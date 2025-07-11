@@ -1,13 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import App from './App';
+import './styles/index.css'; // Your Tailwind + global styles
 
 const rootElement = document.getElementById('root');
-if (!rootElement) throw new Error("❌ Root element not found");
+
+if (!rootElement) {
+  throw new Error('❌ Root element not found');
+}
 
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <div style={{ padding: 20, fontSize: 20, textAlign: 'center' }}>
-      ✅ App Loaded Successfully
-    </div>
+    <App />
   </React.StrictMode>
 );
