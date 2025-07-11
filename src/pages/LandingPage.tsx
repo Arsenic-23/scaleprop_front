@@ -37,31 +37,39 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-white text-center">
-      <h1 className="text-2xl font-bold mb-4">📈 Welcome to Scale Fund</h1>
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-tr from-blue-900 via-indigo-800 to-purple-900 animate-background">
+      <div className="absolute inset-0 z-0 opacity-40 blur-2xl bg-gradient-to-br from-cyan-500 via-indigo-500 to-fuchsia-500"></div>
 
-      {user ? (
-        <>
-          {user.photo_url && (
-            <img
-              src={user.photo_url}
-              alt="profile"
-              className="w-24 h-24 rounded-full mb-2 border shadow"
-            />
-          )}
-          <p className="font-medium">@{user.username || 'unknown'}</p>
-          <p className="text-sm text-gray-500 mb-4">ID: {user.id}</p>
-        </>
-      ) : (
-        <p className="text-gray-500 mb-4">Not inside Telegram Mini App</p>
-      )}
+      <div className="z-10 max-w-md w-full px-6 py-8 backdrop-blur-xl bg-white/10 rounded-3xl border border-white/20 shadow-xl text-center text-white">
+        <h1 className="text-4xl font-extrabold mb-4 tracking-tight drop-shadow-lg">
+          📈 Scale Fund
+        </h1>
+        <p className="text-lg font-medium mb-6 text-indigo-200">
+          Your journey to trading excellence starts here.
+        </p>
 
-      <button
-        onClick={handleEnter}
-        className="bg-blue-600 text-white px-6 py-2 rounded-full shadow hover:bg-blue-700 transition"
-      >
-        🚀 Enter Prop Firm
-      </button>
+        {user ? (
+          <>
+            {user.photo_url && (
+              <img
+                src={user.photo_url}
+                alt="profile"
+                className="w-24 h-24 rounded-full mx-auto mb-3 border-4 border-white/30 shadow-lg"
+              />
+            )}
+            <p className="text-xl font-semibold">@{user.username || user.first_name}</p>
+          </>
+        ) : (
+          <p className="text-gray-300 mb-4">Not inside Telegram Mini App</p>
+        )}
+
+        <button
+          onClick={handleEnter}
+          className="mt-8 bg-indigo-600 hover:bg-indigo-700 px-6 py-3 text-white rounded-full font-bold shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+        >
+          🚀 Enter Prop Firm
+        </button>
+      </div>
     </div>
   );
 };
