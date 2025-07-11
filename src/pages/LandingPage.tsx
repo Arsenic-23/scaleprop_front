@@ -38,7 +38,7 @@ const LandingPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-white text-center">
-      <h1 className="text-2xl font-bold mb-4">📈 Welcome to PropFirmX</h1>
+      <h1 className="text-2xl font-bold mb-4">📈 Welcome to Scale Fund</h1>
 
       {user ? (
         <>
