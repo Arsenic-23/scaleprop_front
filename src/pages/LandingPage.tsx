@@ -20,17 +20,13 @@ export default function LandingPage() {
         <h1 className="text-2xl font-extrabold tracking-wide">SCALE FUND</h1>
       </div>
 
-      {/* Logos inside frame */}
-      <div className="mt-24 w-full max-w-5xl space-y-8 px-6 z-10">
-        <div className="rounded-xl bg-white/5 border border-white/10 backdrop-blur-md p-4 shadow-inner">
-          <LogoScroller direction="left" />
-        </div>
-        <div className="rounded-xl bg-white/5 border border-white/10 backdrop-blur-md p-4 shadow-inner">
-          <LogoScroller direction="right" />
-        </div>
+      {/* Logo Scrollers */}
+      <div className="mt-24 w-full max-w-6xl space-y-6 px-2 z-10">
+        <LogoScroller direction="left" />
+        <LogoScroller direction="right" />
       </div>
 
-      {/* Capsule CTA button */}
+      {/* CTA Button */}
       <div className="absolute bottom-10 w-full flex justify-center z-10">
         <button
           onClick={handleEnter}
