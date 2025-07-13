@@ -10,28 +10,30 @@ const logos = [
 ];
 
 export function LogoScroller({ direction = "left" }: { direction: "left" | "right" }) {
+  const baseAnimation = {
+    x: direction === "left" ? ["0%", "-100%"] : ["0%", "100%"],
+  };
+
   return (
-    <div className="overflow-hidden relative w-full">
+    <div className="overflow-hidden w-full">
       <motion.div
-        className="flex gap-6 py-4 px-4 w-max"
-        animate={{
-          x: direction === "left" ? ["0%", "-100%"] : ["0%", "100%"],
-        }}
+        className="flex w-max"
+        animate={baseAnimation}
         transition={{
           repeat: Infinity,
-          duration: 45,
+          duration: 40,
           ease: "linear",
         }}
       >
         {[...logos, ...logos].map((src, index) => (
           <div
             key={index}
-            className="min-w-[100px] h-[80px] bg-white/5 border border-white/10 rounded-xl flex items-center justify-center shadow-md backdrop-blur-sm transition hover:scale-105"
+            className="w-[100px] h-[100px] flex items-center justify-center bg-white/5 border border-white/10 backdrop-blur-md"
           >
             <motion.img
               src={src}
               alt="logo"
-              className="h-10 object-contain grayscale hover:grayscale-0 transition-all duration-300"
+              className="h-10 w-10 object-contain grayscale hover:grayscale-0 transition duration-300"
             />
           </div>
         ))}
