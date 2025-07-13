@@ -7,6 +7,7 @@ const logos = [
   "/exness.png",
   "/icmarkets.png",
   "/binance.png",
+  "/bybit.png",
   "/oanda.png",
 ];
 
