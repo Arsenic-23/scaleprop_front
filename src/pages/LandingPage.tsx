@@ -11,13 +11,17 @@ export default function LandingPage() {
   return (
     <div className="relative min-h-screen bg-black text-white font-sans flex flex-col items-center justify-start overflow-hidden">
       {/* Branding */}
-      <div className="flex items-center mt-10 z-10">
-        <img src="/logo.png" alt="Scale Fund" className="w-10 h-10 mr-3" />
-        <h1 className="text-3xl font-serif font-bold tracking-tight">SCALE FUND</h1>
+      <div className="mt-16 z-10 flex items-center space-x-3 relative">
+        {/* 🔘 Ring effect around logo */}
+        <div className="relative w-12 h-12 rounded-full flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full border border-white/10 animate-pulse blur-md" />
+          <img src="/logo.png" alt="Scale Fund" className="w-10 h-10 z-10" />
+        </div>
+        <h1 className="text-2xl font-serif font-semibold tracking-wide">Scale Fund</h1>
       </div>
 
       {/* Logo Scrollers */}
-      <div className="mt-24 w-full max-w-6xl space-y-6 px-2 z-10">
+      <div className="mt-20 w-full max-w-6xl space-y-6 px-4 z-10">
         <LogoScroller direction="left" />
         <LogoScroller direction="right" />
       </div>
