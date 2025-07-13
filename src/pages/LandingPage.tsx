@@ -1,77 +1,39 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { LogoScroller } from "../components/LogoScroller";
+import { useNavigate } from "react-router-dom";
 
-interface TelegramUser {
-  id: number;
-  first_name: string;
-  username?: string;
-  photo_url?: string;
-}
-
-const LandingPage = () => {
+export default function LandingPage() {
   const navigate = useNavigate();
-  const [user, setUser] = useState<TelegramUser | null>(null);
-
-  useEffect(() => {
-    const tg = window.Telegram?.WebApp;
-
-    if (!tg || !tg.initDataUnsafe?.user) {
-      console.warn('Not running inside Telegram Mini App.');
-      return;
-    }
-
-    const tgUser = tg.initDataUnsafe.user;
-    const normalizedUser: TelegramUser = {
-      id: tgUser.id,
-      first_name: tgUser.first_name,
-      username: tgUser.username,
-      photo_url: tgUser.photo_url,
-    };
-
-    setUser(normalizedUser);
-    localStorage.setItem('user_id', String(tgUser.id));
-  }, []);
 
   const handleEnter = () => {
-    navigate('/home');
+    navigate("/home");
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-tr from-blue-900 via-indigo-800 to-purple-900 animate-background">
-      <div className="absolute inset-0 z-0 opacity-40 blur-2xl bg-gradient-to-br from-cyan-500 via-indigo-500 to-fuchsia-500"></div>
+    <div className="relative min-h-screen bg-black text-white overflow-hidden font-sans">
+      {/* Top Branding */}
+      <header className="text-center py-6 text-4xl font-bold tracking-wider z-10">
+        SCALE FUND
+      </header>
 
-      <div className="z-10 max-w-md w-full px-6 py-8 backdrop-blur-xl bg-white/10 rounded-3xl border border-white/20 shadow-xl text-center text-white">
-        <h1 className="text-4xl font-extrabold mb-4 tracking-tight drop-shadow-lg">
-          📈 Scale Fund
-        </h1>
-        <p className="text-lg font-medium mb-6 text-indigo-200">
-          Your journey to trading excellence starts here.
-        </p>
+      {/* Blurred Side Overlays */}
+      <div className="absolute left-0 top-0 w-28 h-full bg-black/50 backdrop-blur-md z-0" />
+      <div className="absolute right-0 top-0 w-28 h-full bg-black/50 backdrop-blur-md z-0" />
 
-        {user ? (
-          <>
-            {user.photo_url && (
-              <img
-                src={user.photo_url}
-                alt="profile"
-                className="w-24 h-24 rounded-full mx-auto mb-3 border-4 border-white/30 shadow-lg"
-              />
-            )}
-            <p className="text-xl font-semibold">@{user.username || user.first_name}</p>
-          </>
-        ) : (
-          <p className="text-gray-300 mb-4">Not inside Telegram Mini App</p>
-        )}
+      {/* Logo Rows */}
+      <div className="relative z-10 space-y-4 my-12">
+        <LogoScroller direction="left" />
+        <LogoScroller direction="right" />
+      </div>
 
+      {/* CTA Button */}
+      <div className="absolute bottom-10 w-full flex justify-center z-10">
         <button
           onClick={handleEnter}
-          className="mt-8 bg-indigo-600 hover:bg-indigo-700 px-6 py-3 text-white rounded-full font-bold shadow-lg transition-all duration-300 ease-in-out transform hover:scale-105"
+          className="bg-white text-black px-8 py-3 rounded-full text-lg font-semibold shadow-md hover:scale-105 transition-all duration-300"
         >
           🚀 Enter Prop Firm
         </button>
       </div>
     </div>
   );
-};
-
-export default LandingPage;
+}
