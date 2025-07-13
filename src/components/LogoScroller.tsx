@@ -1,5 +1,5 @@
-import { motion, useAnimation } from "framer-motion";
-import { useRef, useState } from "react";
+import { motion, useMotionValue, useTransform, useAnimationFrame } from "framer-motion";
+import { useRef } from "react";
 
 const logos = [
   "/tradingview.png",
@@ -11,56 +11,24 @@ const logos = [
 ];
 
 export function LogoScroller({ direction }: { direction: "left" | "right" }) {
-  const [isDragging, setIsDragging] = useState(false);
-  const controls = useAnimation();
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const baseSpeed = 30;
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const x = useMotionValue(0);
+  const dir = direction === "left" ? -1 : 1;
 
-  const moveDir = direction === "left" ? "-100%" : "100%";
+  useAnimationFrame((t, delta) => {
+    const moveBy = (dir * baseSpeed * delta) / 1000;
+    x.set(x.get() + moveBy);
+  });
 
-  const handleDragStart = () => {
-    setIsDragging(true);
-    controls.stop();
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-  };
-
-  const handleDragEnd = () => {
-    setIsDragging(false);
-    timeoutRef.current = setTimeout(() => {
-      controls.start({
-        x: [ "0%", moveDir ],
-        transition: {
-          repeat: Infinity,
-          duration: 30,
-          ease: "linear",
-        },
-      });
-    }, 1000);
-  };
+  const translateX = useTransform(x, (val) => `${val % (logos.length * 100)}px`);
 
   return (
-    <div className="relative overflow-hidden w-full">
-      <motion.div
-        className="flex w-max"
-        animate={{
-          x: isDragging ? undefined : [ "0%", moveDir ],
-        }}
-        transition={
-          isDragging
-            ? undefined
-            : {
-                repeat: Infinity,
-                duration: 30,
-                ease: "linear",
-              }
-        }
-        drag="x"
-        dragConstraints={{ left: 0, right: 0 }}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        {[...logos, ...logos, ...logos].map((src, index) => (
+    <div ref={scrollRef} className="overflow-hidden relative w-full">
+      <motion.div style={{ x: translateX }} className="flex w-max">
+        {[...logos, ...logos].map((src, i) => (
           <div
-            key={index}
+            key={i}
             className="w-[100px] h-[100px] flex items-center justify-center rounded-2xl mx-0 bg-white/5 border border-white/10 backdrop-blur-md shadow-inner"
           >
             <img
@@ -72,7 +40,7 @@ export function LogoScroller({ direction }: { direction: "left" | "right" }) {
         ))}
       </motion.div>
 
-      {/* Fading edges */}
+      {/* Edge fading */}
       <div className="absolute left-0 top-0 h-full w-24 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
       <div className="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
     </div>
