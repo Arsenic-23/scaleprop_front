@@ -9,15 +9,11 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-black text-white font-sans flex flex-col items-center justify-center overflow-hidden">
-      {/* Side blur overlays */}
-      <div className="absolute left-0 top-0 w-24 h-full bg-black/50 backdrop-blur-md z-0" />
-      <div className="absolute right-0 top-0 w-24 h-full bg-black/50 backdrop-blur-md z-0" />
-
+    <div className="relative min-h-screen bg-black text-white font-sans flex flex-col items-center justify-start overflow-hidden">
       {/* Branding */}
-      <div className="flex items-center mt-16 z-10">
+      <div className="flex items-center mt-10 z-10">
         <img src="/logo.png" alt="Scale Fund" className="w-10 h-10 mr-3" />
-        <h1 className="text-2xl font-extrabold tracking-wide">SCALE FUND</h1>
+        <h1 className="text-3xl font-serif font-bold tracking-tight">SCALE FUND</h1>
       </div>
 
       {/* Logo Scrollers */}
@@ -30,7 +26,7 @@ export default function LandingPage() {
       <div className="absolute bottom-10 w-full flex justify-center z-10">
         <button
           onClick={handleEnter}
-          className="bg-violet-600 hover:bg-violet-700 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-xl hover:scale-105 transition-all duration-300"
+          className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-xl hover:scale-105 transition-all duration-300"
         >
           🚀 Enter Prop Firm
         </button>
