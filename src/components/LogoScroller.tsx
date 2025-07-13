@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { useRef } from "react";
 
 const logos = [
   "/tradingview.png",
@@ -11,13 +10,10 @@ const logos = [
 ];
 
 export function LogoScroller({ direction = "left" }: { direction: "left" | "right" }) {
-  const scrollRef = useRef(null);
-
   return (
     <div className="overflow-hidden relative w-full">
       <motion.div
-        ref={scrollRef}
-        className="flex gap-16 py-4 px-4 w-max"
+        className="flex gap-6 py-4 px-4 w-max"
         animate={{
           x: direction === "left" ? ["0%", "-100%"] : ["0%", "100%"],
         }}
@@ -28,12 +24,16 @@ export function LogoScroller({ direction = "left" }: { direction: "left" | "righ
         }}
       >
         {[...logos, ...logos].map((src, index) => (
-          <motion.img
+          <div
             key={index}
-            src={src}
-            alt="logo"
-            className="h-12 grayscale hover:grayscale-0 hover:scale-110 transition-all duration-300"
-          />
+            className="min-w-[100px] h-[80px] bg-white/5 border border-white/10 rounded-xl flex items-center justify-center shadow-md backdrop-blur-sm transition hover:scale-105"
+          >
+            <motion.img
+              src={src}
+              alt="logo"
+              className="h-10 object-contain grayscale hover:grayscale-0 transition-all duration-300"
+            />
+          </div>
         ))}
       </motion.div>
     </div>
