@@ -4,12 +4,11 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #f9f9f9;
-  color: #222;
-  min-height: 100vh;
-  padding-bottom: 60px; /* space for bottom navbar */
+  background-color: #000; /* Matte black */
+  color: #fff;
+  overflow-x: hidden;
 }
 
 button {
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
