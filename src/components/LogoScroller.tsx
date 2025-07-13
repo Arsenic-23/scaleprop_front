@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
 
 const logos = [
   "/tradingview.png",
@@ -11,54 +10,24 @@ const logos = [
 ];
 
 export function LogoScroller({ direction }: { direction: "left" | "right" }) {
-  const [isDragging, setIsDragging] = useState(false);
-  const [shouldAnimate, setShouldAnimate] = useState(true);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const handleDragStart = () => {
-    setIsDragging(true);
-    setShouldAnimate(false);
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-  };
-
-  const handleDragEnd = () => {
-    setIsDragging(false);
-    timeoutRef.current = setTimeout(() => {
-      setShouldAnimate(true);
-    }, 1000); // resume after 1 second
-  };
-
   return (
-    <div className="overflow-hidden relative w-full">
+    <div className="overflow-hidden w-full">
       <motion.div
         className="flex w-max"
-        drag="x"
-        dragConstraints={{ left: 0, right: 0 }}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-        animate={
-          shouldAnimate
-            ? {
-                x: direction === "left" ? ["0%", "-100%"] : ["0%", "100%"],
-              }
-            : undefined
-        }
-        transition={
-          shouldAnimate
-            ? {
-                repeat: Infinity,
-                duration: 40,
-                ease: "linear",
-              }
-            : undefined
-        }
+        animate={{
+          x: direction === "left" ? ["0%", "-50%"] : ["0%", "50%"],
+        }}
+        transition={{
+          repeat: Infinity,
+          duration: 20, // 🟢 smoother motion
+          ease: "linear",
+        }}
       >
-        {[...logos, ...logos].map((src, i) => (
+        {[...logos, ...logos].map((src, index) => (
           <div
-            key={i}
-            className="relative w-[100px] h-[100px] flex items-center justify-center rounded-full mx-0 backdrop-blur-md border border-white/10 bg-white/5 hover:scale-105 transition-all duration-300"
+            key={index}
+            className="w-[100px] h-[100px] flex items-center justify-center rounded-2xl mx-0 bg-white/5 border border-white/10 backdrop-blur-md shadow-inner"
           >
-            <div className="absolute inset-0 rounded-full border border-white/10 opacity-30 blur-md" />
             <img
               src={src}
               alt="logo"
@@ -68,7 +37,7 @@ export function LogoScroller({ direction }: { direction: "left" | "right" }) {
         ))}
       </motion.div>
 
-      {/* Edge Faders */}
+      {/* Fading edges */}
       <div className="absolute left-0 top-0 h-full w-24 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
       <div className="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
     </div>
