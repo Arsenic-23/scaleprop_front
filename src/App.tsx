@@ -1,5 +1,7 @@
 // src/App.tsx
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { viewport, init, isTMA } from '@telegram-apps/sdk';
 
 import LandingPage from './pages/LandingPage';
 import Home from './pages/Home';
@@ -15,6 +17,27 @@ import Announcements from './pages/Announcements';
 import Support from './pages/Support';
 
 function App() {
+  useEffect(() => {
+    const initTelegram = async () => {
+      if (await isTMA()) {
+        init(); // Initialize Telegram SDK
+
+        // Mount the viewport (for bottom sheet, inline, etc.)
+        if (viewport.mount.isAvailable()) {
+          await viewport.mount();
+          viewport.expand(); // Expands the mini app height if needed
+        }
+
+        // Request fullscreen (new feature)
+        if (viewport.requestFullscreen.isAvailable()) {
+          await viewport.requestFullscreen();
+        }
+      }
+    };
+
+    initTelegram();
+  }, []);
+
   return (
     <Router>
       <Routes>
