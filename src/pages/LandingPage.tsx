@@ -5,6 +5,9 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   const handleEnter = () => {
+    if (navigator.vibrate) {
+      navigator.vibrate([50, 70, 50]);
+    }
     navigate("/home");
   };
 
@@ -29,14 +32,15 @@ export default function LandingPage() {
 
       {/* CTA Text + Button */}
       <div className="w-full flex flex-col items-center z-10">
-        <p className="text-sm text-white font-semibold mb-4 tracking-wide text-center">
+        <p className="text-sm text-white font-semibold mb-5 tracking-wide text-center">
           Crafted for those who dare to scale beyond limits.
         </p>
         <button
           onClick={handleEnter}
-          className="bg-white text-black px-6 py-2 rounded-full text-sm font-medium shadow-md hover:scale-105 transition-all duration-300 tracking-wide"
+          className="bg-white text-black px-6 py-2 rounded-full text-sm font-medium tracking-wide shadow-md hover:scale-105 transition-all duration-300"
+          style={{ fontFamily: "'Inter', sans-serif" }}
         >
-          🚀 Enter Prop Firm
+          🚀 Join Now
         </button>
       </div>
     </div>
