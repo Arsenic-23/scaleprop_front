@@ -1,4 +1,3 @@
-
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useRef, useEffect } from "react";
 
@@ -31,17 +30,19 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
   const translateX = useTransform(x, (val) => `${val % (logos.length * 140)}px`);
 
-  // Auto scroll + inertia handling
+  // Custom animation loop
   const animate = (time: number) => {
     const delta = time - lastTime;
     lastTime = time;
 
-    if (!isUserDragging && Math.abs(velocity) > 0.1) {
-      x.set(x.get() + velocity * (delta / 1000));
-      velocity *= 0.95; // decay
-    } else if (!isUserDragging && Math.abs(velocity) <= 0.1) {
-      velocity = 0;
-      x.set(x.get() + (dir * baseSpeed * delta) / 1000);
+    if (!isUserDragging) {
+      if (Math.abs(velocity) > 0.01) {
+        x.set(x.get() + velocity * (delta / 1000));
+        velocity *= 0.92; // Decay faster for instant feeling
+      } else {
+        velocity = 0;
+        x.set(x.get() + (dir * baseSpeed * delta) / 1000);
+      }
     }
 
     inertiaFrame = requestAnimationFrame(animate);
@@ -50,7 +51,6 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   useEffect(() => {
     lastTime = performance.now();
     inertiaFrame = requestAnimationFrame(animate);
-
     return () => cancelAnimationFrame(inertiaFrame);
   }, []);
 
@@ -58,9 +58,12 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
     const container = containerRef.current;
     if (!container) return;
 
+    const getEventX = (e: MouseEvent | TouchEvent) =>
+      "touches" in e ? e.touches[0].clientX : e.clientX;
+
     const onDown = (e: MouseEvent | TouchEvent) => {
       isUserDragging = true;
-      startX = "touches" in e ? e.touches[0].clientX : e.clientX;
+      startX = getEventX(e);
       scrollStart = x.get();
       velocity = 0;
       lastX = startX;
@@ -69,20 +72,23 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
     const onMove = (e: MouseEvent | TouchEvent) => {
       if (!isUserDragging) return;
-      const currentX = "touches" in e ? e.touches[0].clientX : e.clientX;
+      const currentX = getEventX(e);
       const now = performance.now();
       const delta = currentX - startX;
+      const dx = currentX - lastX;
+      const dt = (now - lastTime) / 1000;
+
+      if (dt > 0) velocity = dx / dt;
 
       x.set(scrollStart + delta);
 
-      const timeDiff = now - lastTime;
-      velocity = (currentX - lastX) / (timeDiff / 1000);
       lastX = currentX;
       lastTime = now;
     };
 
     const onUp = () => {
       isUserDragging = false;
+      lastTime = performance.now(); // Ensure inertia starts now
     };
 
     container.addEventListener("mousedown", onDown);
@@ -105,7 +111,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   return (
     <div
       ref={containerRef}
-      className="overflow-hidden relative w-full cursor-grab"
+      className="overflow-hidden relative w-full cursor-grab active:cursor-grabbing"
     >
       <motion.div style={{ x: translateX }} className="flex w-max select-none">
         {[...logos, ...logos].map((src, i) => (
