@@ -1,5 +1,6 @@
-import { motion, useMotionValue, useTransform, useAnimationFrame } from "framer-motion";
-import { useRef, useEffect, useState } from "react";
+
+import { motion, useMotionValue, useTransform } from "framer-motion";
+import { useRef, useEffect } from "react";
 
 const logos = [
   "/tradingview.png",
@@ -18,58 +19,70 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   const baseSpeed = 40;
   const containerRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
-  const translateX = useTransform(x, (val) => `${val % (logos.length * 140)}px`);
-
   const dir = direction === "left" ? -1 : 1;
-  const velocity = useRef(0);
-  const [isDragging, setIsDragging] = useState(false);
+
+  let isUserDragging = false;
   let startX = 0;
   let scrollStart = 0;
-  let lastMove = 0;
+  let velocity = 0;
+  let lastX = 0;
   let lastTime = 0;
+  let inertiaFrame: number;
 
-  useAnimationFrame((t, delta) => {
-    if (!isDragging) {
-      if (Math.abs(velocity.current) > 0.2) {
-        x.set(x.get() + velocity.current);
-        velocity.current *= 0.95;
-      } else {
-        const moveBy = (dir * baseSpeed * delta) / 1000;
-        x.set(x.get() + moveBy);
-      }
+  const translateX = useTransform(x, (val) => `${val % (logos.length * 140)}px`);
+
+  // Auto scroll + inertia handling
+  const animate = (time: number) => {
+    const delta = time - lastTime;
+    lastTime = time;
+
+    if (!isUserDragging && Math.abs(velocity) > 0.1) {
+      x.set(x.get() + velocity * (delta / 1000));
+      velocity *= 0.95; // decay
+    } else if (!isUserDragging && Math.abs(velocity) <= 0.1) {
+      velocity = 0;
+      x.set(x.get() + (dir * baseSpeed * delta) / 1000);
     }
-  });
+
+    inertiaFrame = requestAnimationFrame(animate);
+  };
+
+  useEffect(() => {
+    lastTime = performance.now();
+    inertiaFrame = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(inertiaFrame);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const onDown = (e: MouseEvent | TouchEvent) => {
-      setIsDragging(true);
+      isUserDragging = true;
       startX = "touches" in e ? e.touches[0].clientX : e.clientX;
       scrollStart = x.get();
-      lastMove = startX;
+      velocity = 0;
+      lastX = startX;
       lastTime = performance.now();
     };
 
     const onMove = (e: MouseEvent | TouchEvent) => {
-      if (!isDragging) return;
+      if (!isUserDragging) return;
       const currentX = "touches" in e ? e.touches[0].clientX : e.clientX;
-      const dx = currentX - startX;
-      x.set(scrollStart + dx);
-
       const now = performance.now();
-      const deltaX = currentX - lastMove;
-      const deltaTime = now - lastTime;
-      if (deltaTime > 0) {
-        velocity.current = (deltaX / deltaTime) * 25;
-        lastMove = currentX;
-        lastTime = now;
-      }
+      const delta = currentX - startX;
+
+      x.set(scrollStart + delta);
+
+      const timeDiff = now - lastTime;
+      velocity = (currentX - lastX) / (timeDiff / 1000);
+      lastX = currentX;
+      lastTime = now;
     };
 
     const onUp = () => {
-      setIsDragging(false);
+      isUserDragging = false;
     };
 
     container.addEventListener("mousedown", onDown);
@@ -92,7 +105,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   return (
     <div
       ref={containerRef}
-      className="overflow-hidden relative w-full cursor-grab active:cursor-grabbing select-none"
+      className="overflow-hidden relative w-full cursor-grab"
     >
       <motion.div style={{ x: translateX }} className="flex w-max select-none">
         {[...logos, ...logos].map((src, i) => (
