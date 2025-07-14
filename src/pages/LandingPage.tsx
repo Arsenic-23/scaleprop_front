@@ -6,7 +6,7 @@ export default function LandingPage() {
 
   const handleEnter = () => {
     if (navigator.vibrate) {
-      navigator.vibrate([50, 70, 50]);
+      navigator.vibrate([70, 100, 70]);
     }
     navigate("/home");
   };
@@ -14,12 +14,11 @@ export default function LandingPage() {
   return (
     <div className="relative min-h-screen bg-black text-white font-sans flex flex-col items-center justify-between overflow-hidden pb-20">
       {/* Branding */}
-      <div className="mt-20 z-10 flex items-center space-x-3 relative">
-        {/* Stylish circular hover around logo */}
+      <div className="mt-20 z-10 flex items-center space-x-2 relative">
         <div className="relative w-10 h-10 rounded-full flex items-center justify-center border border-white/20 hover:border-white transition duration-300">
           <img src="/logo.png" alt="Scale Fund" className="w-7 h-7 z-10" />
         </div>
-        <h1 className="text-xl font-medium tracking-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
+        <h1 className="text-lg font-semibold tracking-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
           Scale Fund
         </h1>
       </div>
@@ -30,17 +29,17 @@ export default function LandingPage() {
         <LogoScroller direction="right" />
       </div>
 
-      {/* CTA Text + Button */}
-      <div className="w-full flex flex-col items-center z-10">
-        <p className="text-sm text-white font-semibold mb-5 tracking-wide text-center">
+      {/* CTA */}
+      <div className="w-full flex flex-col items-center z-10 pb-10">
+        <p className="text-sm md:text-base text-white font-light opacity-80 mb-4 tracking-wide text-center">
           Crafted for those who dare to scale beyond limits.
         </p>
         <button
           onClick={handleEnter}
-          className="bg-white text-black px-6 py-2 rounded-full text-sm font-medium tracking-wide shadow-md hover:scale-105 transition-all duration-300"
+          className="relative w-[200px] py-3 rounded-full bg-white text-black font-semibold text-base overflow-hidden transition-all duration-300 ease-in-out active:scale-[0.98] shadow-md"
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
-          🚀 Join Now
+          Join Now
         </button>
       </div>
     </div>
