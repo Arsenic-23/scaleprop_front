@@ -74,25 +74,16 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
     <div ref={containerRef} className="overflow-hidden relative w-full cursor-grab">
       <motion.div style={{ x: translateX }} className="flex w-max select-none">
         {[...logos, ...logos].map((src, i) => (
-          <motion.div
+          <div
             key={i}
-            whileHover={{
-              scale: 1.1,
-              boxShadow: "0 0 20px rgba(255, 255, 255, 0.2)",
-            }}
-            whileTap={{
-              scale: 0.96,
-              boxShadow: "0 0 30px rgba(255, 255, 255, 0.35)",
-            }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="w-[120px] h-[120px] flex items-center justify-center mx-3 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-lg shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_8px_20px_rgba(0,0,0,0.2)] transition-all duration-300"
+            className="w-[120px] h-[120px] flex items-center justify-center mx-3 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-lg shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_8px_20px_rgba(0,0,0,0.2)] hover:shadow-[0_0_15px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
           >
             <img
               src={src}
               alt="logo"
-              className="h-14 w-14 object-contain transition-transform duration-300"
+              className="h-14 w-14 object-contain transition-transform duration-300 hover:scale-110"
             />
-          </motion.div>
+          </div>
         ))}
       </motion.div>
 
