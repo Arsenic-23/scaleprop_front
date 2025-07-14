@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useTransform, useAnimationFrame } from "framer-motion";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
 const logos = [
   "/tradingview.png",
@@ -18,14 +18,21 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   const baseSpeed = 40;
   const containerRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
+  const velocity = useRef(0);
   const dir = direction === "left" ? -1 : 1;
-  let isUserDragging = false;
+  const [isDragging, setIsDragging] = useState(false);
   let startX = 0;
   let scrollStart = 0;
+  let lastMoveTime = 0;
 
+  // Smooth animation loop
   useAnimationFrame((t, delta) => {
-    if (!isUserDragging) {
-      const moveBy = (dir * baseSpeed * delta) / 1000;
+    let moveBy = (dir * baseSpeed * delta) / 1000;
+
+    if (!isDragging && Math.abs(velocity.current) > 0.1) {
+      x.set(x.get() + velocity.current);
+      velocity.current *= 0.95; // slow down drag velocity
+    } else if (!isDragging) {
       x.set(x.get() + moveBy);
     }
   });
@@ -37,20 +44,31 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
     if (!container) return;
 
     const onMouseDown = (e: MouseEvent | TouchEvent) => {
-      isUserDragging = true;
+      setIsDragging(true);
       startX = 'touches' in e ? e.touches[0].clientX : e.clientX;
       scrollStart = x.get();
+      lastMoveTime = performance.now();
+      velocity.current = 0;
     };
 
     const onMouseMove = (e: MouseEvent | TouchEvent) => {
-      if (!isUserDragging) return;
+      if (!isDragging) return;
       const currentX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-      const delta = currentX - startX;
-      x.set(scrollStart + delta);
+      const deltaX = currentX - startX;
+      const currentTime = performance.now();
+      const timeDiff = currentTime - lastMoveTime;
+
+      if (timeDiff > 0) {
+        const instantaneousVelocity = deltaX / timeDiff;
+        velocity.current = instantaneousVelocity * 20; // scale for more realistic feel
+      }
+
+      x.set(scrollStart + deltaX);
+      lastMoveTime = currentTime;
     };
 
     const onMouseUp = () => {
-      isUserDragging = false;
+      setIsDragging(false);
     };
 
     container.addEventListener("mousedown", onMouseDown);
@@ -71,7 +89,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   }, [x]);
 
   return (
-    <div ref={containerRef} className="overflow-hidden relative w-full cursor-grab">
+    <div ref={containerRef} className="overflow-hidden relative w-full cursor-grab active:cursor-grabbing">
       <motion.div style={{ x: translateX }} className="flex w-max select-none">
         {[...logos, ...logos].map((src, i) => (
           <div
