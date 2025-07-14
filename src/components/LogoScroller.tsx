@@ -15,23 +15,24 @@ const logos = [
 ];
 
 function ScrollingRow({ direction }: { direction: "left" | "right" }) {
-  const baseSpeed = 40; // px per second
+  const baseSpeed = 40;
   const containerRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
-  const velocity = useRef(0);
+  const translateX = useTransform(x, (val) => `${val % (logos.length * 140)}px`);
+
   const dir = direction === "left" ? -1 : 1;
+  const velocity = useRef(0);
   const [isDragging, setIsDragging] = useState(false);
   let startX = 0;
   let scrollStart = 0;
-  let lastX = 0;
+  let lastMove = 0;
   let lastTime = 0;
 
-  // Auto-scrolling & inertia
   useAnimationFrame((t, delta) => {
     if (!isDragging) {
-      if (Math.abs(velocity.current) > 0.1) {
+      if (Math.abs(velocity.current) > 0.2) {
         x.set(x.get() + velocity.current);
-        velocity.current *= 0.94;
+        velocity.current *= 0.95;
       } else {
         const moveBy = (dir * baseSpeed * delta) / 1000;
         x.set(x.get() + moveBy);
@@ -39,45 +40,42 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
     }
   });
 
-  const totalWidth = logos.length * 140; // 120px + margin
-  const translateX = useTransform(x, (val) => `${val % totalWidth}px`);
-
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const onDown = (e: MouseEvent | TouchEvent) => {
       setIsDragging(true);
-      startX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+      startX = "touches" in e ? e.touches[0].clientX : e.clientX;
       scrollStart = x.get();
-      lastX = startX;
+      lastMove = startX;
       lastTime = performance.now();
-      velocity.current = 0;
     };
 
     const onMove = (e: MouseEvent | TouchEvent) => {
       if (!isDragging) return;
-      const currentX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-      const now = performance.now();
+      const currentX = "touches" in e ? e.touches[0].clientX : e.clientX;
       const dx = currentX - startX;
       x.set(scrollStart + dx);
 
-      // update velocity
-      const delta = currentX - lastX;
-      const time = now - lastTime;
-      if (time > 0) {
-        velocity.current = (delta / time) * 25; // scaled for realism
-        lastX = currentX;
+      const now = performance.now();
+      const deltaX = currentX - lastMove;
+      const deltaTime = now - lastTime;
+      if (deltaTime > 0) {
+        velocity.current = (deltaX / deltaTime) * 25;
+        lastMove = currentX;
         lastTime = now;
       }
     };
 
-    const onUp = () => setIsDragging(false);
+    const onUp = () => {
+      setIsDragging(false);
+    };
 
     container.addEventListener("mousedown", onDown);
-    container.addEventListener("touchstart", onDown, { passive: true });
+    container.addEventListener("touchstart", onDown);
     container.addEventListener("mousemove", onMove);
-    container.addEventListener("touchmove", onMove, { passive: true });
+    container.addEventListener("touchmove", onMove);
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchend", onUp);
 
@@ -94,9 +92,9 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   return (
     <div
       ref={containerRef}
-      className="overflow-hidden relative w-full cursor-grab active:cursor-grabbing touch-pan-x select-none"
+      className="overflow-hidden relative w-full cursor-grab active:cursor-grabbing select-none"
     >
-      <motion.div style={{ x: translateX }} className="flex w-max">
+      <motion.div style={{ x: translateX }} className="flex w-max select-none">
         {[...logos, ...logos].map((src, i) => (
           <div
             key={i}
@@ -111,7 +109,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
         ))}
       </motion.div>
 
-      {/* Edge fading overlays */}
+      {/* Edge fading */}
       <div className="absolute left-0 top-0 h-full w-24 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
       <div className="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
     </div>
