@@ -76,12 +76,12 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
         {[...logos, ...logos].map((src, i) => (
           <div
             key={i}
-            className="w-[120px] h-[120px] flex items-center justify-center mx-3 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-lg shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_8px_20px_rgba(0,0,0,0.2)] hover:shadow-[0_0_15px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
+            className="w-[120px] h-[120px] flex items-center justify-center rounded-2xl mx-2 bg-white/5 border border-white/10 backdrop-blur-md shadow-inner"
           >
             <img
               src={src}
               alt="logo"
-              className="h-14 w-14 object-contain transition-transform duration-300 hover:scale-110"
+              className="h-14 w-14 object-contain transition-all duration-300"
             />
           </div>
         ))}
@@ -96,7 +96,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
 export function LogoScroller() {
   return (
-    <div className="flex flex-col gap-6 py-4">
+    <div className="flex flex-col gap-4">
       <ScrollingRow direction="left" />
       <ScrollingRow direction="right" />
     </div>
