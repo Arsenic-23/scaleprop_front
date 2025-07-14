@@ -28,9 +28,8 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   let lastTime = 0;
   let inertiaFrame: number;
 
-  const translateX = useTransform(x, (val) => `${val % (logos.length * 140)}px`);
+  const translateX = useTransform(x, (val) => `${val % (logos.length * 100)}px`);
 
-  // Custom animation loop
   const animate = (time: number) => {
     const delta = time - lastTime;
     lastTime = time;
@@ -38,7 +37,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
     if (!isUserDragging) {
       if (Math.abs(velocity) > 0.01) {
         x.set(x.get() + velocity * (delta / 1000));
-        velocity *= 0.92; // Decay faster for instant feeling
+        velocity *= 0.92;
       } else {
         velocity = 0;
         x.set(x.get() + (dir * baseSpeed * delta) / 1000);
@@ -81,14 +80,13 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       if (dt > 0) velocity = dx / dt;
 
       x.set(scrollStart + delta);
-
       lastX = currentX;
       lastTime = now;
     };
 
     const onUp = () => {
       isUserDragging = false;
-      lastTime = performance.now(); // Ensure inertia starts now
+      lastTime = performance.now();
     };
 
     container.addEventListener("mousedown", onDown);
@@ -117,29 +115,28 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
         {[...logos, ...logos].map((src, i) => (
           <div
             key={i}
-            className="w-[120px] h-[120px] flex items-center justify-center mx-3 rounded-3xl bg-white/10 border border-white/20 backdrop-blur-lg shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_8px_20px_rgba(0,0,0,0.2)] hover:shadow-[0_0_15px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
+            className="w-[90px] h-[90px] flex items-center justify-center mx-2 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-lg shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_4px_12px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
           >
             <img
               src={src}
               alt="logo"
-              className="h-14 w-14 object-contain transition-transform duration-300 hover:scale-110"
+              className="h-10 w-10 object-contain filter grayscale transition-all duration-300 hover:grayscale-0"
             />
           </div>
         ))}
       </motion.div>
 
-      {/* Edge fading */}
-      <div className="absolute left-0 top-0 h-full w-24 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
-      <div className="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
+      <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
+      <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
     </div>
   );
 }
 
 export function LogoScroller() {
   return (
-    <div className="flex flex-col gap-6 py-4">
+    <div className="flex flex-col py-6">
+      {/* Only one row shown at the bottom */}
       <ScrollingRow direction="left" />
-      <ScrollingRow direction="right" />
     </div>
   );
 }
