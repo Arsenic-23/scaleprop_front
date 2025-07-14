@@ -34,9 +34,13 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
     lastTime = time;
 
     if (!isDragging) {
+      // Pendulum-like deceleration then return to base speed
+      if (Math.abs(velocity) > baseSpeed) {
+        velocity *= 0.96;
+      } else if (Math.abs(velocity) < baseSpeed * 0.95) {
+        velocity += dir * 0.5; // slowly nudge back to base speed
+      }
       x.set(x.get() + (velocity * delta) / 1000);
-    } else {
-      velocity *= 0.95; // reduce noise from small movements
     }
 
     inertiaFrame = requestAnimationFrame(animate);
@@ -80,7 +84,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
     const onUp = () => {
       isDragging = false;
-      if (Math.abs(velocity) < 20) {
+      if (Math.abs(velocity) < baseSpeed) {
         velocity = dir * baseSpeed;
       }
     };
@@ -107,19 +111,12 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       ref={containerRef}
       className="overflow-hidden relative w-full cursor-grab active:cursor-grabbing"
     >
-      {/* Edge Mask (fades logos at edges) */}
-      <div className="absolute inset-0 z-10 pointer-events-none" style={{
-        WebkitMaskImage:
-          "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)",
-        maskImage:
-          "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)"
-      }} />
+      {/* Fading Edges (Restored black gradient both sides) */}
+      <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
+      <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
 
-      {/* Logos Row */}
-      <motion.div
-        style={{ x: translateX }}
-        className="flex w-max select-none"
-      >
+      {/* Logo Strip */}
+      <motion.div style={{ x: translateX }} className="flex w-max select-none">
         {[...logos, ...logos].map((src, i) => (
           <div
             key={i}
@@ -139,7 +136,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
 export function LogoScroller() {
   return (
-    <div className="flex flex-col mt-auto pb-6">
+    <div className="flex flex-col w-full mt-auto pb-6">
       <ScrollingRow direction="left" />
     </div>
   );
