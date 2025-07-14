@@ -15,7 +15,7 @@ const logos = [
 ];
 
 function ScrollingRow({ direction }: { direction: "left" | "right" }) {
-  const baseSpeed = 40;
+  const baseSpeed = 40; // px per second
   const containerRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const velocity = useRef(0);
@@ -23,74 +23,80 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   const [isDragging, setIsDragging] = useState(false);
   let startX = 0;
   let scrollStart = 0;
-  let lastMoveTime = 0;
+  let lastX = 0;
+  let lastTime = 0;
 
-  // Smooth animation loop
+  // Auto-scrolling & inertia
   useAnimationFrame((t, delta) => {
-    let moveBy = (dir * baseSpeed * delta) / 1000;
-
-    if (!isDragging && Math.abs(velocity.current) > 0.1) {
-      x.set(x.get() + velocity.current);
-      velocity.current *= 0.95; // slow down drag velocity
-    } else if (!isDragging) {
-      x.set(x.get() + moveBy);
+    if (!isDragging) {
+      if (Math.abs(velocity.current) > 0.1) {
+        x.set(x.get() + velocity.current);
+        velocity.current *= 0.94;
+      } else {
+        const moveBy = (dir * baseSpeed * delta) / 1000;
+        x.set(x.get() + moveBy);
+      }
     }
   });
 
-  const translateX = useTransform(x, (val) => `${val % (logos.length * 140)}px`);
+  const totalWidth = logos.length * 140; // 120px + margin
+  const translateX = useTransform(x, (val) => `${val % totalWidth}px`);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const onMouseDown = (e: MouseEvent | TouchEvent) => {
+    const onDown = (e: MouseEvent | TouchEvent) => {
       setIsDragging(true);
       startX = 'touches' in e ? e.touches[0].clientX : e.clientX;
       scrollStart = x.get();
-      lastMoveTime = performance.now();
+      lastX = startX;
+      lastTime = performance.now();
       velocity.current = 0;
     };
 
-    const onMouseMove = (e: MouseEvent | TouchEvent) => {
+    const onMove = (e: MouseEvent | TouchEvent) => {
       if (!isDragging) return;
       const currentX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-      const deltaX = currentX - startX;
-      const currentTime = performance.now();
-      const timeDiff = currentTime - lastMoveTime;
+      const now = performance.now();
+      const dx = currentX - startX;
+      x.set(scrollStart + dx);
 
-      if (timeDiff > 0) {
-        const instantaneousVelocity = deltaX / timeDiff;
-        velocity.current = instantaneousVelocity * 20; // scale for more realistic feel
+      // update velocity
+      const delta = currentX - lastX;
+      const time = now - lastTime;
+      if (time > 0) {
+        velocity.current = (delta / time) * 25; // scaled for realism
+        lastX = currentX;
+        lastTime = now;
       }
-
-      x.set(scrollStart + deltaX);
-      lastMoveTime = currentTime;
     };
 
-    const onMouseUp = () => {
-      setIsDragging(false);
-    };
+    const onUp = () => setIsDragging(false);
 
-    container.addEventListener("mousedown", onMouseDown);
-    container.addEventListener("touchstart", onMouseDown);
-    container.addEventListener("mousemove", onMouseMove);
-    container.addEventListener("touchmove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-    window.addEventListener("touchend", onMouseUp);
+    container.addEventListener("mousedown", onDown);
+    container.addEventListener("touchstart", onDown, { passive: true });
+    container.addEventListener("mousemove", onMove);
+    container.addEventListener("touchmove", onMove, { passive: true });
+    window.addEventListener("mouseup", onUp);
+    window.addEventListener("touchend", onUp);
 
     return () => {
-      container.removeEventListener("mousedown", onMouseDown);
-      container.removeEventListener("touchstart", onMouseDown);
-      container.removeEventListener("mousemove", onMouseMove);
-      container.removeEventListener("touchmove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-      window.removeEventListener("touchend", onMouseUp);
+      container.removeEventListener("mousedown", onDown);
+      container.removeEventListener("touchstart", onDown);
+      container.removeEventListener("mousemove", onMove);
+      container.removeEventListener("touchmove", onMove);
+      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("touchend", onUp);
     };
   }, [x]);
 
   return (
-    <div ref={containerRef} className="overflow-hidden relative w-full cursor-grab active:cursor-grabbing">
-      <motion.div style={{ x: translateX }} className="flex w-max select-none">
+    <div
+      ref={containerRef}
+      className="overflow-hidden relative w-full cursor-grab active:cursor-grabbing touch-pan-x select-none"
+    >
+      <motion.div style={{ x: translateX }} className="flex w-max">
         {[...logos, ...logos].map((src, i) => (
           <div
             key={i}
@@ -105,7 +111,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
         ))}
       </motion.div>
 
-      {/* Edge fading */}
+      {/* Edge fading overlays */}
       <div className="absolute left-0 top-0 h-full w-24 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
       <div className="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
     </div>
