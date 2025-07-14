@@ -16,34 +16,27 @@ const logos = [
 
 function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   const baseSpeed = 40;
-  const containerRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
-  const dir = direction === "left" ? -1 : 1;
+  const translateX = useTransform(x, (val) => `${val % (logos.length * 100)}px`);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  let isUserDragging = false;
+  const dir = direction === "left" ? -1 : 1;
+  let isDragging = false;
   let startX = 0;
   let scrollStart = 0;
-  let velocity = 0;
+  let velocity = dir * baseSpeed;
   let lastX = 0;
   let lastTime = 0;
   let inertiaFrame: number;
-
-  const translateX = useTransform(x, (val) => `${val % (logos.length * 100)}px`);
 
   const animate = (time: number) => {
     const delta = time - lastTime;
     lastTime = time;
 
-    if (!isUserDragging) {
-      // Apply constant speed when no dragging
-      velocity *= 0.9; // smooth out any leftover drag velocity
-      if (Math.abs(velocity) < 10) {
-        velocity = dir * baseSpeed;
-      }
+    if (!isDragging) {
       x.set(x.get() + (velocity * delta) / 1000);
     } else {
-      // During drag, don't auto-scroll
-      velocity *= 0.9;
+      velocity *= 0.95; // reduce noise from small movements
     }
 
     inertiaFrame = requestAnimationFrame(animate);
@@ -59,36 +52,37 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
     const container = containerRef.current;
     if (!container) return;
 
-    const getEventX = (e: MouseEvent | TouchEvent) =>
+    const getX = (e: MouseEvent | TouchEvent) =>
       "touches" in e ? e.touches[0].clientX : e.clientX;
 
     const onDown = (e: MouseEvent | TouchEvent) => {
-      isUserDragging = true;
-      startX = getEventX(e);
+      isDragging = true;
+      startX = getX(e);
       scrollStart = x.get();
-      velocity = 0;
       lastX = startX;
       lastTime = performance.now();
+      velocity = 0;
     };
 
     const onMove = (e: MouseEvent | TouchEvent) => {
-      if (!isUserDragging) return;
-      const currentX = getEventX(e);
+      if (!isDragging) return;
+      const currentX = getX(e);
       const now = performance.now();
       const delta = currentX - startX;
       const dx = currentX - lastX;
       const dt = (now - lastTime) / 1000;
 
-      if (dt > 0) velocity = dx / dt;
-
       x.set(scrollStart + delta);
+      velocity = dx / dt;
       lastX = currentX;
       lastTime = now;
     };
 
     const onUp = () => {
-      isUserDragging = false;
-      // velocity remains for inertia
+      isDragging = false;
+      if (Math.abs(velocity) < 20) {
+        velocity = dir * baseSpeed;
+      }
     };
 
     container.addEventListener("mousedown", onDown);
@@ -113,7 +107,19 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       ref={containerRef}
       className="overflow-hidden relative w-full cursor-grab active:cursor-grabbing"
     >
-      <motion.div style={{ x: translateX }} className="flex w-max select-none">
+      {/* Edge Mask (fades logos at edges) */}
+      <div className="absolute inset-0 z-10 pointer-events-none" style={{
+        WebkitMaskImage:
+          "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)",
+        maskImage:
+          "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)"
+      }} />
+
+      {/* Logos Row */}
+      <motion.div
+        style={{ x: translateX }}
+        className="flex w-max select-none"
+      >
         {[...logos, ...logos].map((src, i) => (
           <div
             key={i}
@@ -122,15 +128,11 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
             <img
               src={src}
               alt="logo"
-              className="h-16 w-16 object-contain filter grayscale transition-all duration-300 hover:grayscale-0" // Increased logo size
+              className="h-16 w-16 object-contain filter grayscale transition-all duration-300 hover:grayscale-0"
             />
           </div>
         ))}
       </motion.div>
-
-      {/* Edge Fades */}
-      <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
-      <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
     </div>
   );
 }
