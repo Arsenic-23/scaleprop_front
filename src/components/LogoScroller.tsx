@@ -35,13 +35,15 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
     lastTime = time;
 
     if (!isUserDragging) {
-      if (Math.abs(velocity) > 0.01) {
-        x.set(x.get() + velocity * (delta / 1000));
-        velocity *= 0.92;
-      } else {
-        velocity = 0;
-        x.set(x.get() + (dir * baseSpeed * delta) / 1000);
+      // Apply constant speed when no dragging
+      velocity *= 0.9; // smooth out any leftover drag velocity
+      if (Math.abs(velocity) < 10) {
+        velocity = dir * baseSpeed;
       }
+      x.set(x.get() + (velocity * delta) / 1000);
+    } else {
+      // During drag, don't auto-scroll
+      velocity *= 0.9;
     }
 
     inertiaFrame = requestAnimationFrame(animate);
@@ -86,7 +88,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
     const onUp = () => {
       isUserDragging = false;
-      lastTime = performance.now();
+      // velocity remains for inertia
     };
 
     container.addEventListener("mousedown", onDown);
@@ -120,12 +122,13 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
             <img
               src={src}
               alt="logo"
-              className="h-10 w-10 object-contain filter grayscale transition-all duration-300 hover:grayscale-0"
+              className="h-16 w-16 object-contain filter grayscale transition-all duration-300 hover:grayscale-0" // Increased logo size
             />
           </div>
         ))}
       </motion.div>
 
+      {/* Edge Fades */}
       <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
       <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
     </div>
@@ -134,8 +137,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
 export function LogoScroller() {
   return (
-    <div className="flex flex-col py-6">
-      {/* Only one row shown at the bottom */}
+    <div className="flex flex-col mt-auto pb-6">
       <ScrollingRow direction="left" />
     </div>
   );
