@@ -6,7 +6,7 @@ export default function LandingPage() {
 
   const handleEnter = () => {
     if (navigator.vibrate) {
-      navigator.vibrate([70, 100, 70]);
+      navigator.vibrate([100, 150, 100]);
     }
     navigate("/home");
   };
