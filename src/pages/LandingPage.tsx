@@ -14,12 +14,18 @@ export default function LandingPage() {
   return (
     <div className="relative min-h-screen bg-black text-white font-sans flex flex-col items-center justify-between overflow-hidden pb-20">
       {/* Branding */}
-      <div className="mt-20 z-10 flex items-center space-x-2 relative">
-        <div className="relative w-10 h-10 rounded-full flex items-center justify-center border border-white/20 hover:border-white transition duration-300">
-          <img src="/logo.png" alt="Scale Fund" className="w-8 h-8 z-10" /> {/* Bigger logo inside circle */}
+      <div className="mt-16 z-10 flex items-center space-x-2 relative">
+        {/* 🔘 Classy Icon Logo */}
+        <div className="relative w-10 h-10 rounded-full flex items-center justify-center border border-white/20 hover:border-white transition duration-300 shadow-md bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm">
+          <img src="/logo.png" alt="cale Fund" className="w-6 h-6 z-10" />
         </div>
-        <h1 className="text-lg font-semibold tracking-tight" style={{ fontFamily: "'Inter', sans-serif" }}>
-          Scale Fund
+
+        {/* 🖋️ Elegant Brand Font */}
+        <h1
+          className="text-xl font-semibold tracking-wide"
+          style={{ fontFamily: "'Playfair Display', serif" }}
+        >
+          cale Fund
         </h1>
       </div>
 
@@ -36,12 +42,18 @@ export default function LandingPage() {
         <p className="text-sm md:text-base text-white font-light opacity-80 mb-4 tracking-wide text-center">
           Crafted for those who dare to scale beyond limits.
         </p>
+
+        {/* 🟢 Modern Glassy Join Button */}
         <button
           onClick={handleEnter}
-          className="relative w-[160px] py-2.5 rounded-full bg-white text-black font-medium text-sm overflow-hidden transition-all duration-300 ease-in-out active:scale-[0.98] shadow-md"
-          style={{ fontFamily: "'Inter', sans-serif" }}
+          className="relative px-8 py-3 rounded-full bg-gradient-to-br from-emerald-500 via-green-400 to-lime-400 text-black font-semibold text-sm shadow-lg hover:scale-105 active:scale-95 transition-all duration-300 ease-in-out"
+          style={{
+            fontFamily: "'Inter', sans-serif",
+            backdropFilter: "blur(4px)",
+            WebkitBackdropFilter: "blur(4px)",
+          }}
         >
-          Join Now
+          ✨ Join Now
         </button>
       </div>
     </div>
