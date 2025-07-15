@@ -5,7 +5,6 @@ const logos = [
   "/tradingview.png",
   "/metamask.png",
   "/exness.png",
-  "/icmarkets.png",
   "/binance.png",
   "/bybit.png",
   "/tether.png",
