@@ -13,9 +13,9 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-black text-white font-sans flex flex-col items-center overflow-hidden pt-10 pb-10">
-      {/* Branding at top */}
-      <div className="z-10 flex items-center space-x-2 mb-10">
+    <div className="relative min-h-screen bg-black text-white font-sans flex flex-col items-center overflow-hidden pb-20">
+      {/* Branding - top with margin */}
+      <div className="mt-20 z-10 flex items-center space-x-2">
         <div className="w-10 h-10 flex items-center justify-center">
           <img src="/logo.png" alt="Scale Fund" className="w-8 h-8" />
         </div>
@@ -27,13 +27,13 @@ export default function LandingPage() {
         </h1>
       </div>
 
-      {/* Typewriter Text */}
-      <div className="flex items-center justify-center z-10 mb-10">
+      {/* Typewriter Timeline with space below */}
+      <div className="mt-16 mb-16 z-10">
         <TypewriterTimeline />
       </div>
 
       {/* Logo Scroller */}
-      <div className="w-full max-w-6xl px-4 z-10 mb-10">
+      <div className="w-full max-w-6xl px-4 z-10 mb-16">
         <LogoScroller />
       </div>
 
