@@ -13,9 +13,9 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="relative min-h-screen bg-black text-white font-sans flex flex-col overflow-hidden">
-      {/* Branding */}
-      <div className="mt-10 z-10 flex items-center justify-center space-x-2">
+    <div className="relative min-h-screen bg-black text-white font-sans flex flex-col items-center overflow-hidden pt-10 pb-10">
+      {/* Branding at top */}
+      <div className="z-10 flex items-center space-x-2 mb-10">
         <div className="w-10 h-10 flex items-center justify-center">
           <img src="/logo.png" alt="Scale Fund" className="w-8 h-8" />
         </div>
@@ -27,13 +27,18 @@ export default function LandingPage() {
         </h1>
       </div>
 
-      {/* Typewriter in center */}
-      <div className="flex-grow flex items-center justify-center z-10">
+      {/* Typewriter Text */}
+      <div className="flex items-center justify-center z-10 mb-10">
         <TypewriterTimeline />
       </div>
 
+      {/* Logo Scroller */}
+      <div className="w-full max-w-6xl px-4 z-10 mb-10">
+        <LogoScroller />
+      </div>
+
       {/* CTA Section */}
-      <div className="w-full flex flex-col items-center z-10 pb-8">
+      <div className="w-full flex flex-col items-center z-10">
         <p className="text-sm md:text-base text-white font-light opacity-80 mb-4 tracking-wide text-center">
           Crafted for those who dare to scale beyond limits.
         </p>
@@ -47,11 +52,6 @@ export default function LandingPage() {
         >
           Join Now
         </button>
-      </div>
-
-      {/* Logo Scroller */}
-      <div className="w-full max-w-6xl px-4 z-10 mb-6 mx-auto">
-        <LogoScroller />
       </div>
     </div>
   );
