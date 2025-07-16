@@ -27,18 +27,18 @@ export default function LandingPage() {
         </h1>
       </div>
 
-      {/* Typewriter Timeline in middle */}
-      <div className="mt-16 mb-20 z-10">
+      {/* Typewriter Timeline - vertically centered */}
+      <div className="flex-grow flex items-center justify-center z-10">
         <TypewriterTimeline />
       </div>
 
-      {/* Logo Scroller - pushed further down */}
-      <div className="w-full max-w-6xl px-4 z-10 mb-28">
+      {/* Logo Scroller - just above CTA */}
+      <div className="w-full max-w-6xl px-4 z-10 mb-10">
         <LogoScroller />
       </div>
 
-      {/* CTA Section - fixed near bottom */}
-      <div className="absolute bottom-8 w-full flex flex-col items-center z-20 px-4">
+      {/* CTA Section - just above the bottom */}
+      <div className="z-20 w-full flex flex-col items-center pb-8 px-4">
         <p className="text-sm md:text-base text-white font-light opacity-80 mb-4 tracking-wide text-center">
           Crafted for those who dare to scale beyond limits.
         </p>
