@@ -1,4 +1,5 @@
 import { LogoScroller } from "../components/LogoScroller";
+import { TypewriterTimeline } from "../components/TypewriterTimeline";
 import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
@@ -25,6 +26,8 @@ export default function LandingPage() {
           Scale Fund
         </h1>
       </div>
+
+      <TypewriterTimeline />
 
       {/* Spacer to push scroller near the bottom */}
       <div className="flex-grow" />
