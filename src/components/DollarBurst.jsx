@@ -52,7 +52,7 @@ export default function DollarBurst({ trigger = false, count = 22 }) {
                   transform: "translate(-50%, -50%)",
                 }}
               >
-                $
+                ✨
               </motion.span>
             );
           })}
