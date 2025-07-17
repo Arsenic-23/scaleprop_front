@@ -16,7 +16,7 @@ export const TypewriterTimeline = () => {
 
   useEffect(() => {
     const currentText = steps[stepIndex];
-    let timeout: NodeJS.Timeout;
+    let timeout;
 
     if (!isDeleting && charIndex <= currentText.length) {
       setDisplayedText(currentText.slice(0, charIndex));
