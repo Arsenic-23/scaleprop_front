@@ -16,11 +16,10 @@ export default function DollarBurst({ trigger = false, count = 22 }) {
         {trigger &&
           Array.from({ length: count }).map((_, i) => {
             const angle = (360 / count) * i;
-            const radius = Math.random() * 100 + 80;
+            const radius = 100; // Constant radius for perfect circle
             const x = Math.cos((angle * Math.PI) / 180) * radius;
             const y = Math.sin((angle * Math.PI) / 180) * radius;
-            const duration = Math.random() * 0.4 + 1.1;
-            const delay = Math.random() * 0.05;
+            const duration = 1.4 + Math.random() * 0.2; // Slight variation
 
             return (
               <motion.span
@@ -29,20 +28,19 @@ export default function DollarBurst({ trigger = false, count = 22 }) {
                   x: 0,
                   y: 0,
                   scale: 0.3,
-                  opacity: 1,
+                  opacity: 0.7,
                   rotate: 0,
                 }}
                 animate={{
                   x,
                   y,
-                  scale: 1.4,
+                  scale: 1.6,
                   opacity: 0,
                   rotate: 360,
                 }}
                 transition={{
                   duration,
-                  delay,
-                  ease: [0.23, 1, 0.32, 1], // spring-like
+                  ease: [0.25, 1, 0.5, 1],
                 }}
                 exit={{ opacity: 0 }}
                 className="absolute dollar-burst text-2xl md:text-3xl"
@@ -52,7 +50,7 @@ export default function DollarBurst({ trigger = false, count = 22 }) {
                   transform: "translate(-50%, -50%)",
                 }}
               >
-                ✨
+                $
               </motion.span>
             );
           })}
@@ -61,26 +59,33 @@ export default function DollarBurst({ trigger = false, count = 22 }) {
       <style jsx>{`
         .dollar-burst {
           font-weight: 700;
-          background: linear-gradient(135deg, #00f6ff, #3effb7, #00ff95);
+          background: radial-gradient(circle, #00ffcc, #00ffaa, #00ee88);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          filter: drop-shadow(0 1px 2px rgba(0, 255, 170, 0.3))
-                  blur(0.4px)
-                  brightness(1.2);
-          opacity: 1;
-          animation: hueRotate 6s infinite linear;
+          filter: drop-shadow(0 0 4px #00ffbb88) blur(0.5px) brightness(1.15);
+          animation: smoothPulse 6s infinite ease-in-out, hueRotate 6s infinite linear;
           pointer-events: none;
+        }
+
+        @keyframes smoothPulse {
+          0%,
+          100% {
+            transform: scale(1);
+          }
+          50% {
+            transform: scale(1.03);
+          }
         }
 
         @keyframes hueRotate {
           0% {
-            filter: hue-rotate(0deg) drop-shadow(0 1px 2px rgba(0, 255, 170, 0.3));
+            filter: hue-rotate(0deg) drop-shadow(0 0 4px #00ffbb88);
           }
           50% {
-            filter: hue-rotate(180deg) drop-shadow(0 1px 4px rgba(0, 255, 170, 0.5));
+            filter: hue-rotate(180deg) drop-shadow(0 0 6px #00ffaaaa);
           }
           100% {
-            filter: hue-rotate(360deg) drop-shadow(0 1px 2px rgba(0, 255, 170, 0.3));
+            filter: hue-rotate(360deg) drop-shadow(0 0 4px #00ffbb88);
           }
         }
       `}</style>
