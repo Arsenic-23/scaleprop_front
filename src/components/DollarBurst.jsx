@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const EMOJIS = ["💸", "✨", "💰", "🪙"];
+const EMOJIS = ["$", "€", "¥", "₹"];
 
 export default function DollarBurst({ trigger = false, count = 22 }) {
   const [burstKey, setBurstKey] = useState(0);
