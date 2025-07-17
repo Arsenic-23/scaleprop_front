@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const EMOJIS = ["💸", "✨", "💰", "🪙"];
+
 export default function DollarBurst({ trigger = false, count = 22 }) {
   const [burstKey, setBurstKey] = useState(0);
 
@@ -16,11 +18,12 @@ export default function DollarBurst({ trigger = false, count = 22 }) {
         {trigger &&
           Array.from({ length: count }).map((_, i) => {
             const angle = (360 / count) * i;
-            const radius = Math.random() * 100 + 80;
+            const radius = Math.random() * 100 + 90; // Balanced circle
             const x = Math.cos((angle * Math.PI) / 180) * radius;
             const y = Math.sin((angle * Math.PI) / 180) * radius;
-            const duration = Math.random() * 0.4 + 1.1;
-            const delay = Math.random() * 0.05;
+            const duration = Math.random() * 0.5 + 1.6; // Slightly slower
+            const delay = Math.random() * 0.1;
+            const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
 
             return (
               <motion.span
@@ -35,14 +38,14 @@ export default function DollarBurst({ trigger = false, count = 22 }) {
                 animate={{
                   x,
                   y,
-                  scale: 1.4,
+                  scale: 1.5,
                   opacity: 0,
                   rotate: 360,
                 }}
                 transition={{
                   duration,
                   delay,
-                  ease: [0.23, 1, 0.32, 1], // spring-like
+                  ease: [0.25, 1, 0.5, 1],
                 }}
                 exit={{ opacity: 0 }}
                 className="absolute dollar-burst text-2xl md:text-3xl"
@@ -52,7 +55,7 @@ export default function DollarBurst({ trigger = false, count = 22 }) {
                   transform: "translate(-50%, -50%)",
                 }}
               >
-                $
+                {emoji}
               </motion.span>
             );
           })}
@@ -61,11 +64,11 @@ export default function DollarBurst({ trigger = false, count = 22 }) {
       <style jsx>{`
         .dollar-burst {
           font-weight: 700;
-          background: linear-gradient(135deg, #00f6ff, #3effb7, #00ff95);
+          background: radial-gradient(circle, #00f6ff, #3effb7, #00ff95);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          filter: drop-shadow(0 1px 2px rgba(0, 255, 170, 0.3))
-                  blur(0.4px)
+          filter: drop-shadow(0 0 4px rgba(0, 255, 170, 0.3))
+                  blur(0.5px)
                   brightness(1.2);
           opacity: 1;
           animation: hueRotate 6s infinite linear;
@@ -74,13 +77,13 @@ export default function DollarBurst({ trigger = false, count = 22 }) {
 
         @keyframes hueRotate {
           0% {
-            filter: hue-rotate(0deg) drop-shadow(0 1px 2px rgba(0, 255, 170, 0.3));
+            filter: hue-rotate(0deg) drop-shadow(0 0 4px rgba(0, 255, 170, 0.3));
           }
           50% {
-            filter: hue-rotate(180deg) drop-shadow(0 1px 4px rgba(0, 255, 170, 0.5));
+            filter: hue-rotate(180deg) drop-shadow(0 0 6px rgba(0, 255, 170, 0.5));
           }
           100% {
-            filter: hue-rotate(360deg) drop-shadow(0 1px 2px rgba(0, 255, 170, 0.3));
+            filter: hue-rotate(360deg) drop-shadow(0 0 4px rgba(0, 255, 170, 0.3));
           }
         }
       `}</style>
