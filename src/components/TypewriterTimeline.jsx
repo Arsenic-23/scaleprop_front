@@ -14,9 +14,18 @@ export const TypewriterTimeline = () => {
   const [charIndex, setCharIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [displayedText, setDisplayedText] = useState("");
-  const [burst, setBurst] = useState(false); // 💥 Triggers $ burst
+  const [burst, setBurst] = useState(false);
+  const [initialDelayDone, setInitialDelayDone] = useState(false);
 
   useEffect(() => {
+    // ⏳ Initial delay before starting typing
+    const initialDelay = setTimeout(() => setInitialDelayDone(true), 1000);
+    return () => clearTimeout(initialDelay);
+  }, []);
+
+  useEffect(() => {
+    if (!initialDelayDone) return;
+
     const currentText = steps[stepIndex];
     let timeout;
 
@@ -29,23 +38,24 @@ export const TypewriterTimeline = () => {
     } else {
       timeout = setTimeout(() => {
         setIsDeleting(!isDeleting);
+
         if (!isDeleting) {
-          // pause after typing
+          // 🛑 Pause after typing is done
           timeout = setTimeout(() => setIsDeleting(true), 2000);
         } else {
-          // 🔁 move to next step and trigger $ burst
+          // 🔁 Move to next step + trigger burst
           setStepIndex((prev) => {
             const next = (prev + 1) % steps.length;
-            setBurst(true); // 💥 trigger burst
-            setTimeout(() => setBurst(false), 100); // reset trigger
+            setBurst(true);
+            setTimeout(() => setBurst(false), 150);
             return next;
           });
         }
-      }, 800);
+      }, 1000);
     }
 
     return () => clearTimeout(timeout);
-  }, [charIndex, isDeleting, stepIndex]);
+  }, [charIndex, isDeleting, stepIndex, initialDelayDone]);
 
   return (
     <div className="relative py-12 px-6 text-center w-full overflow-hidden">
@@ -65,10 +75,10 @@ export const TypewriterTimeline = () => {
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
           }}
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -10 }}
-          transition={{ duration: 0.5 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
         >
           {displayedText}
           <span className="ml-1 animate-blink text-white">|</span>
