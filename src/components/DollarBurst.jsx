@@ -19,7 +19,7 @@ export default function DollarBurst({ trigger = false, count = 22 }) {
             const radius = Math.random() * 80 + 90;
             const x = Math.cos((angle * Math.PI) / 180) * radius;
             const y = Math.sin((angle * Math.PI) / 180) * radius;
-            const duration = Math.random() * 0.6 + 1.2;
+            const duration = Math.random() * 0.3 + 1.0;
 
             return (
               <motion.span
@@ -27,20 +27,20 @@ export default function DollarBurst({ trigger = false, count = 22 }) {
                 initial={{
                   x: 0,
                   y: 0,
-                  scale: 0.5,
-                  opacity: 0.9,
+                  scale: 0,
+                  opacity: 1,
                   rotate: 0,
                 }}
                 animate={{
                   x,
                   y,
-                  scale: 1.3,
+                  scale: 1.6,
                   opacity: 0,
-                  rotate: 90 + Math.random() * 180,
+                  rotate: 180,
                 }}
                 transition={{ duration, ease: "easeOut" }}
                 exit={{ opacity: 0 }}
-                className="absolute dollar-burst text-xl md:text-2xl"
+                className="absolute dollar-burst text-2xl md:text-3xl"
                 style={{
                   top: "50%",
                   left: "50%",
@@ -55,13 +55,14 @@ export default function DollarBurst({ trigger = false, count = 22 }) {
 
       <style jsx>{`
         .dollar-burst {
-          font-weight: 600;
-          filter: blur(0.5px);
-          background: radial-gradient(circle, #00ff88, #00ffaa, #1fff77);
+          font-weight: 700;
+          background: radial-gradient(circle at center, #00ffcc, #00ffaa, #00ee88);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          opacity: 0.9;
-          animation: hueRotate 4s infinite linear;
+          filter: blur(0.8px) brightness(1.2);
+          opacity: 1;
+          animation: hueRotate 5s infinite linear;
+          pointer-events: none;
         }
 
         @keyframes hueRotate {
@@ -69,10 +70,10 @@ export default function DollarBurst({ trigger = false, count = 22 }) {
             filter: hue-rotate(0deg);
           }
           50% {
-            filter: hue-rotate(90deg);
+            filter: hue-rotate(180deg);
           }
           100% {
-            filter: hue-rotate(0deg);
+            filter: hue-rotate(360deg);
           }
         }
       `}</style>
