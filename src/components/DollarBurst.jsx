@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function DollarBurst({ trigger = false, count = 22 }) {
+export default function DollarBurst({ trigger = false, count = 5 }) {
   const [burstKey, setBurstKey] = useState(0);
 
   useEffect(() => {
