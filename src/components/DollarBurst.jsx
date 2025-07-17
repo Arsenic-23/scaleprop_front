@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
-export default function DollarBurst({ trigger = false, count = 24, emoji = "💸" }) {
+export default function DollarBurst({ trigger = false, count = 24, emoji = "$" }) {
   const containerRef = useRef(null);
 
   useEffect(() => {
