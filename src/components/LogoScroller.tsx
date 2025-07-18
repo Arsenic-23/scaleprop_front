@@ -10,6 +10,7 @@ const logos = [
   "/tether.png",
   "/telegram.png",
   "/scale.png",
+  "/meta.png",
   "/oanda.png",
 ];
 
