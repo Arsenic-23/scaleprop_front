@@ -1,4 +1,4 @@
-import { motion, useMotionValue, useTransform, wrap } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useRef, useEffect } from "react";
 
 const logos = [
@@ -17,8 +17,8 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   const baseSpeed = 40;
   const x = useMotionValue(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const dir = direction === "left" ? -1 : 1;
 
+  const dir = direction === "left" ? -1 : 1;
   let isDragging = false;
   let startX = 0;
   let scrollStart = 0;
@@ -27,12 +27,9 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   let lastTime = 0;
   let inertiaFrame: number;
 
-  const totalLogoWidth = logos.length * 100;
-
-  const translateX = useTransform(x, (val) => {
-    const wrapped = wrap(0, totalLogoWidth * 3, val);
-    return `${wrapped}px`;
-  });
+  // Total width of one full loop of logos
+  const loopWidth = logos.length * 110 * 2; // logo size + margin (90 + 2*10)
+  const translateX = useTransform(x, (val) => `${val % loopWidth}px`);
 
   const animate = (time: number) => {
     const delta = time - lastTime;
@@ -94,9 +91,9 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
     };
 
     container.addEventListener("mousedown", onDown);
-    container.addEventListener("touchstart", onDown, { passive: true });
+    container.addEventListener("touchstart", onDown);
     container.addEventListener("mousemove", onMove);
-    container.addEventListener("touchmove", onMove, { passive: true });
+    container.addEventListener("touchmove", onMove);
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchend", onUp);
 
@@ -113,17 +110,21 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   return (
     <div
       ref={containerRef}
-      className="overflow-hidden relative w-full cursor-grab active:cursor-grabbing bg-black"
+      className="overflow-hidden relative w-full cursor-grab active:cursor-grabbing"
     >
-      {/* Optional Fading Edges (lighter gradient now) */}
-      <div className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-black/80 to-transparent pointer-events-none z-10" />
-      <div className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-black/80 to-transparent pointer-events-none z-10" />
+      {/* Fading Edges */}
+      <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
+      <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
 
-      <motion.div style={{ x: translateX }} className="flex w-max select-none py-4">
-        {[...logos, ...logos, ...logos].map((src, i) => (
+      {/* Logos Repeated 4x for Safe Infinite Loop */}
+      <motion.div
+        style={{ x: translateX }}
+        className="flex w-max select-none"
+      >
+        {[...logos, ...logos, ...logos, ...logos].map((src, i) => (
           <div
             key={i}
-            className="w-[90px] h-[90px] flex items-center justify-center mx-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-lg shadow-md transition-all duration-300"
+            className="w-[90px] h-[90px] flex items-center justify-center mx-[10px] rounded-2xl bg-white/10 border border-white/20 backdrop-blur-lg shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_4px_12px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
           >
             <img
               src={src}
@@ -139,7 +140,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
 export function LogoScroller() {
   return (
-    <div className="w-full">
+    <div className="flex flex-col w-full mt-auto pb-6">
       <ScrollingRow direction="left" />
     </div>
   );
