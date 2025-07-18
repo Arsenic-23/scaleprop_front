@@ -13,9 +13,13 @@ const logos = [
   "/oanda.png",
 ];
 
+const LOGO_WIDTH = 100; // Each logo box + margin (90px + margin)
+const LOOP_WIDTH = logos.length * LOGO_WIDTH;
+
 function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   const baseSpeed = 40;
   const x = useMotionValue(0);
+  const translateX = useTransform(x, (val) => `${val % LOOP_WIDTH}px`);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const dir = direction === "left" ? -1 : 1;
@@ -26,10 +30,6 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   let lastX = 0;
   let lastTime = 0;
   let inertiaFrame: number;
-
-  // Total width of one full loop of logos
-  const loopWidth = logos.length * 110 * 2; // logo size + margin (90 + 2*10)
-  const translateX = useTransform(x, (val) => `${val % loopWidth}px`);
 
   const animate = (time: number) => {
     const delta = time - lastTime;
@@ -116,15 +116,12 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
       <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
 
-      {/* Logos Repeated 4x for Safe Infinite Loop */}
-      <motion.div
-        style={{ x: translateX }}
-        className="flex w-max select-none"
-      >
-        {[...logos, ...logos, ...logos, ...logos].map((src, i) => (
+      {/* Logo Strip */}
+      <motion.div style={{ x: translateX }} className="flex w-max select-none">
+        {[...logos, ...logos, ...logos].map((src, i) => (
           <div
             key={i}
-            className="w-[90px] h-[90px] flex items-center justify-center mx-[10px] rounded-2xl bg-white/10 border border-white/20 backdrop-blur-lg shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_4px_12px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
+            className="w-[90px] h-[90px] flex items-center justify-center mx-2 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-lg shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_4px_12px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
           >
             <img
               src={src}
