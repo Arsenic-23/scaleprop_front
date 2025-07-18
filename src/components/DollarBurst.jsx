@@ -3,7 +3,7 @@ import gsap from "gsap";
 
 const currencyList = ["₹", "¥", "$", "€"];
 
-export default function CurrencyBurst({ trigger = false, count = 32 }) {
+export default function CurrencyBurst({ trigger = false, count = 36 }) {
   const containerRef = useRef(null);
   const [index, setIndex] = useState(0);
 
@@ -23,16 +23,15 @@ export default function CurrencyBurst({ trigger = false, count = 32 }) {
     for (let i = 0; i < count; i++) {
       const span = document.createElement("span");
       span.innerText = emoji;
-      span.className = "emoji-burst absolute text-2xl md:text-3xl";
+      span.className = "emoji-burst absolute text-2xl md:text-4xl";
       container.appendChild(span);
       emojis.push(span);
 
       const angle = (2 * Math.PI * i) / count;
-      const distance = 100 + Math.random() * 50;
+      const distance = 180 + Math.random() * 70; // Bigger burst radius
       const x = Math.cos(angle) * distance;
       const y = Math.sin(angle) * distance;
 
-      // Initial position in center
       span.style.left = `${centerX}px`;
       span.style.top = `${centerY}px`;
 
@@ -49,10 +48,10 @@ export default function CurrencyBurst({ trigger = false, count = 32 }) {
           x,
           y,
           opacity: 0,
-          scale: 1.5,
-          rotate: 720,
-          duration: 1.8,
-          ease: "power3.out",
+          scale: 2,
+          rotate: 1080,
+          duration: 2.2,
+          ease: "power4.out",
           onComplete: () => {
             span.remove();
           },
@@ -68,7 +67,7 @@ export default function CurrencyBurst({ trigger = false, count = 32 }) {
     >
       <style jsx>{`
         .emoji-burst {
-          font-weight: 800;
+          font-weight: 900;
           background: radial-gradient(
             circle,
             #ffffff,
@@ -79,7 +78,7 @@ export default function CurrencyBurst({ trigger = false, count = 32 }) {
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           animation: shimmer 3s infinite ease-in-out;
-          filter: blur(0.3px) brightness(1.1);
+          filter: blur(0.3px) brightness(1.2);
           transform: translate(-50%, -50%);
           user-select: none;
           pointer-events: none;
@@ -87,13 +86,13 @@ export default function CurrencyBurst({ trigger = false, count = 32 }) {
 
         @keyframes shimmer {
           0% {
-            filter: hue-rotate(0deg) brightness(1.1);
+            filter: hue-rotate(0deg) brightness(1.2);
           }
           50% {
             filter: hue-rotate(180deg) brightness(1.3);
           }
           100% {
-            filter: hue-rotate(360deg) brightness(1.1);
+            filter: hue-rotate(360deg) brightness(1.2);
           }
         }
       `}</style>
