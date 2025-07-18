@@ -22,6 +22,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   const x = useMotionValue(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const dir = direction === "left" ? -1 : 1;
+
   let isDragging = false;
   let startX = 0;
   let scrollStart = 0;
@@ -30,26 +31,25 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   let lastTime = 0;
   let inertiaFrame: number;
 
+  const lerp = (a: number, b: number, n: number) => a + (b - a) * n;
+
   const animate = (time: number) => {
     const delta = time - lastTime;
     lastTime = time;
 
     if (!isDragging) {
-      if (Math.abs(velocity) > baseSpeed) {
-        velocity *= 0.96;
-      } else if (Math.abs(velocity) < baseSpeed * 0.95) {
-        velocity += dir * 0.5;
-      }
+      // Smooth acceleration & deceleration
+      velocity = lerp(velocity, dir * baseSpeed, 0.02);
 
       const nextX = x.get() + (velocity * delta) / 1000;
 
-      // Seamless infinite loop reset logic
+      // Infinite loop logic
       if (nextX <= -TOTAL_WIDTH) {
         x.set(0);
       } else if (nextX >= 0) {
         x.set(-TOTAL_WIDTH);
       } else {
-        x.set(nextX);
+        x.set(Math.fround(nextX));
       }
     }
 
@@ -94,7 +94,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
     const onUp = () => {
       isDragging = false;
-      if (Math.abs(velocity) < baseSpeed) {
+      if (Math.abs(velocity) < baseSpeed * 0.5) {
         velocity = dir * baseSpeed;
       }
     };
@@ -127,7 +127,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
       {/* Scrollable Logo Row */}
       <motion.div style={{ x }} className="flex w-max select-none">
-        {[...logos, ...logos, ...logos].map((src, i) => (
+        {[...logos, ...logos, ...logos, ...logos].map((src, i) => (
           <div
             key={i}
             className="w-[90px] h-[90px] flex items-center justify-center mx-2 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-lg shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_4px_12px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
