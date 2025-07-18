@@ -16,15 +16,22 @@ export default function CurrencyBurst({ trigger = false, count = 28 }) {
     const container = containerRef.current;
     const emojis = [];
 
+    const rect = container.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
     for (let i = 0; i < count; i++) {
       const span = document.createElement("span");
       span.innerText = emoji;
       span.className = "emoji-burst absolute text-2xl md:text-3xl";
+      span.style.left = `${centerX}px`;
+      span.style.top = `${centerY}px`;
+
       container.appendChild(span);
       emojis.push(span);
 
       const angle = (Math.PI * 2 * i) / count;
-      const distance = Math.random() * 150 + 100;
+      const distance = 140; // Fixed distance for perfect circle
       const x = Math.cos(angle) * distance;
       const y = Math.sin(angle) * distance;
 
@@ -34,20 +41,18 @@ export default function CurrencyBurst({ trigger = false, count = 28 }) {
           x: 0,
           y: 0,
           opacity: 1,
-          scale: 0.3,
+          scale: 0.4,
           rotate: 0,
         },
         {
           x,
           y,
           opacity: 0,
-          scale: 1.6,
+          scale: 1.4,
           rotate: 360,
-          duration: 1.8,
-          ease: "power3.out",
-          onComplete: () => {
-            span.remove();
-          },
+          duration: 1.6,
+          ease: "power2.out",
+          onComplete: () => span.remove(),
         }
       );
     }
