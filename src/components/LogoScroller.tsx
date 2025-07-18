@@ -1,4 +1,4 @@
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import { useRef, useEffect } from "react";
 
 const logos = [
@@ -13,15 +13,14 @@ const logos = [
   "/oanda.png",
 ];
 
-const LOGO_WIDTH = 100; // Each logo box + margin (90px + margin)
-const LOOP_WIDTH = logos.length * LOGO_WIDTH;
+const LOGO_WIDTH = 104; // 90px + 2*7px margin
+const TOTAL_LOGOS = logos.length;
+const TOTAL_WIDTH = TOTAL_LOGOS * LOGO_WIDTH;
 
 function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   const baseSpeed = 40;
   const x = useMotionValue(0);
-  const translateX = useTransform(x, (val) => `${val % LOOP_WIDTH}px`);
   const containerRef = useRef<HTMLDivElement>(null);
-
   const dir = direction === "left" ? -1 : 1;
   let isDragging = false;
   let startX = 0;
@@ -41,7 +40,17 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       } else if (Math.abs(velocity) < baseSpeed * 0.95) {
         velocity += dir * 0.5;
       }
-      x.set(x.get() + (velocity * delta) / 1000);
+
+      const nextX = x.get() + (velocity * delta) / 1000;
+
+      // Seamless infinite loop reset logic
+      if (nextX <= -TOTAL_WIDTH) {
+        x.set(0);
+      } else if (nextX >= 0) {
+        x.set(-TOTAL_WIDTH);
+      } else {
+        x.set(nextX);
+      }
     }
 
     inertiaFrame = requestAnimationFrame(animate);
@@ -116,8 +125,8 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
       <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
 
-      {/* Logo Strip */}
-      <motion.div style={{ x: translateX }} className="flex w-max select-none">
+      {/* Scrollable Logo Row */}
+      <motion.div style={{ x }} className="flex w-max select-none">
         {[...logos, ...logos, ...logos].map((src, i) => (
           <div
             key={i}
