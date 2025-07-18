@@ -1,4 +1,4 @@
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform, wrap } from "framer-motion";
 import { useRef, useEffect } from "react";
 
 const logos = [
@@ -16,10 +16,9 @@ const logos = [
 function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   const baseSpeed = 40;
   const x = useMotionValue(0);
-  const translateX = useTransform(x, (val) => `${val % (logos.length * 100)}px`);
   const containerRef = useRef<HTMLDivElement>(null);
-
   const dir = direction === "left" ? -1 : 1;
+
   let isDragging = false;
   let startX = 0;
   let scrollStart = 0;
@@ -28,16 +27,23 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   let lastTime = 0;
   let inertiaFrame: number;
 
+  // total width of all logos (assume each is ~100px incl margin)
+  const totalLogoWidth = logos.length * 100;
+
+  const translateX = useTransform(x, (val) => {
+    const wrapped = wrap(0, totalLogoWidth * 3, val); // 3x duplication
+    return `${wrapped}px`;
+  });
+
   const animate = (time: number) => {
     const delta = time - lastTime;
     lastTime = time;
 
     if (!isDragging) {
-      // Pendulum-like deceleration then return to base speed
       if (Math.abs(velocity) > baseSpeed) {
         velocity *= 0.96;
       } else if (Math.abs(velocity) < baseSpeed * 0.95) {
-        velocity += dir * 0.5; // slowly nudge back to base speed
+        velocity += dir * 0.5;
       }
       x.set(x.get() + (velocity * delta) / 1000);
     }
@@ -89,9 +95,9 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
     };
 
     container.addEventListener("mousedown", onDown);
-    container.addEventListener("touchstart", onDown);
+    container.addEventListener("touchstart", onDown, { passive: true });
     container.addEventListener("mousemove", onMove);
-    container.addEventListener("touchmove", onMove);
+    container.addEventListener("touchmove", onMove, { passive: true });
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchend", onUp);
 
@@ -110,13 +116,15 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       ref={containerRef}
       className="overflow-hidden relative w-full cursor-grab active:cursor-grabbing"
     >
-      {/* Fading Edges (Restored black gradient both sides) */}
+      {/* Gradient Fades */}
       <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
       <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
 
-      {/* Logo Strip */}
-      <motion.div style={{ x: translateX }} className="flex w-max select-none">
-        {[...logos, ...logos].map((src, i) => (
+      <motion.div
+        style={{ x: translateX }}
+        className="flex w-max select-none"
+      >
+        {[...logos, ...logos, ...logos].map((src, i) => (
           <div
             key={i}
             className="w-[90px] h-[90px] flex items-center justify-center mx-2 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-lg shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_4px_12px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
