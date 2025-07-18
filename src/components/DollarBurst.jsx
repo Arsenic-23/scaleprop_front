@@ -16,8 +16,9 @@ export default function CurrencyBurst({ trigger = false, count = 32 }) {
     const container = containerRef.current;
     const emojis = [];
 
-    const centerX = container.offsetWidth / 2;
-    const centerY = container.offsetHeight / 2;
+    const rect = container.getBoundingClientRect();
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
 
     for (let i = 0; i < count; i++) {
       const span = document.createElement("span");
@@ -26,28 +27,31 @@ export default function CurrencyBurst({ trigger = false, count = 32 }) {
       container.appendChild(span);
       emojis.push(span);
 
-      // Angle for circular symmetry
-      const angle = (2 * Math.PI * i) / count + (Math.random() * 0.2 - 0.1); // slight randomness
-      const distance = 120 + Math.random() * 40; // consistent but slightly varied
+      const angle = (2 * Math.PI * i) / count;
+      const distance = 100 + Math.random() * 50;
       const x = Math.cos(angle) * distance;
       const y = Math.sin(angle) * distance;
+
+      // Initial position in center
+      span.style.left = `${centerX}px`;
+      span.style.top = `${centerY}px`;
 
       gsap.fromTo(
         span,
         {
-          x: centerX,
-          y: centerY,
+          x: 0,
+          y: 0,
           opacity: 1,
           scale: 0.5,
           rotate: 0,
         },
         {
-          x: centerX + x,
-          y: centerY + y,
+          x,
+          y,
           opacity: 0,
           scale: 1.5,
           rotate: 720,
-          duration: 1.6,
+          duration: 1.8,
           ease: "power3.out",
           onComplete: () => {
             span.remove();
@@ -76,8 +80,9 @@ export default function CurrencyBurst({ trigger = false, count = 32 }) {
           -webkit-text-fill-color: transparent;
           animation: shimmer 3s infinite ease-in-out;
           filter: blur(0.3px) brightness(1.1);
+          transform: translate(-50%, -50%);
           user-select: none;
-          white-space: nowrap;
+          pointer-events: none;
         }
 
         @keyframes shimmer {
