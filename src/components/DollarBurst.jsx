@@ -3,7 +3,7 @@ import gsap from "gsap";
 
 const currencyList = ["₹", "¥", "$", "€"];
 
-export default function CurrencyBurst({ trigger = false, count = 28 }) {
+export default function CurrencyBurst({ trigger = false, count = 32 }) {
   const containerRef = useRef(null);
   const [index, setIndex] = useState(0);
 
@@ -16,6 +16,9 @@ export default function CurrencyBurst({ trigger = false, count = 28 }) {
     const container = containerRef.current;
     const emojis = [];
 
+    const centerX = container.offsetWidth / 2;
+    const centerY = container.offsetHeight / 2;
+
     for (let i = 0; i < count; i++) {
       const span = document.createElement("span");
       span.innerText = emoji;
@@ -23,27 +26,28 @@ export default function CurrencyBurst({ trigger = false, count = 28 }) {
       container.appendChild(span);
       emojis.push(span);
 
-      const angle = (Math.PI * 2 * i) / count;
-      const distance = Math.random() * 150 + 100;
+      // Angle for circular symmetry
+      const angle = (2 * Math.PI * i) / count + (Math.random() * 0.2 - 0.1); // slight randomness
+      const distance = 120 + Math.random() * 40; // consistent but slightly varied
       const x = Math.cos(angle) * distance;
       const y = Math.sin(angle) * distance;
 
       gsap.fromTo(
         span,
         {
-          x: 0,
-          y: 0,
+          x: centerX,
+          y: centerY,
           opacity: 1,
-          scale: 0.3,
+          scale: 0.5,
           rotate: 0,
         },
         {
-          x,
-          y,
+          x: centerX + x,
+          y: centerY + y,
           opacity: 0,
-          scale: 1.6,
-          rotate: 360,
-          duration: 1.8,
+          scale: 1.5,
+          rotate: 720,
+          duration: 1.6,
           ease: "power3.out",
           onComplete: () => {
             span.remove();
@@ -70,8 +74,10 @@ export default function CurrencyBurst({ trigger = false, count = 28 }) {
           );
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          animation: shimmer 4s infinite ease-in-out;
-          filter: blur(0.4px) brightness(1.1);
+          animation: shimmer 3s infinite ease-in-out;
+          filter: blur(0.3px) brightness(1.1);
+          user-select: none;
+          white-space: nowrap;
         }
 
         @keyframes shimmer {
@@ -79,7 +85,7 @@ export default function CurrencyBurst({ trigger = false, count = 28 }) {
             filter: hue-rotate(0deg) brightness(1.1);
           }
           50% {
-            filter: hue-rotate(180deg) brightness(1.2);
+            filter: hue-rotate(180deg) brightness(1.3);
           }
           100% {
             filter: hue-rotate(360deg) brightness(1.1);
