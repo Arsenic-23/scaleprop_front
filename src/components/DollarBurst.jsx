@@ -1,53 +1,58 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
-const currencyList = ["₹", "¥", "$", "€"];
+const signs = ["₹", "¥", "$", "€"];
 
-export default function CurrencyBurst({ trigger = false, count = 28 }) {
+const getRandomSymbol = (() => {
+  let index = 0;
+  return () => {
+    const symbol = signs[index];
+    index = (index + 1) % signs.length;
+    return symbol;
+  };
+})();
+
+export default function DollarBurst({ trigger, count = 12 }) {
   const containerRef = useRef(null);
-  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     if (!trigger || !containerRef.current) return;
 
-    const emoji = currencyList[index % currencyList.length];
-    setIndex((prev) => (prev + 1) % currencyList.length);
-
     const container = containerRef.current;
-    const emojis = [];
+    const particles = [];
 
     for (let i = 0; i < count; i++) {
-      const span = document.createElement("span");
-      span.innerText = emoji;
-      span.className = "emoji-burst absolute text-2xl md:text-3xl";
-      container.appendChild(span);
-      emojis.push(span);
+      const el = document.createElement("span");
+      el.textContent = getRandomSymbol();
+      el.style.position = "absolute";
+      el.style.fontSize = "1rem";
+      el.style.opacity = "0.9";
+      el.style.color = "white";
+      el.style.backgroundImage = "linear-gradient(45deg, #00f0ff, #00ff99)";
+      el.style.webkitBackgroundClip = "text";
+      el.style.webkitTextFillColor = "transparent";
+      container.appendChild(el);
+      particles.push(el);
 
       const angle = (Math.PI * 2 * i) / count;
-      const distance = Math.random() * 150 + 100;
-      const x = Math.cos(angle) * distance;
-      const y = Math.sin(angle) * distance;
+      const radius = 80 + Math.random() * 40;
 
       gsap.fromTo(
-        span,
+        el,
         {
           x: 0,
           y: 0,
+          scale: 0.4,
           opacity: 1,
-          scale: 0.3,
-          rotate: 0,
         },
         {
-          x,
-          y,
+          x: Math.cos(angle) * radius,
+          y: Math.sin(angle) * radius,
+          scale: 1.4,
           opacity: 0,
-          scale: 1.6,
-          rotate: 360,
-          duration: 1.8,
-          ease: "power3.out",
-          onComplete: () => {
-            span.remove();
-          },
+          duration: 1.4,
+          ease: "power2.out",
+          onComplete: () => el.remove(),
         }
       );
     }
@@ -56,36 +61,11 @@ export default function CurrencyBurst({ trigger = false, count = 28 }) {
   return (
     <div
       ref={containerRef}
-      className="pointer-events-none absolute inset-0 z-50 overflow-hidden"
-    >
-      <style jsx>{`
-        .emoji-burst {
-          font-weight: 800;
-          background: radial-gradient(
-            circle,
-            #ffffff,
-            #00ffe0,
-            #14e7b8,
-            #00b894
-          );
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          animation: shimmer 4s infinite ease-in-out;
-          filter: blur(0.4px) brightness(1.1);
-        }
-
-        @keyframes shimmer {
-          0% {
-            filter: hue-rotate(0deg) brightness(1.1);
-          }
-          50% {
-            filter: hue-rotate(180deg) brightness(1.2);
-          }
-          100% {
-            filter: hue-rotate(360deg) brightness(1.1);
-          }
-        }
-      `}</style>
-    </div>
+      className="absolute inset-0 pointer-events-none z-0"
+      style={{
+        width: "100%",
+        height: "100%",
+      }}
+    />
   );
 }
