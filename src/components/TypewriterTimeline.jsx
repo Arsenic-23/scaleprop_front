@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import DollarBurst from "./DollarBurst"; // 💸 Import the animation
+import DollarBurst from "./DollarBurst"; // 💸 Updated animation
 
 const steps = [
   "Sign up and set your strategy.",
@@ -18,7 +18,6 @@ export const TypewriterTimeline = () => {
   const [initialDelayDone, setInitialDelayDone] = useState(false);
 
   useEffect(() => {
-    // ⏳ Initial delay before starting typing
     const initialDelay = setTimeout(() => setInitialDelayDone(true), 1000);
     return () => clearTimeout(initialDelay);
   }, []);
@@ -40,10 +39,8 @@ export const TypewriterTimeline = () => {
         setIsDeleting(!isDeleting);
 
         if (!isDeleting) {
-          // 🛑 Pause after typing is done
           timeout = setTimeout(() => setIsDeleting(true), 2000);
         } else {
-          // 🔁 Move to next step + trigger burst
           setStepIndex((prev) => {
             const next = (prev + 1) % steps.length;
             setBurst(true);
@@ -58,8 +55,8 @@ export const TypewriterTimeline = () => {
   }, [charIndex, isDeleting, stepIndex, initialDelayDone]);
 
   return (
-    <div className="relative py-12 px-6 text-center w-full overflow-hidden">
-      {/* 💸 Dollar Burst Animation */}
+    <div className="relative py-24 px-6 text-center w-full overflow-visible flex justify-center items-center">
+      {/* 💸 Animated Burst */}
       <DollarBurst trigger={burst} count={18} />
 
       {/* 📝 Typewriter Text */}
