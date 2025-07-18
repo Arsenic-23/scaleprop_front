@@ -14,9 +14,8 @@ const logos = [
   "/oanda.png",
 ];
 
-const LOGO_WIDTH = 104; // 90px + 2*7px margin
-const TOTAL_LOGOS = logos.length;
-const TOTAL_WIDTH = TOTAL_LOGOS * LOGO_WIDTH;
+const LOGO_WIDTH = 104;
+const TOTAL_WIDTH = logos.length * LOGO_WIDTH;
 
 function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   const baseSpeed = 40;
@@ -28,29 +27,26 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   let startX = 0;
   let scrollStart = 0;
   let velocity = dir * baseSpeed;
+  let lastTime = performance.now();
   let lastX = 0;
-  let lastTime = 0;
   let inertiaFrame: number;
 
   const lerp = (a: number, b: number, n: number) => a + (b - a) * n;
 
-  const animate = (time: number) => {
-    const delta = time - lastTime;
-    lastTime = time;
+  const animate = (now: number) => {
+    const delta = now - lastTime;
+    lastTime = now;
 
     if (!isDragging) {
-      // Smooth acceleration & deceleration
-      velocity = lerp(velocity, dir * baseSpeed, 0.02);
+      velocity = lerp(velocity, dir * baseSpeed, 0.04);
+      const next = x.get() + (velocity * delta) / 1000;
 
-      const nextX = x.get() + (velocity * delta) / 1000;
-
-      // Infinite loop logic
-      if (nextX <= -TOTAL_WIDTH) {
+      if (next <= -TOTAL_WIDTH) {
         x.set(0);
-      } else if (nextX >= 0) {
+      } else if (next >= 0) {
         x.set(-TOTAL_WIDTH);
       } else {
-        x.set(Math.fround(nextX));
+        x.set(Math.fround(next));
       }
     }
 
@@ -58,7 +54,6 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   };
 
   useEffect(() => {
-    lastTime = performance.now();
     inertiaFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(inertiaFrame);
   }, []);
@@ -83,11 +78,10 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       if (!isDragging) return;
       const currentX = getX(e);
       const now = performance.now();
-      const delta = currentX - startX;
       const dx = currentX - lastX;
       const dt = (now - lastTime) / 1000;
 
-      x.set(scrollStart + delta);
+      x.set(scrollStart + (currentX - startX));
       velocity = dx / dt;
       lastX = currentX;
       lastTime = now;
@@ -95,15 +89,15 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
     const onUp = () => {
       isDragging = false;
-      if (Math.abs(velocity) < baseSpeed * 0.5) {
+      if (Math.abs(velocity) < baseSpeed * 0.4) {
         velocity = dir * baseSpeed;
       }
     };
 
     container.addEventListener("mousedown", onDown);
-    container.addEventListener("touchstart", onDown);
+    container.addEventListener("touchstart", onDown, { passive: true });
     container.addEventListener("mousemove", onMove);
-    container.addEventListener("touchmove", onMove);
+    container.addEventListener("touchmove", onMove, { passive: true });
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchend", onUp);
 
@@ -126,7 +120,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
       <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
 
-      {/* Scrollable Logo Row */}
+      {/* Infinite Logos */}
       <motion.div style={{ x }} className="flex w-max select-none">
         {[...logos, ...logos, ...logos, ...logos].map((src, i) => (
           <div
