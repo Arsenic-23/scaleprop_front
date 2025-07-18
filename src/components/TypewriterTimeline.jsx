@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import DollarBurst from "./DollarBurst"; // 💸 Updated animation
+import CurrencyBurst from "./CurrencyBurst"; // 💸 Updated animation
 
 const steps = [
   "Sign up and set your strategy.",
@@ -44,7 +44,7 @@ export const TypewriterTimeline = () => {
           setStepIndex((prev) => {
             const next = (prev + 1) % steps.length;
             setBurst(true);
-            setTimeout(() => setBurst(false), 150);
+            setTimeout(() => setBurst(false), 200);
             return next;
           });
         }
@@ -57,7 +57,7 @@ export const TypewriterTimeline = () => {
   return (
     <div className="relative py-24 px-6 text-center w-full overflow-visible flex justify-center items-center">
       {/* 💸 Animated Burst */}
-      <DollarBurst trigger={burst} count={18} />
+      <CurrencyBurst trigger={burst} count={28} />
 
       {/* 📝 Typewriter Text */}
       <AnimatePresence mode="wait">
