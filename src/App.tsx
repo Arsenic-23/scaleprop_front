@@ -1,6 +1,6 @@
 // src/App.tsx
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { viewport, init, isTMA } from '@telegram-apps/sdk';
 
 import LandingPage from './pages/LandingPage';
@@ -16,30 +16,24 @@ import AdminPanel from './pages/AdminPanel';
 import Announcements from './pages/Announcements';
 import Support from './pages/Support';
 
-function App() {
-  useEffect(() => {
-    const initTelegram = async () => {
-      if (await isTMA()) {
-        init(); // Initialize Telegram SDK
+import BottomNav from './components/BottomNav'; // ✅ Make sure you’ve created this
 
-        // Mount the viewport (for bottom sheet, inline, etc.)
-        if (viewport.mount.isAvailable()) {
-          await viewport.mount();
-          viewport.expand(); // Expands the mini app height if needed
-        }
+function AppWrapper() {
+  const location = useLocation();
 
-        // Request fullscreen (new feature)
-        if (viewport.requestFullscreen.isAvailable()) {
-          await viewport.requestFullscreen();
-        }
-      }
-    };
+  // ✅ Define routes where nav bar should appear
+  const showBottomNavRoutes = [
+    '/home',
+    '/account',
+    '/profile',
+    '/plans',
+    '/support',
+  ];
 
-    initTelegram();
-  }, []);
+  const showBottomNav = showBottomNavRoutes.includes(location.pathname);
 
   return (
-    <Router>
+    <>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
@@ -54,6 +48,35 @@ function App() {
         <Route path="/announcements" element={<Announcements />} />
         <Route path="/support" element={<Support />} />
       </Routes>
+
+      {showBottomNav && <BottomNav />} {/* ✅ Conditionally show */}
+    </>
+  );
+}
+
+function App() {
+  useEffect(() => {
+    const initTelegram = async () => {
+      if (await isTMA()) {
+        init();
+
+        if (viewport.mount.isAvailable()) {
+          await viewport.mount();
+          viewport.expand();
+        }
+
+        if (viewport.requestFullscreen.isAvailable()) {
+          await viewport.requestFullscreen();
+        }
+      }
+    };
+
+    initTelegram();
+  }, []);
+
+  return (
+    <Router>
+      <AppWrapper /> {/* Wrap routes and navigation */}
     </Router>
   );
 }
