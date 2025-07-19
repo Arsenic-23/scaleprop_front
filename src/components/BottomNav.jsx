@@ -13,7 +13,7 @@ export default function BottomNav() {
   const location = useLocation();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#111827] border-t border-gray-800 shadow-md flex justify-around items-center h-16 px-2">
+    <div className="fixed bottom-4 left-4 right-4 z-50 rounded-2xl bg-black/60 backdrop-blur-md border border-white/10 shadow-xl flex justify-around items-center h-16 px-4">
       {tabs.map((tab) => {
         const isActive = location.pathname === tab.route;
         const Icon = tab.icon;
@@ -22,11 +22,18 @@ export default function BottomNav() {
           <button
             key={tab.name}
             onClick={() => navigate(tab.route)}
-            className={`flex flex-col items-center justify-center text-xs font-medium transition-all ${
-              isActive ? "text-white scale-110" : "text-gray-400"
+            className={`flex flex-col items-center justify-center text-[11px] font-medium transition-all duration-200 ${
+              isActive
+                ? "text-white scale-110 drop-shadow-md"
+                : "text-gray-400 hover:text-white"
             }`}
           >
-            <Icon size={22} className="mb-1" />
+            <Icon
+              size={22}
+              className={`mb-1 transition-all duration-200 ${
+                isActive ? "stroke-white" : "stroke-gray-400"
+              }`}
+            />
             {tab.name}
           </button>
         );
