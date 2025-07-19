@@ -14,13 +14,13 @@ export default function BottomNav() {
 
   const triggerHapticFeedback = () => {
     if (window.navigator?.vibrate) {
-      window.navigator.vibrate(50);
+      window.navigator.vibrate(40);
     }
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-4 z-50 flex justify-center items-center pointer-events-none">
-      <div className="flex justify-between items-center px-6 py-3 w-[90%] max-w-md h-16 rounded-2xl shadow-xl border border-white/10 backdrop-blur-lg bg-black/60 pointer-events-auto transition-all duration-300">
+    <div className="fixed inset-x-0 bottom-5 z-50 flex justify-center pointer-events-none">
+      <div className="flex items-center justify-between gap-5 px-4 py-2 w-fit rounded-full bg-black/60 backdrop-blur-md border border-white/10 shadow-lg pointer-events-auto">
         {tabs.map((tab, index) => {
           const isActive = location.pathname === tab.route;
           const Icon = tab.icon;
@@ -33,17 +33,12 @@ export default function BottomNav() {
                 triggerHapticFeedback();
               }}
               className={`
-                flex items-center justify-center
-                w-11 h-11 sm:w-12 sm:h-12 rounded-full
-                transition-all duration-300
-                ${isActive
-                  ? "bg-white/20 text-white shadow-lg scale-110"
-                  : "text-gray-400 hover:text-white hover:bg-white/10"
-                }
+                text-[1.1rem] transition-all duration-200
+                ${isActive ? "text-white" : "text-gray-400 hover:text-white"}
               `}
               aria-label={tab.route.substring(1)}
             >
-              <Icon size={22} />
+              <Icon size={20} />
             </button>
           );
         })}
