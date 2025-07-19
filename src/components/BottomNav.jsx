@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Home, BarChart2, Users, User } from "lucide-react";
-import { useEffect } from "react"; // Import useEffect for haptic feedback
 
 const tabs = [
   { icon: Home, route: "/home" },
@@ -13,20 +12,15 @@ export default function BottomNav() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Function to trigger haptic feedback
   const triggerHapticFeedback = () => {
-    if (window.navigator && window.navigator.vibrate) {
-      // Vibrate for a short duration (e.g., 50ms)
+    if (window.navigator?.vibrate) {
       window.navigator.vibrate(50);
     }
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 p-3 sm:p-4 md:p-5 lg:p-6"> {/* Responsive padding */}
-      <div className="relative mx-auto max-w-sm sm:max-w-md md:max-w-lg h-14 sm:h-16 rounded-full bg-black/70 backdrop-blur-xl shadow-2xl border border-white/10 flex items-center justify-around px-4 sm:px-6"> {/* Adjusted sizing and shadows */}
-        {/* Optional: Add a subtle background gradient or animated element for premium feel */}
-        <div className="absolute inset-0 rounded-full pointer-events-none" style={{ background: 'linear-gradient(45deg, rgba(255,255,255,0.05), rgba(255,255,255,0))' }}></div>
-
+    <div className="fixed inset-x-0 bottom-4 z-50 flex justify-center items-center pointer-events-none">
+      <div className="flex justify-between items-center px-6 py-3 w-[90%] max-w-md h-16 rounded-2xl shadow-xl border border-white/10 backdrop-blur-lg bg-black/60 pointer-events-auto transition-all duration-300">
         {tabs.map((tab, index) => {
           const isActive = location.pathname === tab.route;
           const Icon = tab.icon;
@@ -36,36 +30,20 @@ export default function BottomNav() {
               key={index}
               onClick={() => {
                 navigate(tab.route);
-                triggerHapticFeedback(); // Trigger vibration on click
+                triggerHapticFeedback();
               }}
               className={`
-                relative flex flex-col items-center justify-center
-                flex-grow group
-                transition-all duration-300 ease-out
+                flex items-center justify-center
+                w-11 h-11 sm:w-12 sm:h-12 rounded-full
+                transition-all duration-300
                 ${isActive
-                  ? "text-white scale-105"
-                  : "text-gray-400 hover:text-white"
+                  ? "bg-white/20 text-white shadow-lg scale-110"
+                  : "text-gray-400 hover:text-white hover:bg-white/10"
                 }
               `}
-              aria-label={tab.route.substring(1)} // Accessibility improvement
+              aria-label={tab.route.substring(1)}
             >
-              <div className={`
-                w-10 h-10 sm:w-12 sm:h-12 rounded-full
-                flex items-center justify-center
-                transition-all duration-300 ease-out
-                ${isActive
-                  ? "bg-white/15 shadow-lg"
-                  : "group-hover:bg-white/5"
-                }
-              `}>
-                <Icon size={20} className="sm:text-xl md:text-2xl" /> {/* Responsive icon size */}
-              </div>
-              {/* Optional: Add a small, subtle text label for active tab */}
-              {isActive && (
-                <span className="absolute -bottom-4 text-xs font-medium text-white opacity-80 animate-fade-in-up">
-                  {tab.route.substring(1).charAt(0).toUpperCase() + tab.route.substring(1).slice(1)}
-                </span>
-              )}
+              <Icon size={22} />
             </button>
           );
         })}
