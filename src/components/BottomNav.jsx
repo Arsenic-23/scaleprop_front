@@ -3,10 +3,10 @@ import { Home, BarChart2, Users, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const tabs = [
-  { icon: Home, label: "Home", path: "/home" },
-  { icon: BarChart2, label: "Dashboard", path: "/dashboard" },
-  { icon: Users, label: "Community", path: "/community" },
-  { icon: User, label: "Account", path: "/account" },
+  { icon: <Home size={16} strokeWidth={2} />, label: "Home", path: "/home" },
+  { icon: <BarChart2 size={16} strokeWidth={2} />, label: "Dashboard", path: "/dashboard" },
+  { icon: <Users size={16} strokeWidth={2} />, label: "Community", path: "/community" },
+  { icon: <User size={16} strokeWidth={2} />, label: "Account", path: "/account" },
 ];
 
 export default function BottomNav() {
@@ -16,7 +16,7 @@ export default function BottomNav() {
   let pressTimer;
 
   const handleLongPressStart = (label) => {
-    window.navigator.vibrate?.([30, 20, 30]);
+    window.navigator.vibrate?.([30, 20, 30]); // Medium impact
     pressTimer = setTimeout(() => setPopup(label), 500);
   };
 
@@ -28,13 +28,11 @@ export default function BottomNav() {
   return (
     <nav
       className="fixed bottom-3 left-1/2 transform -translate-x-1/2
-      bg-black/80 text-white dark:bg-neutral-900/80 dark:text-neutral-100
-      backdrop-blur-lg rounded-full px-4 py-2
-      flex justify-around items-center z-50 w-[90%] max-w-md
-      shadow-[0_8px_30px_rgba(0,0,0,0.4)] border border-white/10"
-      style={{
-        background: "linear-gradient(145deg, rgba(0,0,0,0.9), rgba(25,25,25,0.85))",
-      }}
+      bg-white/90 dark:bg-neutral-900/80
+      text-neutral-800 dark:text-neutral-100
+      rounded-full px-3 py-1.5
+      flex justify-around items-center z-50 w-[60%] max-w-xs
+      shadow-lg backdrop-blur-md border border-neutral-300 dark:border-neutral-700"
     >
       {tabs.map((tab, index) => (
         <NavItem
@@ -50,7 +48,7 @@ export default function BottomNav() {
       ))}
 
       {popup && (
-        <div className="absolute bottom-14 bg-black/80 text-white px-3 py-1 rounded text-xs shadow-sm animate-fadeIn">
+        <div className="absolute bottom-14 bg-black/80 text-white px-2.5 py-1 rounded text-xs shadow-sm dark:bg-white/10">
           {popup}
         </div>
       )}
@@ -59,7 +57,7 @@ export default function BottomNav() {
 }
 
 function NavItem({
-  icon: Icon,
+  icon,
   label,
   path,
   currentPath,
@@ -70,7 +68,7 @@ function NavItem({
   const isActive = currentPath === path;
 
   const handleClick = () => {
-    window.navigator.vibrate?.([10, 15, 10]);
+    window.navigator.vibrate?.([10, 15, 10]); // Light tap
     navigate(path);
   };
 
@@ -82,13 +80,13 @@ function NavItem({
       onMouseLeave={onLongPressEnd}
       onTouchStart={() => onLongPressStart(label)}
       onTouchEnd={onLongPressEnd}
-      className={`flex flex-col items-center justify-center px-3 py-1 transition-all duration-200 ${
+      className={`flex flex-col items-center justify-center px-2 py-0.5 transition-all duration-200 ${
         isActive
-          ? "text-white scale-110 font-semibold"
-          : "text-gray-400 hover:text-white"
+          ? "text-primary dark:text-white scale-105 font-semibold"
+          : "text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"
       }`}
     >
-      <Icon size={20} strokeWidth={2} />
+      {icon}
     </button>
   );
 }
