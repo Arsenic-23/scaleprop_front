@@ -16,7 +16,7 @@ export default function BottomNav() {
   let pressTimer;
 
   const handleLongPressStart = (label) => {
-    window.navigator.vibrate?.([30, 20, 30]); // Medium impact
+    window.navigator.vibrate?.([50, 30, 50]);
     pressTimer = setTimeout(() => setPopup(label), 500);
   };
 
