@@ -13,14 +13,21 @@ export default function BottomNav() {
   const location = useLocation();
 
   const triggerHapticFeedback = () => {
-    if (window.navigator?.vibrate) {
-      window.navigator.vibrate(40);
+    if (typeof window !== "undefined" && navigator.vibrate) {
+      navigator.vibrate([10, 20, 10]);
     }
   };
 
   return (
     <div className="fixed inset-x-0 bottom-5 z-50 flex justify-center pointer-events-none">
-      <div className="flex items-center justify-between gap-5 px-4 py-2 w-fit rounded-full bg-black/60 backdrop-blur-md border border-white/10 shadow-lg pointer-events-auto">
+      <div
+        className="flex items-center justify-between gap-8 px-8 py-3 w-[90%] max-w-md rounded-full 
+        bg-black/80 backdrop-blur-lg border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.4)] 
+        pointer-events-auto transition-all duration-300"
+        style={{
+          background: "linear-gradient(145deg, rgba(0,0,0,0.9), rgba(25,25,25,0.85))",
+        }}
+      >
         {tabs.map((tab, index) => {
           const isActive = location.pathname === tab.route;
           const Icon = tab.icon;
@@ -32,13 +39,11 @@ export default function BottomNav() {
                 navigate(tab.route);
                 triggerHapticFeedback();
               }}
-              className={`
-                text-[1.1rem] transition-all duration-200
-                ${isActive ? "text-white" : "text-gray-400 hover:text-white"}
-              `}
+              className={`transition-all duration-200 ease-in-out flex flex-col items-center 
+                ${isActive ? "text-white scale-110" : "text-gray-400 hover:text-white"}`}
               aria-label={tab.route.substring(1)}
             >
-              <Icon size={20} />
+              <Icon size={22} strokeWidth={2} />
             </button>
           );
         })}
