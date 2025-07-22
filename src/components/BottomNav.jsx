@@ -1,8 +1,14 @@
 import React, { useState } from "react";
-import { Home, BarChart2, Users, User } from "lucide-react";
+import { Home, BarChart2, Users, User, LucideIcon } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const tabs = [
+interface Tab {
+  icon: LucideIcon;
+  label: string;
+  path: string;
+}
+
+const tabs: Tab[] = [
   { icon: Home, label: "Home", path: "/home" },
   { icon: BarChart2, label: "Dashboard", path: "/dashboard" },
   { icon: Users, label: "Community", path: "/community" },
@@ -13,10 +19,10 @@ export default function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
   const [popup, setPopup] = useState<string | null>(null);
-  let pressTimer: any;
+  let pressTimer: NodeJS.Timeout;
 
   const handleLongPressStart = (label: string) => {
-    window.navigator.vibrate?.([30, 20, 30]); // Medium iOS-like impact
+    window.navigator.vibrate?.([30, 20, 30]);
     pressTimer = setTimeout(() => setPopup(label), 500);
   };
 
@@ -58,6 +64,16 @@ export default function BottomNav() {
   );
 }
 
+interface NavItemProps {
+  icon: LucideIcon;
+  label: string;
+  path: string;
+  currentPath: string;
+  navigate: (path: string) => void;
+  onLongPressStart: (label: string) => void;
+  onLongPressEnd: () => void;
+}
+
 function NavItem({
   icon: Icon,
   label,
@@ -66,19 +82,11 @@ function NavItem({
   navigate,
   onLongPressStart,
   onLongPressEnd,
-}: {
-  icon: any;
-  label: string;
-  path: string;
-  currentPath: string;
-  navigate: any;
-  onLongPressStart: (label: string) => void;
-  onLongPressEnd: () => void;
-}) {
+}: NavItemProps) {
   const isActive = currentPath === path;
 
   const handleClick = () => {
-    window.navigator.vibrate?.([10, 15, 10]); // Light iOS tap
+    window.navigator.vibrate?.([10, 15, 10]);
     navigate(path);
   };
 
