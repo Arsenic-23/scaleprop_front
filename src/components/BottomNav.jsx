@@ -12,10 +12,10 @@ const tabs = [
 export default function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [popup, setPopup] = useState(null);
-  let pressTimer;
+  const [popup, setPopup] = useState<string | null>(null);
+  let pressTimer: any;
 
-  const handleLongPressStart = (label) => {
+  const handleLongPressStart = (label: string) => {
     window.navigator.vibrate?.([50, 30, 50]);
     pressTimer = setTimeout(() => setPopup(label), 500);
   };
@@ -27,11 +27,11 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-3 left-1/2 transform -translate-x-1/2
+      className="fixed bottom-4 left-1/2 transform -translate-x-1/2
       bg-white/90 dark:bg-neutral-900/80
       text-neutral-800 dark:text-neutral-100
       rounded-full px-3 py-1.5
-      flex justify-around items-center z-50 w-[60%] max-w-xs
+      flex justify-around items-center z-50 w-[70%] max-w-sm
       shadow-lg backdrop-blur-md border border-neutral-300 dark:border-neutral-700"
     >
       {tabs.map((tab, index) => (
@@ -64,11 +64,19 @@ function NavItem({
   navigate,
   onLongPressStart,
   onLongPressEnd,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  path: string;
+  currentPath: string;
+  navigate: any;
+  onLongPressStart: (label: string) => void;
+  onLongPressEnd: () => void;
 }) {
   const isActive = currentPath === path;
 
   const handleClick = () => {
-    window.navigator.vibrate?.([10, 15, 10]); // Light tap
+    window.navigator.vibrate?.([10, 15, 10]);
     navigate(path);
   };
 
@@ -82,7 +90,7 @@ function NavItem({
       onTouchEnd={onLongPressEnd}
       className={`flex flex-col items-center justify-center px-2 py-0.5 transition-all duration-200 ${
         isActive
-          ? "text-primary dark:text-white scale-105 font-semibold"
+          ? "text-blue-500 dark:text-white scale-105 font-semibold"
           : "text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"
       }`}
     >
