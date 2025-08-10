@@ -1,8 +1,17 @@
 // src/pages/Profile.tsx
 import { useEffect, useState } from "react";
+import { Wallet, CreditCard, ArrowDownCircle } from "lucide-react";
 
 const Profile = () => {
   const [user, setUser] = useState<any>(null);
+
+  // Example stats (you can replace with real API data)
+  const stats = {
+    accountsBought: 42,
+    totalEarnings: 15600,
+    totalWithdrawals: 8200,
+    joined: "2024-03-15",
+  };
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
@@ -11,43 +20,78 @@ const Profile = () => {
     }
   }, []);
 
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex flex-col items-center p-6 text-white">
-      <h2 className="text-2xl font-extrabold mb-6 tracking-wide">
+    <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white px-6 py-8">
+      <h2 className="text-2xl font-extrabold mb-8 tracking-wide text-center">
         👤 My Profile
       </h2>
 
       {user ? (
-        <div className="bg-gray-800/60 backdrop-blur-md border border-gray-700 rounded-2xl shadow-xl p-6 w-full max-w-sm transition-transform transform hover:scale-105 duration-300">
-          <div className="relative mb-4">
+        <div className="max-w-md mx-auto space-y-6">
+          {/* Profile Card */}
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl p-6 text-center hover:scale-[1.02] transition-transform duration-300">
             <img
               src={user.photo_url}
               alt="profile"
-              className="w-28 h-28 rounded-full border-4 border-indigo-500 shadow-lg mx-auto"
+              className="w-28 h-28 rounded-full border-4 border-indigo-500 shadow-lg mx-auto mb-4"
             />
+            <p className="text-lg font-semibold">@{user.username || "unknown"}</p>
+            <p className="text-sm text-gray-400">{user.first_name}</p>
+            <div className="mt-4 bg-black/40 rounded-lg p-3">
+              <p className="text-xs text-gray-500">User ID</p>
+              <p className="font-mono text-indigo-400">{user.id}</p>
+            </div>
+            <div className="mt-3 text-xs text-gray-400">
+              Joined on {formatDate(stats.joined)}
+            </div>
           </div>
 
-          <p className="text-lg font-semibold text-center">
-            @{user.username || "unknown"}
-          </p>
-          <p className="text-sm text-gray-400 text-center mt-1">
-            {user.first_name}
-          </p>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-white/5 backdrop-blur-lg p-4 rounded-xl border border-white/10 text-center shadow-md hover:scale-105 transition">
+              <Wallet className="mx-auto text-green-400 mb-2" size={28} />
+              <p className="text-sm text-gray-400">Accounts Bought</p>
+              <p className="text-lg font-bold">{stats.accountsBought}</p>
+            </div>
 
-          <div className="mt-4 bg-gray-900/50 rounded-lg p-3">
-            <p className="text-xs text-gray-500">User ID</p>
-            <p className="font-mono text-indigo-400">{user.id}</p>
+            <div className="bg-white/5 backdrop-blur-lg p-4 rounded-xl border border-white/10 text-center shadow-md hover:scale-105 transition">
+              <CreditCard className="mx-auto text-blue-400 mb-2" size={28} />
+              <p className="text-sm text-gray-400">Total Earnings</p>
+              <p className="text-lg font-bold text-green-400">
+                ₹{stats.totalEarnings.toLocaleString()}
+              </p>
+            </div>
+
+            <div className="bg-white/5 backdrop-blur-lg p-4 rounded-xl border border-white/10 text-center shadow-md hover:scale-105 transition">
+              <ArrowDownCircle className="mx-auto text-red-400 mb-2" size={28} />
+              <p className="text-sm text-gray-400">Total Withdrawals</p>
+              <p className="text-lg font-bold text-red-400">
+                ₹{stats.totalWithdrawals.toLocaleString()}
+              </p>
+            </div>
           </div>
 
+          {/* Edit Button */}
           <button
-            className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 transition-all py-2 rounded-lg font-semibold shadow-md"
+            className="w-full bg-indigo-600 hover:bg-indigo-500 transition-all py-3 rounded-lg font-semibold shadow-lg hover:shadow-indigo-500/30"
             onClick={() => alert("Edit profile coming soon!")}
           >
             ✏️ Edit Profile
           </button>
         </div>
       ) : (
-        <p className="text-gray-400 animate-pulse">Loading profile...</p>
+        <p className="text-gray-400 animate-pulse text-center">
+          Loading profile...
+        </p>
       )}
     </div>
   );
