@@ -13,7 +13,7 @@ export default function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
   const [popup, setPopup] = useState<string | null>(null);
-  let pressTimer: any;
+  let pressTimer; any;
 
   const handleLongPressStart = (label: string) => {
     window.navigator.vibrate?.([50, 30, 50]);
