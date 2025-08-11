@@ -17,7 +17,7 @@ const rules: Rule[] = [
   { type: "allowed", title: "Max Total Drawdown", detail: "10% of account", icon: <Activity />, note: "Account locked if exceeded." },
   { type: "allowed", title: "Profit Target", detail: "8% within 30 days", icon: <Target />, note: "Meets challenge success criteria." },
   { type: "allowed", title: "Trading Days Required", detail: "Minimum 5 active days", icon: <Calendar />, note: "Active day = at least one executed trade." },
-  { type: "restricted", title: "EA / Bot Usage", detail: "Not allowed", icon: <Robot />, note: "Automated strategies will cause disqualification." },
+  { type: "restricted", title: "EA / Bot Usage", detail: "Not allowed", icon: <Bot />, note: "Automated strategies will cause disqualification." },
   { type: "restricted", title: "News Trading", detail: "Restricted during high-volatility events", icon: <Newspaper />, note: "Check event calendar before trading." },
   { type: "restricted", title: "Holding Trades Over Weekend", detail: "Not permitted", icon: <Clock />, note: "Close positions by EOD Friday." },
 ];
