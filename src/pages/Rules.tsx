@@ -1,6 +1,6 @@
 // src/pages/Rules.tsx
 import React from "react";
-import { ArrowLeft, CheckCircle2, XCircle, Calendar, Activity, Target, Robot, Newspaper, Clock } from "lucide-react";
+import { ArrowLeft, CheckCircle2, XCircle, Calendar, Activity, Target, Bot, Newspaper, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
