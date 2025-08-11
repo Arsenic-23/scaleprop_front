@@ -6,31 +6,36 @@ const Home = () => {
   const userId = localStorage.getItem("user_id");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white flex flex-col pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-black to-neutral-900 text-white flex flex-col pb-24">
       {/* Dashboard Header */}
-      <div className="p-6 text-center border-b border-white/10">
-        <h1 className="text-3xl font-extrabold tracking-wide">📊 Dashboard</h1>
-        <p className="text-sm text-gray-400">
+      <div className="p-6 text-center border-b border-white/10 backdrop-blur-lg bg-white/5">
+        <h1 className="text-3xl font-extrabold tracking-wide">📊 Trading Dashboard</h1>
+        <p className="text-sm text-gray-400 mt-1">
           User ID: <span className="font-mono">{userId}</span>
         </p>
       </div>
 
-      {/* Stats Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-6">
-        <StatCard title="Account Balance" value="$50,000" color="from-green-500 to-emerald-400" />
-        <StatCard title="Profit Target" value="$5,000" color="from-blue-500 to-cyan-400" />
-        <StatCard title="Max Drawdown" value="$2,500" color="from-red-500 to-pink-400" />
+      {/* Stats Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 p-6">
+        <StatCard title="Account Balance" value="$50,000" accent="green" />
+        <StatCard title="Profit Target" value="$5,000" accent="blue" />
+        <StatCard title="Max Drawdown" value="$2,500" accent="red" />
       </div>
 
-      {/* Action Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 p-6">
-        <ActionCard to="/plans" label="Buy Challenge" emoji="💼" color="from-blue-600 to-blue-400" />
-        <ActionCard to="/account" label="Trading Account" emoji="📊" color="from-green-600 to-green-400" />
-        <ActionCard to="/rules" label="View Rules" emoji="📘" color="from-yellow-500 to-yellow-300" darkText />
-        <ActionCard to="/payout" label="Request Payout" emoji="💸" color="from-purple-600 to-purple-400" />
-        <ActionCard to="/announcements" label="Announcements" emoji="📢" color="from-indigo-600 to-indigo-400" />
-        <ActionCard to="/profile" label="My Profile" emoji="👤" color="from-gray-700 to-gray-500" />
-        <ActionCard to="/support" label="Support" emoji="📞" color="from-red-600 to-red-400" />
+      {/* Quick Actions */}
+      <div className="p-6">
+        <h2 className="text-lg font-semibold mb-4 tracking-wide text-gray-300">
+          Quick Actions
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <ActionTile to="/plans" label="Buy Challenge" emoji="💼" accent="blue" />
+          <ActionTile to="/account" label="Trading Account" emoji="📊" accent="green" />
+          <ActionTile to="/rules" label="View Rules" emoji="📘" accent="yellow" />
+          <ActionTile to="/payout" label="Request Payout" emoji="💸" accent="purple" />
+          <ActionTile to="/announcements" label="Announcements" emoji="📢" accent="indigo" />
+          <ActionTile to="/profile" label="My Profile" emoji="👤" accent="gray" />
+          <ActionTile to="/support" label="Support" emoji="📞" accent="red" />
+        </div>
       </div>
 
       {/* Bottom Navigation */}
@@ -39,37 +44,70 @@ const Home = () => {
   );
 };
 
-const StatCard = ({ title, value, color }: { title: string; value: string; color: string }) => (
-  <div
-    className={`p-4 rounded-xl shadow-lg text-center bg-gradient-to-tr ${color} transform transition hover:scale-105`}
-  >
-    <p className="text-sm opacity-80">{title}</p>
-    <h2 className="text-2xl font-bold">{value}</h2>
-  </div>
-);
+// Premium Stat Card
+const StatCard = ({
+  title,
+  value,
+  accent,
+}: {
+  title: string;
+  value: string;
+  accent: "green" | "blue" | "red";
+}) => {
+  const colors: Record<typeof accent, string> = {
+    green: "from-green-500/20 to-green-500/5 border-green-400/30 text-green-400",
+    blue: "from-blue-500/20 to-blue-500/5 border-blue-400/30 text-blue-400",
+    red: "from-red-500/20 to-red-500/5 border-red-400/30 text-red-400",
+  };
 
-const ActionCard = ({
+  return (
+    <div
+      className={`p-5 rounded-2xl shadow-lg backdrop-blur-md border bg-gradient-to-br ${colors[accent]} transform transition hover:scale-105 hover:shadow-${accent}-500/30`}
+    >
+      <p className="text-sm opacity-80">{title}</p>
+      <h2 className="text-3xl font-bold mt-1">{value}</h2>
+    </div>
+  );
+};
+
+// Action Tile Component
+const ActionTile = ({
   to,
   label,
   emoji,
-  color,
-  darkText = false,
+  accent,
 }: {
   to: string;
   label: string;
   emoji: string;
-  color: string;
-  darkText?: boolean;
-}) => (
-  <Link
-    to={to}
-    className={`transition-all hover:scale-105 bg-gradient-to-tr ${color} p-4 rounded-xl shadow-lg text-center font-semibold ${
-      darkText ? "text-black" : "text-white"
-    }`}
-  >
-    <div className="text-2xl mb-1">{emoji}</div>
-    {label}
-  </Link>
-);
+  accent:
+    | "blue"
+    | "green"
+    | "yellow"
+    | "purple"
+    | "indigo"
+    | "gray"
+    | "red";
+}) => {
+  const accentMap: Record<typeof accent, string> = {
+    blue: "hover:border-blue-400/40 hover:shadow-blue-500/20",
+    green: "hover:border-green-400/40 hover:shadow-green-500/20",
+    yellow: "hover:border-yellow-400/40 hover:shadow-yellow-500/20",
+    purple: "hover:border-purple-400/40 hover:shadow-purple-500/20",
+    indigo: "hover:border-indigo-400/40 hover:shadow-indigo-500/20",
+    gray: "hover:border-gray-400/40 hover:shadow-gray-500/20",
+    red: "hover:border-red-400/40 hover:shadow-red-500/20",
+  };
+
+  return (
+    <Link
+      to={to}
+      className={`p-4 rounded-xl backdrop-blur-lg bg-white/5 border border-white/10 text-center font-medium transition-all duration-300 transform hover:scale-105 ${accentMap[accent]}`}
+    >
+      <div className="text-2xl mb-1">{emoji}</div>
+      <span className="text-sm">{label}</span>
+    </Link>
+  );
+};
 
 export default Home;
