@@ -1,5 +1,7 @@
 // src/App.tsx
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { init, isTMA } from '@telegram-apps/sdk';
 
 import LandingPage from './pages/LandingPage';
 import Home from './pages/Home';
@@ -19,7 +21,6 @@ import BottomNav from './components/BottomNav';
 function AppWrapper() {
   const location = useLocation();
 
-  // ✅ Define routes where nav bar should appear
   const showBottomNavRoutes = [
     '/home',
     '/account',
@@ -53,6 +54,26 @@ function AppWrapper() {
 }
 
 function App() {
+  useEffect(() => {
+    const initTelegram = async () => {
+      // Only initialize Telegram Mini App SDK if inside Telegram
+      if (await isTMA()) {
+        init();
+        // ✅ Removed viewport.expand() and requestFullscreen()
+        // Still have access to Telegram WebApp data
+        const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
+        if (user) {
+          localStorage.setItem("tg_user", JSON.stringify(user));
+          if (user.id) {
+            localStorage.setItem("user_id", user.id.toString());
+          }
+        }
+      }
+    };
+
+    initTelegram();
+  }, []);
+
   return (
     <Router>
       <AppWrapper />
