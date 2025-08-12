@@ -1,11 +1,11 @@
 // src/pages/Profile.tsx
 import { useEffect, useState } from "react";
 import { Wallet, CreditCard, ArrowDownCircle } from "lucide-react";
+import { init, isTMA } from "@telegram-apps/sdk";
 
 const Profile = () => {
   const [user, setUser] = useState<any>(null);
 
-  // Example stats (you can replace with real API data)
   const stats = {
     accountsBought: 42,
     totalEarnings: 15600,
@@ -14,10 +14,31 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    const tg = window.Telegram?.WebApp;
-    if (tg?.initDataUnsafe?.user) {
-      setUser(tg.initDataUnsafe.user);
-    }
+    const fetchTelegramUser = async () => {
+      if (await isTMA()) {
+        init();
+
+        // Wait for Telegram WebApp object
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+          tg.ready();
+          const u = tg.initDataUnsafe?.user;
+          console.log("Telegram User Data:", u);
+          if (u) {
+            setUser(u);
+            localStorage.setItem("tg_user", JSON.stringify(u));
+          }
+        }
+      } else {
+        // Fallback if testing outside Telegram
+        const cachedUser = localStorage.getItem("tg_user");
+        if (cachedUser) {
+          setUser(JSON.parse(cachedUser));
+        }
+      }
+    };
+
+    fetchTelegramUser();
   }, []);
 
   const formatDate = (dateStr: string) => {
@@ -37,7 +58,6 @@ const Profile = () => {
 
       {user ? (
         <div className="max-w-md mx-auto space-y-6">
-          {/* Profile Card */}
           <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl p-6 text-center hover:scale-[1.02] transition-transform duration-300">
             <img
               src={user.photo_url}
@@ -55,14 +75,12 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="bg-white/5 backdrop-blur-lg p-4 rounded-xl border border-white/10 text-center shadow-md hover:scale-105 transition">
               <Wallet className="mx-auto text-green-400 mb-2" size={28} />
               <p className="text-sm text-gray-400">Accounts Bought</p>
               <p className="text-lg font-bold">{stats.accountsBought}</p>
             </div>
-
             <div className="bg-white/5 backdrop-blur-lg p-4 rounded-xl border border-white/10 text-center shadow-md hover:scale-105 transition">
               <CreditCard className="mx-auto text-blue-400 mb-2" size={28} />
               <p className="text-sm text-gray-400">Total Earnings</p>
@@ -70,7 +88,6 @@ const Profile = () => {
                 ₹{stats.totalEarnings.toLocaleString()}
               </p>
             </div>
-
             <div className="bg-white/5 backdrop-blur-lg p-4 rounded-xl border border-white/10 text-center shadow-md hover:scale-105 transition">
               <ArrowDownCircle className="mx-auto text-red-400 mb-2" size={28} />
               <p className="text-sm text-gray-400">Total Withdrawals</p>
@@ -80,7 +97,6 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Edit Button */}
           <button
             className="w-full bg-indigo-600 hover:bg-indigo-500 transition-all py-3 rounded-lg font-semibold shadow-lg hover:shadow-indigo-500/30"
             onClick={() => alert("Edit profile coming soon!")}
