@@ -1,32 +1,30 @@
-// src/App.tsx
-import { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { init, isTMA } from '@telegram-apps/sdk';
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 
-import LandingPage from './pages/LandingPage';
-import Home from './pages/Home';
-import Plans from './pages/Plans';
-import Payment from './pages/Payment';
-import Account from './pages/Account';
-import Rules from './pages/Rules';
-import Passed from './pages/Passed';
-import Payout from './pages/Payout';
-import Profile from './pages/Profile';
-import AdminPanel from './pages/AdminPanel';
-import Announcements from './pages/Announcements';
-import Support from './pages/Support';
+import LandingPage from "./pages/LandingPage";
+import Home from "./pages/Home";
+import Plans from "./pages/Plans";
+import Payment from "./pages/Payment";
+import Account from "./pages/Account";
+import Rules from "./pages/Rules";
+import Passed from "./pages/Passed";
+import Payout from "./pages/Payout";
+import Profile from "./pages/Profile";
+import AdminPanel from "./pages/AdminPanel";
+import Announcements from "./pages/Announcements";
+import Support from "./pages/Support";
 
-import BottomNav from './components/BottomNav';
+import BottomNav from "./components/BottomNav";
+import { UserProvider } from "./context/UserContext";
 
 function AppWrapper() {
   const location = useLocation();
 
   const showBottomNavRoutes = [
-    '/home',
-    '/account',
-    '/profile',
-    '/plans',
-    '/support',
+    "/home",
+    "/account",
+    "/profile",
+    "/plans",
+    "/support",
   ];
 
   const showBottomNav = showBottomNavRoutes.includes(location.pathname);
@@ -53,29 +51,12 @@ function AppWrapper() {
   );
 }
 
-function App() {
-  useEffect(() => {
-    const initTelegram = async () => {
-      if (await isTMA()) {
-        init();
-        const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
-        if (user) {
-          localStorage.setItem("tg_user", JSON.stringify(user));
-          if (user.id) {
-            localStorage.setItem("user_id", user.id.toString());
-          }
-        }
-      }
-    };
-
-    initTelegram();
-  }, []);
-
+export default function App() {
   return (
     <Router>
-      <AppWrapper />
+      <UserProvider>
+        <AppWrapper />
+      </UserProvider>
     </Router>
   );
 }
-
-export default App;
