@@ -1,3 +1,5 @@
+
+// src/pages/Profile.tsx
 import { Wallet, CreditCard, ArrowDownCircle } from "lucide-react";
 import { useUser } from "../context/UserContext";
 
@@ -22,7 +24,7 @@ const Profile = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-gray-400 animate-pulse">
+      <div className="min-h-screen bg-black text-gray-400 flex items-center justify-center">
         Loading profile...
       </div>
     );
