@@ -56,11 +56,8 @@ function AppWrapper() {
 function App() {
   useEffect(() => {
     const initTelegram = async () => {
-      // Only initialize Telegram Mini App SDK if inside Telegram
       if (await isTMA()) {
         init();
-        // ✅ Removed viewport.expand() and requestFullscreen()
-        // Still have access to Telegram WebApp data
         const user = window.Telegram?.WebApp?.initDataUnsafe?.user;
         if (user) {
           localStorage.setItem("tg_user", JSON.stringify(user));
