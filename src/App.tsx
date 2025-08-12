@@ -1,7 +1,5 @@
 // src/App.tsx
-import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { viewport, init, isTMA } from '@telegram-apps/sdk';
 
 import LandingPage from './pages/LandingPage';
 import Home from './pages/Home';
@@ -16,7 +14,7 @@ import AdminPanel from './pages/AdminPanel';
 import Announcements from './pages/Announcements';
 import Support from './pages/Support';
 
-import BottomNav from './components/BottomNav'; // ✅ Make sure you’ve created this
+import BottomNav from './components/BottomNav';
 
 function AppWrapper() {
   const location = useLocation();
@@ -49,34 +47,15 @@ function AppWrapper() {
         <Route path="/support" element={<Support />} />
       </Routes>
 
-      {showBottomNav && <BottomNav />} {/* ✅ Conditionally show */}
+      {showBottomNav && <BottomNav />}
     </>
   );
 }
 
 function App() {
-  useEffect(() => {
-    const initTelegram = async () => {
-      if (await isTMA()) {
-        init();
-
-        if (viewport.mount.isAvailable()) {
-          await viewport.mount();
-          viewport.expand();
-        }
-
-        if (viewport.requestFullscreen.isAvailable()) {
-          await viewport.requestFullscreen();
-        }
-      }
-    };
-
-    initTelegram();
-  }, []);
-
   return (
     <Router>
-      <AppWrapper /> {/* Wrap routes and navigation */}
+      <AppWrapper />
     </Router>
   );
 }
