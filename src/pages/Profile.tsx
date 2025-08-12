@@ -1,10 +1,8 @@
-// src/pages/Profile.tsx
-import { useEffect, useState } from "react";
 import { Wallet, CreditCard, ArrowDownCircle } from "lucide-react";
-import { init, isTMA } from "@telegram-apps/sdk";
+import { useUser } from "../context/UserContext";
 
 const Profile = () => {
-  const [user, setUser] = useState<any>(null);
+  const { user } = useUser();
 
   const stats = {
     accountsBought: 42,
@@ -12,34 +10,6 @@ const Profile = () => {
     totalWithdrawals: 8200,
     joined: "2024-03-15",
   };
-
-  useEffect(() => {
-    const fetchTelegramUser = async () => {
-      if (await isTMA()) {
-        init();
-
-        // Wait for Telegram WebApp object
-        const tg = window.Telegram?.WebApp;
-        if (tg) {
-          tg.ready();
-          const u = tg.initDataUnsafe?.user;
-          console.log("Telegram User Data:", u);
-          if (u) {
-            setUser(u);
-            localStorage.setItem("tg_user", JSON.stringify(u));
-          }
-        }
-      } else {
-        // Fallback if testing outside Telegram
-        const cachedUser = localStorage.getItem("tg_user");
-        if (cachedUser) {
-          setUser(JSON.parse(cachedUser));
-        }
-      }
-    };
-
-    fetchTelegramUser();
-  }, []);
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
@@ -50,65 +20,67 @@ const Profile = () => {
     });
   };
 
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-400 animate-pulse">
+        Loading profile...
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white px-6 py-8">
       <h2 className="text-2xl font-extrabold mb-8 tracking-wide text-center">
         👤 My Profile
       </h2>
 
-      {user ? (
-        <div className="max-w-md mx-auto space-y-6">
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl p-6 text-center hover:scale-[1.02] transition-transform duration-300">
-            <img
-              src={user.photo_url}
-              alt="profile"
-              className="w-28 h-28 rounded-full border-4 border-indigo-500 shadow-lg mx-auto mb-4"
-            />
-            <p className="text-lg font-semibold">@{user.username || "unknown"}</p>
-            <p className="text-sm text-gray-400">{user.first_name}</p>
-            <div className="mt-4 bg-black/40 rounded-lg p-3">
-              <p className="text-xs text-gray-500">User ID</p>
-              <p className="font-mono text-indigo-400">{user.id}</p>
-            </div>
-            <div className="mt-3 text-xs text-gray-400">
-              Joined on {formatDate(stats.joined)}
-            </div>
+      <div className="max-w-md mx-auto space-y-6">
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl p-6 text-center hover:scale-[1.02] transition-transform duration-300">
+          <img
+            src={user.photo_url}
+            alt="profile"
+            className="w-28 h-28 rounded-full border-4 border-indigo-500 shadow-lg mx-auto mb-4"
+          />
+          <p className="text-lg font-semibold">@{user.username || "unknown"}</p>
+          <p className="text-sm text-gray-400">{user.first_name}</p>
+          <div className="mt-4 bg-black/40 rounded-lg p-3">
+            <p className="text-xs text-gray-500">User ID</p>
+            <p className="font-mono text-indigo-400">{user.id}</p>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white/5 backdrop-blur-lg p-4 rounded-xl border border-white/10 text-center shadow-md hover:scale-105 transition">
-              <Wallet className="mx-auto text-green-400 mb-2" size={28} />
-              <p className="text-sm text-gray-400">Accounts Bought</p>
-              <p className="text-lg font-bold">{stats.accountsBought}</p>
-            </div>
-            <div className="bg-white/5 backdrop-blur-lg p-4 rounded-xl border border-white/10 text-center shadow-md hover:scale-105 transition">
-              <CreditCard className="mx-auto text-blue-400 mb-2" size={28} />
-              <p className="text-sm text-gray-400">Total Earnings</p>
-              <p className="text-lg font-bold text-green-400">
-                ₹{stats.totalEarnings.toLocaleString()}
-              </p>
-            </div>
-            <div className="bg-white/5 backdrop-blur-lg p-4 rounded-xl border border-white/10 text-center shadow-md hover:scale-105 transition">
-              <ArrowDownCircle className="mx-auto text-red-400 mb-2" size={28} />
-              <p className="text-sm text-gray-400">Total Withdrawals</p>
-              <p className="text-lg font-bold text-red-400">
-                ₹{stats.totalWithdrawals.toLocaleString()}
-              </p>
-            </div>
+          <div className="mt-3 text-xs text-gray-400">
+            Joined on {formatDate(stats.joined)}
           </div>
-
-          <button
-            className="w-full bg-indigo-600 hover:bg-indigo-500 transition-all py-3 rounded-lg font-semibold shadow-lg hover:shadow-indigo-500/30"
-            onClick={() => alert("Edit profile coming soon!")}
-          >
-            ✏️ Edit Profile
-          </button>
         </div>
-      ) : (
-        <p className="text-gray-400 animate-pulse text-center">
-          Loading profile...
-        </p>
-      )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-white/5 backdrop-blur-lg p-4 rounded-xl border border-white/10 text-center shadow-md hover:scale-105 transition">
+            <Wallet className="mx-auto text-green-400 mb-2" size={28} />
+            <p className="text-sm text-gray-400">Accounts Bought</p>
+            <p className="text-lg font-bold">{stats.accountsBought}</p>
+          </div>
+          <div className="bg-white/5 backdrop-blur-lg p-4 rounded-xl border border-white/10 text-center shadow-md hover:scale-105 transition">
+            <CreditCard className="mx-auto text-blue-400 mb-2" size={28} />
+            <p className="text-sm text-gray-400">Total Earnings</p>
+            <p className="text-lg font-bold text-green-400">
+              ₹{stats.totalEarnings.toLocaleString()}
+            </p>
+          </div>
+          <div className="bg-white/5 backdrop-blur-lg p-4 rounded-xl border border-white/10 text-center shadow-md hover:scale-105 transition">
+            <ArrowDownCircle className="mx-auto text-red-400 mb-2" size={28} />
+            <p className="text-sm text-gray-400">Total Withdrawals</p>
+            <p className="text-lg font-bold text-red-400">
+              ₹{stats.totalWithdrawals.toLocaleString()}
+            </p>
+          </div>
+        </div>
+
+        <button
+          className="w-full bg-indigo-600 hover:bg-indigo-500 transition-all py-3 rounded-lg font-semibold shadow-lg hover:shadow-indigo-500/30"
+          onClick={() => alert("Edit profile coming soon!")}
+        >
+          ✏️ Edit Profile
+        </button>
+      </div>
     </div>
   );
 };
