@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const tabs = [
   { icon: <Home size={16} strokeWidth={2} />, label: "Home", path: "/home" },
-  { icon: <BarChart2 size={16} strokeWidth={2} />, label: "Dashboard", path: "/dashboard" },
+  { icon: <BarChart2 size={16} strokeWidth={2} />, label: "Dashboard", path: "/account" },
   { icon: <Users size={16} strokeWidth={2} />, label: "Community", path: "/community" },
   { icon: <User size={16} strokeWidth={2} />, label: "Account", path: "/profile" },
 ];
