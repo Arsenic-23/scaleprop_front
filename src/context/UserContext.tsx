@@ -1,18 +1,10 @@
 // src/context/UserContext.tsx
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-} from "react";
-import { init, isTMA } from "@telegram-apps/sdk";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 
 interface User {
   id: number;
-  username?: string;
+  username: string;
   first_name: string;
-  last_name?: string;
   photo_url?: string;
 }
 
@@ -32,39 +24,29 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        if (await isTMA()) {
-          init();
-          const tg = (window as any)?.Telegram?.WebApp;
-          tg?.ready();
+    const tg = (window as any)?.Telegram?.WebApp;
 
-          const tgUser = tg?.initDataUnsafe?.user;
-          if (tgUser) {
-            const parsedUser: User = {
-              id: tgUser.id,
-              username: tgUser.username,
-              first_name: tgUser.first_name,
-              last_name: tgUser.last_name,
-              photo_url: tgUser.photo_url,
-            };
-            setUser(parsedUser);
-            localStorage.setItem("tg_user", JSON.stringify(parsedUser));
-            return;
-          }
-        }
+    if (!tg) {
+      console.warn("⚠️ Telegram WebApp not found. Running outside Telegram?");
+      return;
+    }
 
-        // Fallback to localStorage if outside Telegram or no data
-        const cachedUser = localStorage.getItem("tg_user");
-        if (cachedUser) {
-          setUser(JSON.parse(cachedUser));
-        }
-      } catch (err) {
-        console.error("Error fetching Telegram user:", err);
-      }
-    };
+    // Ensure Telegram is ready before reading data
+    tg.ready();
+    tg.expand();
 
-    fetchUser();
+    console.log("📡 Telegram initDataUnsafe:", tg.initDataUnsafe);
+
+    if (tg.initDataUnsafe?.user) {
+      setUser({
+        id: tg.initDataUnsafe.user.id,
+        username: tg.initDataUnsafe.user.username,
+        first_name: tg.initDataUnsafe.user.first_name,
+        photo_url: tg.initDataUnsafe.user.photo_url,
+      });
+    } else {
+      console.warn("⚠️ No user data found in Telegram initDataUnsafe");
+    }
   }, []);
 
   return (
