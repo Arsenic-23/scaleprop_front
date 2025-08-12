@@ -1,5 +1,4 @@
-// src/context/UserContext.tsx
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
 interface User {
   id: number;
@@ -21,31 +20,26 @@ const UserContext = createContext<UserContextType>({
 export const useUser = () => useContext(UserContext);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    // Load cached user instantly
+    const cached = localStorage.getItem("tg_user");
+    return cached ? JSON.parse(cached) : null;
+  });
 
   useEffect(() => {
-    const tg = (window as any)?.Telegram?.WebApp;
-
-    if (!tg) {
-      console.warn("⚠️ Telegram WebApp not found. Running outside Telegram?");
-      return;
-    }
-
-    // Ensure Telegram is ready before reading data
-    tg.ready();
-    tg.expand();
-
-    console.log("📡 Telegram initDataUnsafe:", tg.initDataUnsafe);
-
-    if (tg.initDataUnsafe?.user) {
-      setUser({
-        id: tg.initDataUnsafe.user.id,
-        username: tg.initDataUnsafe.user.username,
-        first_name: tg.initDataUnsafe.user.first_name,
-        photo_url: tg.initDataUnsafe.user.photo_url,
-      });
-    } else {
-      console.warn("⚠️ No user data found in Telegram initDataUnsafe");
+    const tgUser = (window as any)?.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (tgUser) {
+      const newUser: User = {
+        id: tgUser.id,
+        username: tgUser.username,
+        first_name: tgUser.first_name,
+        photo_url: tgUser.photo_url,
+      };
+      setUser(newUser);
+      localStorage.setItem("tg_user", JSON.stringify(newUser));
+      if (newUser.id) {
+        localStorage.setItem("user_id", newUser.id.toString());
+      }
     }
   }, []);
 
