@@ -1,33 +1,67 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+// src/App.tsx
+import { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { init, isTMA } from '@telegram-apps/sdk';
+import { useUser, UserProvider } from './context/UserContext';
 
-import LandingPage from "./pages/LandingPage";
-import Home from "./pages/Home";
-import Plans from "./pages/Plans";
-import Payment from "./pages/Payment";
-import Account from "./pages/Account";
-import Rules from "./pages/Rules";
-import Passed from "./pages/Passed";
-import Payout from "./pages/Payout";
-import Profile from "./pages/Profile";
-import AdminPanel from "./pages/AdminPanel";
-import Announcements from "./pages/Announcements";
-import Support from "./pages/Support";
+import LandingPage from './pages/LandingPage';
+import Home from './pages/Home';
+import Plans from './pages/Plans';
+import Payment from './pages/Payment';
+import Account from './pages/Account';
+import Rules from './pages/Rules';
+import Passed from './pages/Passed';
+import Payout from './pages/Payout';
+import Profile from './pages/Profile';
+import AdminPanel from './pages/AdminPanel';
+import Announcements from './pages/Announcements';
+import Support from './pages/Support';
 
-import BottomNav from "./components/BottomNav";
-import { UserProvider } from "./context/UserContext";
+import BottomNav from './components/BottomNav';
 
 function AppWrapper() {
   const location = useLocation();
+  const { setUser } = useUser();
 
   const showBottomNavRoutes = [
-    "/home",
-    "/account",
-    "/profile",
-    "/plans",
-    "/support",
+    '/home',
+    '/account',
+    '/profile',
+    '/plans',
+    '/support',
   ];
 
   const showBottomNav = showBottomNavRoutes.includes(location.pathname);
+
+  useEffect(() => {
+    const initTelegram = async () => {
+      if (await isTMA()) {
+        init();
+
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+          tg.ready();
+
+          const user = tg.initDataUnsafe?.user;
+          if (user) {
+            setUser(user);
+            localStorage.setItem("tg_user", JSON.stringify(user));
+            if (user.id) {
+              localStorage.setItem("user_id", user.id.toString());
+            }
+          }
+        }
+      } else {
+        // fallback for local testing
+        const cachedUser = localStorage.getItem("tg_user");
+        if (cachedUser) {
+          setUser(JSON.parse(cachedUser));
+        }
+      }
+    };
+
+    initTelegram();
+  }, [setUser]);
 
   return (
     <>
@@ -53,10 +87,10 @@ function AppWrapper() {
 
 export default function App() {
   return (
-    <Router>
-      <UserProvider>
+    <UserProvider>
+      <Router>
         <AppWrapper />
-      </UserProvider>
-    </Router>
+      </Router>
+    </UserProvider>
   );
 }
