@@ -1,6 +1,5 @@
-// src/pages/Plans.tsx
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import BackButton from "../components/BackButton"; // ✅ Reusable back button
 
 const Plans = () => {
   const navigate = useNavigate();
@@ -34,13 +33,10 @@ const Plans = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white px-4 py-6">
-      {/* Back Button */}
-      <button
-        onClick={() => navigate(-1)}
-        className="flex items-center gap-2 mb-6 text-gray-300 hover:text-white transition"
-      >
-        <ArrowLeft size={20} /> Back
-      </button>
+      {/* ✅ Reusable Back Button */}
+      <div className="mb-6">
+        <BackButton />
+      </div>
 
       {/* Heading */}
       <h2 className="text-2xl font-bold mb-8 text-center">
