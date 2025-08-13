@@ -1,7 +1,6 @@
-// src/pages/Rules.tsx
 import React from "react";
-import { ArrowLeft, CheckCircle2, XCircle, Calendar, Activity, Target, Bot, Newspaper, Clock } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import BackButton from "../components/BackButton";
+import { CheckCircle2, XCircle, Calendar, Activity, Target, Bot, Newspaper, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 
 type Rule = {
@@ -23,8 +22,6 @@ const rules: Rule[] = [
 ];
 
 export default function Rules() {
-  const navigate = useNavigate();
-
   const container = {
     hidden: { opacity: 0, y: 8 },
     show: { opacity: 1, y: 0, transition: { staggerChildren: 0.06 } },
@@ -36,27 +33,19 @@ export default function Rules() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-neutral-900 to-black text-white antialiased">
-      {/* Top bar */}
       <div className="sticky top-0 z-40 bg-black/60 backdrop-blur-md border-b border-white/6">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-start gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            aria-label="Back"
-            className="mt-2 p-2 rounded-full bg-white/4 hover:bg-white/8 transition shadow-sm"
-          >
-            <ArrowLeft size={18} />
-          </button>
-
+          <BackButton className="mt-2 p-2 rounded-full bg-white/4 hover:bg-white/8 transition shadow-sm" />
           <div className="ml-1">
             <h1 className="text-lg font-semibold tracking-tight">📘 Challenge Rules</h1>
-            <p className="text-xs text-gray-400 mt-0.5">Read before you trade. Violations may disqualify your account.</p>
+            <p className="text-xs text-gray-400 mt-0.5">
+              Read before you trade. Violations may disqualify your account.
+            </p>
           </div>
         </div>
       </div>
 
-      {/* Content */}
       <main className="max-w-3xl mx-auto px-4 py-6 space-y-6">
-        {/* Summary strip */}
         <div className="flex items-center justify-between bg-gradient-to-r from-white/3 via-white/2 to-white/3 p-3 rounded-xl border border-white/6 shadow-md">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center shadow">
@@ -74,14 +63,7 @@ export default function Rules() {
           </div>
         </div>
 
-        {/* Rules as iOS-style chat bubbles */}
-        <motion.ul
-          initial="hidden"
-          animate="show"
-          variants={container}
-          className="space-y-3"
-          aria-live="polite"
-        >
+        <motion.ul initial="hidden" animate="show" variants={container} className="space-y-3" aria-live="polite">
           {rules.map((r, i) => (
             <motion.li key={i} variants={item} className="relative">
               <div
@@ -108,20 +90,16 @@ export default function Rules() {
                       <p className="font-semibold text-sm">{r.title}</p>
                       <p className="text-xs text-gray-300 mt-0.5">{r.detail}</p>
                     </div>
-
-                    <div className="text-right">
-                      <span
-                        className={`inline-flex items-center text-xs font-medium px-2 py-1 rounded-lg ${
-                          r.type === "allowed"
-                            ? "bg-green-700/20 text-green-300"
-                            : "bg-red-700/20 text-red-300"
-                        }`}
-                      >
-                        {r.type === "allowed" ? "Allowed" : "Restricted"}
-                      </span>
-                    </div>
+                    <span
+                      className={`inline-flex items-center text-xs font-medium px-2 py-1 rounded-lg ${
+                        r.type === "allowed"
+                          ? "bg-green-700/20 text-green-300"
+                          : "bg-red-700/20 text-red-300"
+                      }`}
+                    >
+                      {r.type === "allowed" ? "Allowed" : "Restricted"}
+                    </span>
                   </div>
-
                   {r.note && (
                     <div className="mt-3 text-xs text-gray-400 bg-black/30 p-2 rounded-md">
                       {r.note}
@@ -133,12 +111,10 @@ export default function Rules() {
           ))}
         </motion.ul>
 
-        {/* Detailed explanatory block */}
         <section className="bg-white/3 border border-white/6 rounded-2xl p-4 backdrop-blur-sm">
           <h3 className="text-sm font-semibold mb-2">How enforcement works</h3>
           <p className="text-xs text-gray-300">
-            All metrics are measured on server-side. Drawdown checks run in real time. If a rule is
-            violated your account will be paused and reviewed. Appeals are accepted within 48 hours.
+            All metrics are measured on server-side. Drawdown checks run in real time. If a rule is violated your account will be paused and reviewed. Appeals are accepted within 48 hours.
           </p>
 
           <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -153,10 +129,8 @@ export default function Rules() {
           </div>
         </section>
 
-        {/* Footer note */}
         <div className="text-xs text-gray-500 text-center px-3">
-          ⚠️ Repeated or intentional breaches lead to permanent disqualification. Keep a copy of
-          these rules for your records.
+          ⚠️ Repeated or intentional breaches lead to permanent disqualification. Keep a copy of these rules for your records.
         </div>
       </main>
     </div>
