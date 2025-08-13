@@ -1,37 +1,31 @@
-// src/pages/Payment.tsx
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from "react-router-dom";
+import BackButton from "../components/BackButton"; // ✅ Reusable back button
 
 const Payment = () => {
   const navigate = useNavigate();
 
-  const plan = localStorage.getItem('selected_plan');
-  const price = localStorage.getItem('selected_price');
-  const userId = localStorage.getItem('user_id');
+  const plan = localStorage.getItem("selected_plan");
+  const price = localStorage.getItem("selected_price");
+  const userId = localStorage.getItem("user_id");
 
   const handleConfirm = () => {
-    alert('✅ Payment marked! Please wait for admin verification.');
-    navigate('/account');
+    alert("✅ Payment marked! Please wait for admin verification.");
+    navigate("/account");
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white p-6 flex flex-col">
-      
-      {/* Back Button */}
-      <div className="flex items-center mb-6">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-300 hover:text-white transition"
-        >
-          <ArrowLeft size={20} />
-          <span className="text-sm font-medium">Back</span>
-        </button>
+      {/* ✅ Reusable Back Button */}
+      <div className="mb-6">
+        <BackButton />
       </div>
 
       {/* Payment Card */}
       <div className="bg-gray-800 rounded-2xl shadow-lg p-6 w-full max-w-md mx-auto border border-gray-700">
-        <h2 className="text-2xl font-bold mb-4 text-center">💳 Complete Your Payment</h2>
-        
+        <h2 className="text-2xl font-bold mb-4 text-center">
+          💳 Complete Your Payment
+        </h2>
+
         {/* Plan & Price */}
         <div className="bg-gray-900 p-4 rounded-xl border border-gray-700 mb-6 text-center">
           <p className="text-gray-400 text-sm">Selected Plan</p>
