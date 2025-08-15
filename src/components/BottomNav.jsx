@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import { Home, BarChart2, Users, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 
 const tabs = [
-  { icon: Home, label: "Home", path: "/home" },
-  { icon: BarChart2, label: "Dashboard", path: "/account" },
-  { icon: Users, label: "Community", path: "/community" },
-  { icon: User, label: "Account", path: "/profile" },
+  { icon: <Home size={20} strokeWidth={2} />, label: "Home", path: "/home" },
+  { icon: <BarChart2 size={20} strokeWidth={2} />, label: "Dashboard", path: "/account" },
+  { icon: <Users size={20} strokeWidth={2} />, label: "Community", path: "/community" },
+  { icon: <User size={20} strokeWidth={2} />, label: "Account", path: "/profile" },
 ];
 
 export default function BottomNav() {
@@ -28,42 +27,29 @@ export default function BottomNav() {
     setPopup(null);
   };
 
-  const activeIndex = tabs.findIndex((tab) => tab.path === location.pathname);
-
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50
-      bg-white/70 dark:bg-neutral-900/50
-      backdrop-blur-xl border-t border-white/20 dark:border-white/10"
+      className="fixed bottom-0 left-0 right-0
+      bg-white dark:bg-neutral-900
+      text-neutral-800 dark:text-neutral-100
+      flex justify-around items-center z-50
+      border-t border-neutral-200 dark:border-neutral-800"
     >
-      <div className="flex justify-around items-center relative">
-        {/* Active indicator */}
-        {activeIndex >= 0 && (
-          <motion.div
-            layout
-            initial={false}
-            animate={{ x: `${activeIndex * 100}%` }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="absolute bottom-0 left-0 w-1/4 h-[3px] bg-blue-500 rounded-t-full"
-          />
-        )}
-
-        {tabs.map((tab, index) => (
-          <NavItem
-            key={index}
-            icon={tab.icon}
-            label={tab.label}
-            path={tab.path}
-            currentPath={location.pathname}
-            navigate={navigate}
-            onLongPressStart={handleLongPressStart}
-            onLongPressEnd={handleLongPressEnd}
-          />
-        ))}
-      </div>
+      {tabs.map((tab, index) => (
+        <NavItem
+          key={index}
+          icon={tab.icon}
+          label={tab.label}
+          path={tab.path}
+          currentPath={location.pathname}
+          navigate={navigate}
+          onLongPressStart={handleLongPressStart}
+          onLongPressEnd={handleLongPressEnd}
+        />
+      ))}
 
       {popup && (
-        <div className="absolute bottom-14 left-1/2 -translate-x-1/2 bg-black/80 text-white px-2.5 py-1 rounded text-xs shadow-sm dark:bg-white/10">
+        <div className="absolute bottom-14 bg-black/80 text-white px-2.5 py-1 rounded text-xs shadow-sm dark:bg-white/10">
           {popup}
         </div>
       )}
@@ -72,7 +58,7 @@ export default function BottomNav() {
 }
 
 function NavItem({
-  icon: Icon,
+  icon,
   label,
   path,
   currentPath,
@@ -80,7 +66,7 @@ function NavItem({
   onLongPressStart,
   onLongPressEnd,
 }: {
-  icon: React.ElementType;
+  icon: JSX.Element;
   label: string;
   path: string;
   currentPath: string;
@@ -105,26 +91,14 @@ function NavItem({
       onMouseLeave={onLongPressEnd}
       onTouchStart={() => onLongPressStart(label)}
       onTouchEnd={onLongPressEnd}
-      className="flex flex-col items-center justify-center py-2 w-full relative"
+      className={`flex flex-col items-center justify-center py-2 w-full transition-all duration-200 ${
+        isActive
+          ? "text-blue-500 dark:text-blue-400 font-medium"
+          : "text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"
+      }`}
     >
-      <Icon
-        size={24}
-        strokeWidth={isActive ? 2.5 : 2}
-        className={`transition-colors duration-300 ${
-          isActive
-            ? "text-blue-500 dark:text-blue-400"
-            : "text-gray-500 dark:text-gray-400"
-        }`}
-      />
-      <span
-        className={`text-[11px] mt-0.5 transition-colors duration-300 ${
-          isActive
-            ? "text-blue-500 dark:text-blue-400"
-            : "text-gray-500 dark:text-gray-400"
-        }`}
-      >
-        {label}
-      </span>
+      {icon}
+      <span className="text-xs mt-0.5">{label}</span>
     </button>
   );
 }
