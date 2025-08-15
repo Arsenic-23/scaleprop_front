@@ -3,19 +3,19 @@ import { Home, BarChart2, Users, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const tabs = [
-  { icon: <Home size={20} strokeWidth={2} />, label: "Home", path: "/home" },
-  { icon: <BarChart2 size={20} strokeWidth={2} />, label: "Dashboard", path: "/account" },
-  { icon: <Users size={20} strokeWidth={2} />, label: "Community", path: "/community" },
-  { icon: <User size={20} strokeWidth={2} />, label: "Account", path: "/profile" },
+  { icon: <Home size={16} strokeWidth={2} />, label: "Home", path: "/home" },
+  { icon: <BarChart2 size={16} strokeWidth={2} />, label: "Dashboard", path: "/account" },
+  { icon: <Users size={16} strokeWidth={2} />, label: "Community", path: "/community" },
+  { icon: <User size={16} strokeWidth={2} />, label: "Account", path: "/profile" },
 ];
 
 export default function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [popup, setPopup] = useState<string | null>(null);
-  let pressTimer: NodeJS.Timeout;
+  const [popup, setPopup] = useState(null);
+  let pressTimer;
 
-  const handleLongPressStart = (label: string) => {
+  const handleLongPressStart = (label) => {
     if (window.navigator.vibrate) {
       window.navigator.vibrate([50, 30, 50]);
     }
@@ -29,11 +29,11 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0
-      bg-white dark:bg-neutral-900
-      text-neutral-800 dark:text-neutral-100
-      flex justify-around items-center z-50
-      border-t border-neutral-200 dark:border-neutral-800"
+      className="fixed bottom-0 left-0 w-full  
+      bg-white dark:bg-neutral-900  
+      text-neutral-800 dark:text-neutral-100  
+      flex justify-around items-center  
+      z-50 border-t border-neutral-300 dark:border-neutral-700 py-2"
     >
       {tabs.map((tab, index) => (
         <NavItem
@@ -65,14 +65,6 @@ function NavItem({
   navigate,
   onLongPressStart,
   onLongPressEnd,
-}: {
-  icon: JSX.Element;
-  label: string;
-  path: string;
-  currentPath: string;
-  navigate: (path: string) => void;
-  onLongPressStart: (label: string) => void;
-  onLongPressEnd: () => void;
 }) {
   const isActive = currentPath === path;
 
@@ -91,14 +83,14 @@ function NavItem({
       onMouseLeave={onLongPressEnd}
       onTouchStart={() => onLongPressStart(label)}
       onTouchEnd={onLongPressEnd}
-      className={`flex flex-col items-center justify-center py-2 w-full transition-all duration-200 ${
+      className={`flex flex-col items-center justify-center px-2 py-0.5 transition-all duration-200 ${
         isActive
-          ? "text-blue-500 dark:text-blue-400 font-medium"
+          ? "text-blue-500 dark:text-white font-semibold"
           : "text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"
       }`}
     >
       {icon}
-      <span className="text-xs mt-0.5">{label}</span>
+      <span className="text-xs mt-1">{label}</span>
     </button>
   );
 }
