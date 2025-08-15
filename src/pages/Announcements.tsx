@@ -1,5 +1,4 @@
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, MouseEvent } from "react";
 import { motion } from "framer-motion";
 import { Bell } from "lucide-react";
 
@@ -12,9 +11,11 @@ interface Announcement {
 
 const Announcements = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [ripples, setRipples] = useState<
+    { id: number; x: number; y: number }[]
+  >([]);
 
   useEffect(() => {
-    // 🔄 Replace this with a real API fetch later
     const dummyAnnouncements: Announcement[] = [
       {
         id: 1,
@@ -34,48 +35,112 @@ const Announcements = () => {
     setAnnouncements(dummyAnnouncements);
   }, []);
 
+  const handleRipple = (e: MouseEvent<HTMLButtonElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const newRipple = { id: Date.now(), x, y };
+    setRipples((prev) => [...prev, newRipple]);
+
+    // Remove ripple after animation
+    setTimeout(() => {
+      setRipples((prev) => prev.filter((r) => r.id !== newRipple.id));
+    }, 600);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-      {/* Page Header */}
-      <div className="flex items-center justify-center mb-6">
-        <Bell className="text-blue-600 dark:text-blue-400 w-6 h-6 mr-2" />
-        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-          Announcements
-        </h2>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-950 dark:to-black p-6">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex items-center justify-center mb-8"
+      >
+        <div className="flex items-center bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-full px-4 py-2 shadow-sm">
+          <Bell className="text-blue-600 dark:text-blue-400 w-5 h-5 mr-2" />
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-white tracking-tight">
+            Announcements
+          </h2>
+        </div>
+      </motion.div>
 
       {/* Announcements List */}
       {announcements.length > 0 ? (
-        <div className="space-y-5">
+        <div className="space-y-6">
           {announcements.map((a, index) => (
-            <motion.div
+            <motion.button
               key={a.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="p-5 rounded-2xl shadow-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow"
+              whileTap={{ scale: 0.97 }}
+              onClick={handleRipple}
+              transition={{
+                delay: index * 0.1,
+                type: "spring",
+                stiffness: 150,
+                damping: 12,
+              }}
+              className="relative overflow-hidden w-full text-left p-5 rounded-3xl shadow-lg bg-white/70 dark:bg-white/5 border border-white/30 dark:border-white/10 backdrop-blur-xl hover:shadow-xl transition-all duration-300 focus:outline-none"
             >
-              <h3 className="font-semibold text-lg text-gray-900 dark:text-white">
+              {/* Ripple Effect Layer */}
+              {ripples.map((r) => (
+                <span
+                  key={r.id}
+                  className="absolute bg-black/10 dark:bg-white/20 rounded-full animate-ripple"
+                  style={{
+                    left: r.x,
+                    top: r.y,
+                    transform: "translate(-50%, -50%)",
+                  }}
+                />
+              ))}
+
+              <h3 className="font-semibold text-lg text-gray-900 dark:text-white leading-snug">
                 {a.title}
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+              <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 leading-relaxed">
                 {a.message}
               </p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-4">
                 {new Date(a.date).toLocaleDateString(undefined, {
                   year: "numeric",
                   month: "long",
                   day: "numeric",
                 })}
               </p>
-            </motion.div>
+            </motion.button>
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-500 dark:text-gray-400 text-sm">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center text-gray-500 dark:text-gray-400 text-sm"
+        >
           No announcements yet.
-        </p>
+        </motion.p>
       )}
+
+      {/* Ripple Animation Styles */}
+      <style jsx>{`
+        .animate-ripple {
+          width: 20px;
+          height: 20px;
+          animation: ripple 0.6s linear;
+        }
+        @keyframes ripple {
+          from {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 0.4;
+          }
+          to {
+            transform: translate(-50%, -50%) scale(15);
+            opacity: 0;
+          }
+        }
+      `}</style>
     </div>
   );
 };
