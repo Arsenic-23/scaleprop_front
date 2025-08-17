@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Home, BarChart2, Users, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const tabs = [
-  { icon: <Home size={16} strokeWidth={2} />, label: "", path: "/home" },
-  { icon: <BarChart2 size={16} strokeWidth={2} />, label: "", path: "/account" },
-  { icon: <Users size={16} strokeWidth={2} />, label: "", path: "/community" },
-  { icon: <User size={16} strokeWidth={2} />, label: "", path: "/profile" },
+  { icon: Home, label: "Home", path: "/home" },
+  { icon: BarChart2, label: "Account", path: "/account" },
+  { icon: Users, label: "Community", path: "/community" },
+  { icon: User, label: "Profile", path: "/profile" },
 ];
 
 export default function BottomNav() {
@@ -28,37 +29,44 @@ export default function BottomNav() {
   };
 
   return (
-    <nav
-      className="fixed bottom-0 left-0 w-full  
-      bg-white dark:bg-neutral-900  
-      text-neutral-800 dark:text-neutral-100  
-      flex justify-around items-center  
-      z-50 border-t border-neutral-300 dark:border-neutral-700 py-2"
-    >
-      {tabs.map((tab, index) => (
-        <NavItem
-          key={index}
-          icon={tab.icon}
-          label={tab.label}
-          path={tab.path}
-          currentPath={location.pathname}
-          navigate={navigate}
-          onLongPressStart={handleLongPressStart}
-          onLongPressEnd={handleLongPressEnd}
-        />
-      ))}
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+      <nav
+        className="flex justify-around items-center gap-6 px-6 py-3 
+        bg-white/80 dark:bg-neutral-900/80 
+        backdrop-blur-xl shadow-lg rounded-2xl border border-white/20 dark:border-neutral-700/50"
+      >
+        {tabs.map((tab, index) => (
+          <NavItem
+            key={index}
+            icon={tab.icon}
+            label={tab.label}
+            path={tab.path}
+            currentPath={location.pathname}
+            navigate={navigate}
+            onLongPressStart={handleLongPressStart}
+            onLongPressEnd={handleLongPressEnd}
+          />
+        ))}
+      </nav>
 
       {popup && (
-        <div className="absolute bottom-14 bg-black/80 text-white px-2.5 py-1 rounded text-xs shadow-sm dark:bg-white/10">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          className="absolute bottom-16 left-1/2 -translate-x-1/2 
+          bg-black/80 text-white px-3 py-1.5 rounded-xl text-xs shadow-md 
+          dark:bg-white/10 backdrop-blur-md"
+        >
           {popup}
-        </div>
+        </motion.div>
       )}
-    </nav>
+    </div>
   );
 }
 
 function NavItem({
-  icon,
+  icon: Icon,
   label,
   path,
   currentPath,
@@ -76,21 +84,29 @@ function NavItem({
   };
 
   return (
-    <button
+    <motion.button
+      whileTap={{ scale: 0.9 }}
       onClick={handleClick}
       onMouseDown={() => onLongPressStart(label)}
       onMouseUp={onLongPressEnd}
       onMouseLeave={onLongPressEnd}
       onTouchStart={() => onLongPressStart(label)}
       onTouchEnd={onLongPressEnd}
-      className={`flex flex-col items-center justify-center px-2 py-0.5 transition-all duration-200 ${
+      className={`flex flex-col items-center justify-center px-2 py-1 transition-all duration-300 ${
         isActive
-          ? "text-blue-500 dark:text-white font-semibold"
+          ? "text-blue-500 dark:text-blue-400"
           : "text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"
       }`}
     >
-      {icon}
-      <span className="text-xs mt-1">{label}</span>
-    </button>
+      <motion.div
+        animate={isActive ? { scale: 1.2 } : { scale: 1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      >
+        <Icon size={22} strokeWidth={2} />
+      </motion.div>
+      <span className={`text-[11px] mt-1 ${isActive ? "font-medium" : ""}`}>
+        {label}
+      </span>
+    </motion.button>
   );
 }
