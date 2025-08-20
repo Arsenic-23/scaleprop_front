@@ -1,161 +1,118 @@
 "use client";
-import { motion, useMotionValue, useSpring } from "framer-motion";
-import { useRef, useEffect } from "react";
+import { motion, useMotionValue, useAnimation } from "framer-motion";
+import { useEffect, useRef } from "react";
 
 const logos = [
-  "/tradingview.png",
-  "/metamask.png",
-  "/exness.png",
-  "/binance.png",
-  "/bybit.png",
-  "/tether.png",
-  "/telegram.png",
-  "/scale.png",
-  "/meta.png",
-  "/oanda.png",
+  "/logo1.png",
+  "/logo2.png",
+  "/logo3.png",
+  "/logo4.png",
+  "/logo5.png",
+  "/logo6.png",
+  "/logo7.png",
+  "/logo8.png",
 ];
 
-const LOGO_WIDTH = 104;
-const TOTAL_WIDTH = logos.length * LOGO_WIDTH;
-
-function ScrollingRow({ direction }: { direction: "left" | "right" }) {
-  const baseSpeed = 40;
-  const rawX = useMotionValue(0); // raw value (dragging + velocity)
-  const x = useSpring(rawX, {
-    stiffness: 200,
-    damping: 25,
-    mass: 0.5,
-  }); // smooth bounce physics
-
+export default function LogoScroller() {
+  const x = useMotionValue(0);
+  const controls = useAnimation();
   const containerRef = useRef<HTMLDivElement>(null);
-  const dir = direction === "left" ? -1 : 1;
-
-  let isDragging = false;
-  let startX = 0;
-  let scrollStart = 0;
-  let velocity = dir * baseSpeed;
-  let lastTime = performance.now();
-  let lastX = 0;
-  let inertiaFrame: number;
-
-  // Lerp for smooth velocity reset
-  const lerp = (a: number, b: number, n: number) => a + (b - a) * n;
-
-  // Wrap so it loops seamlessly
-  const wrap = (value: number, min: number, max: number) => {
-    const range = max - min;
-    return ((((value - min) % range) + range) % range) + min;
-  };
-
-  const animate = (now: number) => {
-    const delta = now - lastTime;
-    lastTime = now;
-
-    if (!isDragging) {
-      velocity = lerp(velocity, dir * baseSpeed, 0.04);
-      const next = rawX.get() + (velocity * delta) / 1000;
-
-      rawX.set(wrap(next, -TOTAL_WIDTH, 0));
-    }
-
-    inertiaFrame = requestAnimationFrame(animate);
-  };
 
   useEffect(() => {
-    inertiaFrame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(inertiaFrame);
-  }, []);
+    const el = containerRef.current;
+    if (!el) return;
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    let startX = 0;
+    let currentX = 0;
+    let velocity = 0;
+    let lastTime = 0;
+    let lastX = 0;
 
-    const getX = (e: MouseEvent | TouchEvent) =>
-      "touches" in e ? e.touches[0].clientX : e.clientX;
-
-    const onDown = (e: MouseEvent | TouchEvent) => {
-      isDragging = true;
-      startX = getX(e);
-      scrollStart = rawX.get();
-      lastX = startX;
-      lastTime = performance.now();
+    const onDown = (e: any) => {
+      startX = e.touches ? e.touches[0].clientX : e.clientX;
+      currentX = x.get();
       velocity = 0;
+      lastTime = Date.now();
+      lastX = startX;
+      controls.stop();
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("touchmove", onMove);
+      window.addEventListener("mouseup", onUp);
+      window.addEventListener("touchend", onUp);
     };
 
-    const onMove = (e: MouseEvent | TouchEvent) => {
-      if (!isDragging) return;
-      const currentX = getX(e);
-      const now = performance.now();
-      const dx = currentX - lastX;
-      const dt = (now - lastTime) / 1000;
-
-      rawX.set(scrollStart + (currentX - startX));
-      velocity = dx / dt;
-      lastX = currentX;
+    const onMove = (e: any) => {
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const dx = clientX - startX;
+      x.set(currentX + dx);
+      const now = Date.now();
+      const delta = clientX - lastX;
+      velocity = delta / (now - lastTime); // px/ms
+      lastX = clientX;
       lastTime = now;
     };
 
     const onUp = () => {
-      isDragging = false;
-      if (Math.abs(velocity) < baseSpeed * 0.4) {
-        velocity = dir * baseSpeed;
-      }
-    };
+      const maxOffset = 0;
+      const minOffset = -(
+        el.scrollWidth - el.clientWidth
+      );
 
-    container.addEventListener("mousedown", onDown);
-    container.addEventListener("touchstart", onDown, { passive: true });
-    container.addEventListener("mousemove", onMove);
-    container.addEventListener("touchmove", onMove, { passive: true });
-    window.addEventListener("mouseup", onUp);
-    window.addEventListener("touchend", onUp);
+      let target = x.get() + velocity * 300; // momentum
 
-    return () => {
-      container.removeEventListener("mousedown", onDown);
-      container.removeEventListener("touchstart", onDown);
-      container.removeEventListener("mousemove", onMove);
-      container.removeEventListener("touchmove", onMove);
+      if (target > maxOffset) target = maxOffset;
+      if (target < minOffset) target = minOffset;
+
+      controls.start({
+        x: target,
+        transition: {
+          type: "spring",
+          stiffness: 150,
+          damping: 20,
+          mass: 0.8,
+          velocity: velocity * 1000, // convert to px/s
+        },
+      });
+
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("touchmove", onMove);
       window.removeEventListener("mouseup", onUp);
       window.removeEventListener("touchend", onUp);
     };
-  }, [rawX]);
+
+    el.addEventListener("mousedown", onDown);
+    el.addEventListener("touchstart", onDown);
+
+    return () => {
+      el.removeEventListener("mousedown", onDown);
+      el.removeEventListener("touchstart", onDown);
+    };
+  }, [x, controls]);
 
   return (
     <div
       ref={containerRef}
-      className="overflow-hidden relative w-full cursor-grab active:cursor-grabbing"
+      className="overflow-hidden w-full select-none"
+      style={{ touchAction: "none" }}
     >
-      {/* Fading Edges */}
-      <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
-      <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
-
-      {/* Infinite Logos */}
-      <motion.div style={{ x }} className="flex w-max select-none">
-        {[...logos, ...logos].map((src, i) => (
-          <motion.div
+      <motion.div
+        style={{ x }}
+        animate={controls}
+        className="flex gap-8 py-6 px-4"
+      >
+        {logos.map((logo, i) => (
+          <div
             key={i}
-            className="w-[90px] h-[90px] flex items-center justify-center mx-2 rounded-2xl 
-              bg-white/10 border border-white/20 backdrop-blur-lg 
-              shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_4px_12px_rgba(0,0,0,0.15)] 
-              hover:shadow-[0_0_12px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
-            whileHover={{ scale: 1.1 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="flex-shrink-0 w-32 h-20 flex items-center justify-center rounded-2xl bg-neutral-900 shadow-lg"
           >
             <img
-              src={src}
-              alt="logo"
-              className="h-16 w-16 object-contain filter grayscale transition-all duration-300 hover:grayscale-0"
+              src={logo}
+              alt={`logo-${i}`}
+              className="max-h-12 object-contain"
             />
-          </motion.div>
+          </div>
         ))}
       </motion.div>
-    </div>
-  );
-}
-
-export function LogoScroller() {
-  return (
-    <div className="flex flex-col w-full mt-auto pb-6">
-      <ScrollingRow direction="left" />
     </div>
   );
 }
