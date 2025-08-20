@@ -1,4 +1,5 @@
-import { motion, useMotionValue } from "framer-motion";
+"use client";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useRef, useEffect } from "react";
 
 const logos = [
@@ -19,7 +20,13 @@ const TOTAL_WIDTH = logos.length * LOGO_WIDTH;
 
 function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   const baseSpeed = 40;
-  const x = useMotionValue(0);
+  const rawX = useMotionValue(0); // raw value (dragging + velocity)
+  const x = useSpring(rawX, {
+    stiffness: 200,
+    damping: 25,
+    mass: 0.5,
+  }); // smooth bounce physics
+
   const containerRef = useRef<HTMLDivElement>(null);
   const dir = direction === "left" ? -1 : 1;
 
@@ -31,8 +38,10 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   let lastX = 0;
   let inertiaFrame: number;
 
+  // Lerp for smooth velocity reset
   const lerp = (a: number, b: number, n: number) => a + (b - a) * n;
 
+  // Wrap so it loops seamlessly
   const wrap = (value: number, min: number, max: number) => {
     const range = max - min;
     return ((((value - min) % range) + range) % range) + min;
@@ -44,10 +53,9 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
     if (!isDragging) {
       velocity = lerp(velocity, dir * baseSpeed, 0.04);
-      const next = x.get() + (velocity * delta) / 1000;
+      const next = rawX.get() + (velocity * delta) / 1000;
 
-      // smooth infinite wrap instead of snapping
-      x.set(wrap(next, -TOTAL_WIDTH, 0));
+      rawX.set(wrap(next, -TOTAL_WIDTH, 0));
     }
 
     inertiaFrame = requestAnimationFrame(animate);
@@ -68,7 +76,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
     const onDown = (e: MouseEvent | TouchEvent) => {
       isDragging = true;
       startX = getX(e);
-      scrollStart = x.get();
+      scrollStart = rawX.get();
       lastX = startX;
       lastTime = performance.now();
       velocity = 0;
@@ -81,7 +89,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       const dx = currentX - lastX;
       const dt = (now - lastTime) / 1000;
 
-      x.set(scrollStart + (currentX - startX));
+      rawX.set(scrollStart + (currentX - startX));
       velocity = dx / dt;
       lastX = currentX;
       lastTime = now;
@@ -109,7 +117,7 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       window.removeEventListener("mouseup", onUp);
       window.removeEventListener("touchend", onUp);
     };
-  }, [x]);
+  }, [rawX]);
 
   return (
     <div
@@ -123,19 +131,21 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       {/* Infinite Logos */}
       <motion.div style={{ x }} className="flex w-max select-none">
         {[...logos, ...logos].map((src, i) => (
-          <div
+          <motion.div
             key={i}
             className="w-[90px] h-[90px] flex items-center justify-center mx-2 rounded-2xl 
-            bg-white/10 border border-white/20 backdrop-blur-lg 
-            shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_4px_12px_rgba(0,0,0,0.15)] 
-            hover:shadow-[0_0_12px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
+              bg-white/10 border border-white/20 backdrop-blur-lg 
+              shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_4px_12px_rgba(0,0,0,0.15)] 
+              hover:shadow-[0_0_12px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
+            whileHover={{ scale: 1.1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             <img
               src={src}
               alt="logo"
               className="h-16 w-16 object-contain filter grayscale transition-all duration-300 hover:grayscale-0"
             />
-          </div>
+          </motion.div>
         ))}
       </motion.div>
     </div>
