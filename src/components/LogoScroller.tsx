@@ -33,6 +33,11 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
   const lerp = (a: number, b: number, n: number) => a + (b - a) * n;
 
+  const wrap = (value: number, min: number, max: number) => {
+    const range = max - min;
+    return ((((value - min) % range) + range) % range) + min;
+  };
+
   const animate = (now: number) => {
     const delta = now - lastTime;
     lastTime = now;
@@ -41,13 +46,8 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       velocity = lerp(velocity, dir * baseSpeed, 0.04);
       const next = x.get() + (velocity * delta) / 1000;
 
-      if (next <= -TOTAL_WIDTH) {
-        x.set(0);
-      } else if (next >= 0) {
-        x.set(-TOTAL_WIDTH);
-      } else {
-        x.set(Math.fround(next));
-      }
+      // smooth infinite wrap instead of snapping
+      x.set(wrap(next, -TOTAL_WIDTH, 0));
     }
 
     inertiaFrame = requestAnimationFrame(animate);
@@ -122,10 +122,13 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
       {/* Infinite Logos */}
       <motion.div style={{ x }} className="flex w-max select-none">
-        {[...logos, ...logos, ...logos, ...logos].map((src, i) => (
+        {[...logos, ...logos].map((src, i) => (
           <div
             key={i}
-            className="w-[90px] h-[90px] flex items-center justify-center mx-2 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-lg shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_4px_12px_rgba(0,0,0,0.15)] hover:shadow-[0_0_12px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
+            className="w-[90px] h-[90px] flex items-center justify-center mx-2 rounded-2xl 
+            bg-white/10 border border-white/20 backdrop-blur-lg 
+            shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_4px_12px_rgba(0,0,0,0.15)] 
+            hover:shadow-[0_0_12px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
           >
             <img
               src={src}
