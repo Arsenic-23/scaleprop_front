@@ -1,7 +1,7 @@
 import { useEffect, useState, MouseEvent } from "react";
 import { motion } from "framer-motion";
 import { Bell } from "lucide-react";
-import BackButton from "./BackButton";
+import BackButton from "./BackButton"; // ✅ Import your back button
 
 interface Announcement {
   id: number;
