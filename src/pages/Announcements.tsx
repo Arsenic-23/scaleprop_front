@@ -1,6 +1,7 @@
 import { useEffect, useState, MouseEvent } from "react";
 import { motion } from "framer-motion";
 import { Bell } from "lucide-react";
+import BackButton from "./BackButton";
 
 interface Announcement {
   id: number;
@@ -51,19 +52,21 @@ const Announcements = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-950 dark:to-black p-6">
-      {/* Header */}
+      {/* Header with Back Button */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="flex items-center justify-center mb-8"
+        className="flex items-center justify-between mb-8"
       >
+        <BackButton /> {/* ✅ Back button placed here */}
         <div className="flex items-center bg-white/60 dark:bg-white/10 backdrop-blur-xl rounded-full px-4 py-2 shadow-sm">
           <Bell className="text-blue-600 dark:text-blue-400 w-5 h-5 mr-2" />
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white tracking-tight">
             Announcements
           </h2>
         </div>
+        <div className="w-12" /> {/* Spacer for symmetry */}
       </motion.div>
 
       {/* Announcements List */}
