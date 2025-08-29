@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 
 const BackButton = () => {
@@ -19,13 +20,18 @@ const BackButton = () => {
   }, [navigate]);
 
   return (
-    <button
+    <motion.button
       onClick={() => navigate(-1)}
-      className="flex items-center gap-2 text-white bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg shadow transition"
+      whileTap={{ scale: 0.9 }}
+      className="flex items-center justify-center w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 shadow-lg transition"
     >
-      <ArrowLeft size={18} />
-      Back
-    </button>
+      <motion.div
+        whileTap={{ rotate: -45, x: -2 }}
+        transition={{ type: "spring", stiffness: 300, damping: 10 }}
+      >
+        <ArrowLeft size={22} className="text-white" />
+      </motion.div>
+    </motion.button>
   );
 };
 
