@@ -51,20 +51,20 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
       {/* Top: label and total */}
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm text-gray-400">{label}</span>
-        <span className="text-base font-semibold text-gray-300">
+        <span className="text-sm font-semibold text-gray-200">
           {totalLabel}
         </span>
       </div>
 
-      {/* Outer rectangular frame */}
-      <div className="w-full h-4 bg-gray-700/30 flex gap-[2px] overflow-hidden">
+      {/* Outer rectangular thin capsule frame */}
+      <div className="w-full h-3 bg-gray-800/60 flex gap-[2px] rounded-md overflow-hidden">
         {Array.from({ length: segments }).map((_, i) => {
           const isActive = i < activeCount;
           return (
             <div
               key={i}
-              className={`flex-1 h-full ${
-                isActive ? activeColor : "bg-gray-600/40"
+              className={`flex-1 h-full transition-colors ${
+                isActive ? activeColor : "bg-gray-700"
               }`}
             />
           );
@@ -74,7 +74,7 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
       {/* Bottom: used + percentage */}
       <div className="flex items-center justify-between mt-2">
         <span className="text-xs text-gray-400">{usedLabel}</span>
-        <span className="text-sm font-medium text-gray-300">
+        <span className="text-xs font-medium text-gray-300">
           {formatPct(pct)}%
         </span>
       </div>
@@ -100,8 +100,8 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
   totalDdMax,
 }) => {
   return (
-    <div className="rounded-lg p-4 bg-[#1E1E1E] border border-gray-600/50 space-y-5">
-      <h3 className="text-sm font-semibold text-gray-300 mb-2">
+    <div className="rounded-lg p-5 bg-[#1E1E1E] border border-gray-700/50 space-y-6">
+      <h3 className="text-sm font-semibold text-gray-200">
         Progress Overview
       </h3>
 
