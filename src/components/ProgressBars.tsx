@@ -15,13 +15,13 @@ interface LinearCapsuleBarProps {
 const colorClassFor = (c: ColorKey) => {
   switch (c) {
     case "emerald":
-      return "bg-emerald-500";
+      return "bg-emerald-500"; // exact bold emerald
     case "amber":
-      return "bg-amber-500";
+      return "bg-amber-500"; // exact bold amber
     case "rose":
-      return "bg-rose-500";
+      return "bg-rose-500"; // exact bold rose
     default:
-      return "bg-rose-500"; // bold red as default
+      return "bg-rose-500";
   }
 };
 
@@ -31,7 +31,7 @@ const formatPct = (v: number) => {
 };
 
 /**
- * Evenly sized rectangular thin capsule progress bar
+ * Rectangular thin capsule progress bar
  */
 const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
   label,
@@ -54,8 +54,8 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
         <span className="text-base font-semibold text-gray-200">{totalLabel}</span>
       </div>
 
-      {/* chopped capsules inside same frame */}
-      <div className="w-full h-4 rounded-xl bg-slate-800/30 flex gap-[2px] overflow-hidden">
+      {/* outer rectangular frame */}
+      <div className="w-full h-4 bg-slate-800/40 flex gap-[2px] overflow-hidden">
         {Array.from({ length: segments }).map((_, i) => {
           const isActive = i < activeCount;
           return (
@@ -94,7 +94,7 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
   totalDdMax,
 }) => {
   return (
-    <div className="rounded-2xl p-4 bg-slate-900/60 border border-slate-700/50 space-y-5">
+    <div className="rounded-lg p-4 bg-slate-900/60 border border-slate-700/50 space-y-5">
       <h3 className="text-sm font-semibold text-gray-200 mb-2">
         Progress Overview
       </h3>
