@@ -1,3 +1,4 @@
+// src/pages/Home.tsx
 import React, { useState } from "react";
 import { Bell } from "lucide-react";
 import { ProgressBarsGroup } from "../components/ProgressBars";
