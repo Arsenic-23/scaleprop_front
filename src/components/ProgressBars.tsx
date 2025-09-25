@@ -94,7 +94,7 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
   totalDdMax,
 }) => {
   return (
-    <div className="rounded-lg p-4 bg-[#080808] border border-gray-600/50 space-y-5">
+    <div className="rounded-lg p-4 **bg-[#1E1E1E]** border border-gray-600/50 space-y-5">
       <h3 className="text-sm font-semibold text-gray-300 mb-2">
         Progress Overview
       </h3>
