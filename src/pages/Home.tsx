@@ -43,7 +43,7 @@ const Home: React.FC = () => {
                   "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
               }}
             >
-              Scalefund
+              Scale Fund
             </h1>
           </div>
 
