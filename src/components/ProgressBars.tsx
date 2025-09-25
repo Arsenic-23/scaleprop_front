@@ -1,3 +1,4 @@
+// src/components/ProgressBars.tsx
 import React from "react";
 
 type ColorKey = "emerald" | "amber" | "rose";
