@@ -21,7 +21,9 @@ const Home: React.FC = () => {
       <header className="sticky top-0 z-40 backdrop-blur-md bg-black/40 border-b border-white/10">
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
           {/* Brand */}
-          <h1 className="text-xl font-bold tracking-tight">Scalefund</h1>
+          <h1 className="text-xl font-extrabold tracking-wide uppercase text-gray-300">
+            Scalefund
+          </h1>
 
           {/* Notification Icon */}
           <button
