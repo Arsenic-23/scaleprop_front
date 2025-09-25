@@ -16,7 +16,7 @@ const Home: React.FC = () => {
 
   const handleNotificationClick = () => {
     if (navigator.vibrate) {
-      navigator.vibrate(100);
+      navigator.vibrate(150);
     }
     setIsVibrating(true);
     setTimeout(() => setIsVibrating(false), 200);
@@ -33,7 +33,7 @@ const Home: React.FC = () => {
               <img
                 src="/logo.png"
                 alt="Scalefund Logo"
-                className="w-5 h-5 object-contain"
+                className="w-8 h-8 object-contain"
               />
             </div>
             <h1
