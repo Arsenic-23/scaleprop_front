@@ -1,4 +1,3 @@
-// src/pages/Home.tsx
 import React, { useState } from "react";
 import { Bell } from "lucide-react";
 import { ProgressBarsGroup } from "../components/ProgressBars";
@@ -36,7 +35,6 @@ const Home: React.FC = () => {
                 alt="Scalefund Logo"
                 className="w-8 h-8 object-contain z-10"
               />
-              {/* Grey Ring overlay */}
               <div className="absolute inset-0 rounded-full border-2 border-gray-500 z-0" />
             </div>
             <h1
@@ -44,7 +42,7 @@ const Home: React.FC = () => {
               style={{
                 fontFamily:
                   "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-                lineHeight: "2.5rem", // vertically center with logo
+                lineHeight: "2.5rem",
               }}
             >
               Scale Fund
@@ -68,12 +66,12 @@ const Home: React.FC = () => {
       <main className="flex-1 overflow-y-auto">
         <div className="max-w-5xl mx-auto p-6">
           <ProgressBarsGroup
-            target={target}
-            targetMax={targetMax}
-            dailyDd={dailyDd}
-            dailyDdMax={dailyDdMax}
-            totalDd={totalDd}
-            totalDdMax={totalDdMax}
+            profitTargetValue={target}
+            profitTargetMax={targetMax}
+            dailyDrawdownValue={dailyDd}
+            dailyDrawdownMax={dailyDdMax}
+            totalDrawdownValue={totalDd}
+            totalDrawdownMax={totalDdMax}
           />
         </div>
       </main>
