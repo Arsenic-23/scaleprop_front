@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Bell } from "lucide-react";
 import { ProgressBarsGroup } from "../components/ProgressBars";
 
@@ -13,13 +13,29 @@ const Home: React.FC = () => {
   const [totalDdMax] = useState(5000);
 
   const [isVibrating, setIsVibrating] = useState(false);
+  const [ripple, setRipple] = useState(false);
+  const rippleTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const triggerRipple = () => {
+    setRipple(true);
+    if (rippleTimeout.current) clearTimeout(rippleTimeout.current);
+    rippleTimeout.current = setTimeout(() => setRipple(false), 300);
+  };
 
   const handleNotificationClick = () => {
     if (navigator.vibrate) {
       navigator.vibrate(100);
     }
     setIsVibrating(true);
+    triggerRipple();
     setTimeout(() => setIsVibrating(false), 200);
+  };
+
+  const handleLongPress = () => {
+    if (navigator.vibrate) {
+      navigator.vibrate([50, 100, 50]);
+    }
+    triggerRipple();
   };
 
   return (
@@ -29,10 +45,11 @@ const Home: React.FC = () => {
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
           {/* Brand */}
           <h1
-            className="text-xl font-bold text-gray-300 tracking-tight"
+            className="text-2xl font-extrabold text-gray-300 tracking-wide"
             style={{
               fontFamily:
                 "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+              letterSpacing: "-0.5px",
             }}
           >
             Scalefund
@@ -42,11 +59,18 @@ const Home: React.FC = () => {
           <button
             aria-label="Notifications"
             onClick={handleNotificationClick}
-            className={`p-2 rounded-full transition transform duration-150 ${
+            onContextMenu={(e) => {
+              e.preventDefault();
+              handleLongPress();
+            }}
+            className={`relative p-3 rounded-full overflow-hidden transition transform duration-150 ${
               isVibrating ? "scale-110" : "scale-100"
             }`}
           >
-            <Bell className="w-5 h-5 text-gray-300" />
+            {ripple && (
+              <span className="absolute inset-0 bg-gray-500/30 animate-ping rounded-full"></span>
+            )}
+            <Bell className="w-6 h-6 text-gray-300 relative z-10" />
           </button>
         </div>
       </header>
