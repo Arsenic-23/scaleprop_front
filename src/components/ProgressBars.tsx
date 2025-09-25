@@ -1,35 +1,57 @@
 import React from "react";
 
-interface ProgressBarProps {
+interface SegmentedBarProps {
   label: string;
   value: number;
   max: number;
-  color?: string;
-  prefix?: string;
-  percentage?: number;
+  usedLabel?: string; // e.g. "$5,000" or "$1,000 Used"
+  totalLabel?: string; // e.g. "$8,000" or "$5,000"
+  color: string; // active color
+  inactiveColor?: string; // default inactive
+  segments?: number; // number of blocks
+  showPercentage?: boolean;
 }
 
-/**
- * Reusable ProgressBar component
- */
-const ProgressBar: React.FC<ProgressBarProps> = ({ label, value, max, color = "bg-green-500", prefix = "$", percentage }) => {
-  const calcPercentage = percentage !== undefined ? percentage : Math.min(100, (value / max) * 100);
+const SegmentedBar: React.FC<SegmentedBarProps> = ({
+  label,
+  value,
+  max,
+  usedLabel,
+  totalLabel,
+  color,
+  inactiveColor = "bg-gray-700",
+  segments = 32,
+  showPercentage = true,
+}) => {
+  const percentage = Math.min(100, (value / max) * 100);
+  const activeBlocks = Math.round((percentage / 100) * segments);
 
   return (
     <div className="space-y-1">
-      <div className="flex items-center justify-between text-sm font-medium text-white">
+      {/* Top row: label and total */}
+      <div className="flex items-center justify-between text-sm text-gray-200">
         <span>{label}</span>
-        <span className="text-gray-300">
-          {prefix}
-          {value.toLocaleString()} / {prefix}
-          {max.toLocaleString()} <span className="text-white ml-2">{calcPercentage}%</span>
-        </span>
+        <span className="font-semibold">{totalLabel}</span>
       </div>
-      <div className="w-full h-6 bg-gray-700 rounded-lg overflow-hidden border border-gray-600">
-        <div
-          className={`h-full rounded-lg ${color}`}
-          style={{ width: `${calcPercentage}%` }}
-        />
+
+      {/* Bar */}
+      <div className="flex gap-1">
+        {Array.from({ length: segments }).map((_, i) => (
+          <div
+            key={i}
+            className={`h-3 flex-1 rounded-sm ${
+              i < activeBlocks ? color : inactiveColor
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* Bottom row: used + percentage */}
+      <div className="flex items-center justify-between text-xs text-gray-400">
+        <span>{usedLabel}</span>
+        {showPercentage && (
+          <span>{percentage.toFixed(1).replace(".0", "")}%</span>
+        )}
       </div>
     </div>
   );
@@ -44,9 +66,6 @@ interface ProgressBarsGroupProps {
   totalDdMax: number;
 }
 
-/**
- * Group of progress bars for the dashboard
- */
 export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
   target,
   targetMax,
@@ -56,11 +75,31 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
   totalDdMax,
 }) => {
   return (
-    <div className="rounded-2xl p-5 bg-gray-900 border border-gray-800 space-y-6">
-      <h3 className="text-sm font-semibold text-gray-400 mb-4">Progress Overview</h3>
-      <ProgressBar label="Profit Target" value={target} max={targetMax} color="bg-green-500" percentage={62.5} />
-      <ProgressBar label="Max Daily Drawdown" value={dailyDd} max={dailyDdMax} color="bg-yellow-500" percentage={20} />
-      <ProgressBar label="Max Total Drawdown" value={totalDd} max={totalDdMax} color="bg-red-500" percentage={30} />
+    <div className="rounded-2xl p-5 bg-gradient-to-tr from-white/5 to-white/10 border border-white/10 backdrop-blur-md shadow-xl space-y-5">
+      <SegmentedBar
+        label="Profit Target"
+        value={target}
+        max={targetMax}
+        usedLabel={`$${target.toLocaleString()}`}
+        totalLabel={`$${targetMax.toLocaleString()}`}
+        color="bg-green-500"
+      />
+      <SegmentedBar
+        label="Max Daily Drawdown"
+        value={dailyDd}
+        max={dailyDdMax}
+        usedLabel={`$${dailyDd.toLocaleString()} Used`}
+        totalLabel={`$${dailyDdMax.toLocaleString()}`}
+        color="bg-yellow-500"
+      />
+      <SegmentedBar
+        label="Max Total Drawdown"
+        value={totalDd}
+        max={totalDdMax}
+        usedLabel={`$${totalDd.toLocaleString()} Used`}
+        totalLabel={`$${totalDdMax.toLocaleString()}`}
+        color="bg-red-500"
+      />
     </div>
   );
 };
