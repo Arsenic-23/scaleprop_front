@@ -29,18 +29,21 @@ const Home: React.FC = () => {
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
           {/* Brand with Logo and Grey Circle */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full border border-gray-500 flex items-center justify-center">
+            <div className="relative w-10 h-10 flex items-center justify-center">
               <img
                 src="/logo.png"
                 alt="Scalefund Logo"
-                className="w-8 h-8 object-contain"
+                className="w-8 h-8 object-contain z-10"
               />
+              {/* Grey Ring overlay */}
+              <div className="absolute inset-0 rounded-full border-2 border-gray-500 z-0" />
             </div>
             <h1
               className="text-2xl font-bold text-gray-300 tracking-tight"
               style={{
                 fontFamily:
                   "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+                lineHeight: "2.5rem", // vertically center with logo
               }}
             >
               Scale Fund
