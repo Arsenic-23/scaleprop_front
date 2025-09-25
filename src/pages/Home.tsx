@@ -27,13 +27,15 @@ const Home: React.FC = () => {
       {/* Header */}
       <header className="sticky top-0 z-40 backdrop-blur-md bg-black/40 border-b border-white/10">
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
-          {/* Brand with Logo */}
+          {/* Brand with Logo and Grey Circle */}
           <div className="flex items-center gap-3">
-            <img
-              src="/logo.png"
-              alt="Scalefund Logo"
-              className="w-8 h-8 object-contain"
-            />
+            <div className="w-10 h-10 rounded-full border border-gray-500 flex items-center justify-center">
+              <img
+                src="/logo.png"
+                alt="Scalefund Logo"
+                className="w-6 h-6 object-contain"
+              />
+            </div>
             <h1
               className="text-2xl font-bold text-gray-300 tracking-tight"
               style={{
