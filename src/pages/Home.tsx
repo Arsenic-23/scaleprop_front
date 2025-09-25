@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import { Bell } from "lucide-react";
 import { ProgressBarsGroup } from "../components/ProgressBars";
 
-/* -------------------------
-   Main Page
-   ------------------------- */
 const Home: React.FC = () => {
   const [target, setTarget] = useState(3000);
   const [targetMax] = useState(5000);
@@ -15,20 +12,39 @@ const Home: React.FC = () => {
   const [totalDd, setTotalDd] = useState(1800);
   const [totalDdMax] = useState(5000);
 
+  const [isVibrating, setIsVibrating] = useState(false);
+
+  const handleNotificationClick = () => {
+    if (navigator.vibrate) {
+      navigator.vibrate(100);
+    }
+    setIsVibrating(true);
+    setTimeout(() => setIsVibrating(false), 200);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-black to-neutral-900 text-white flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-40 backdrop-blur-md bg-black/40 border-b border-white/10">
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
           {/* Brand */}
-          <h1 className="text-xl font-extrabold tracking-wide uppercase text-gray-300">
+          <h1
+            className="text-xl font-bold text-gray-300 tracking-tight"
+            style={{
+              fontFamily:
+                "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+            }}
+          >
             Scalefund
           </h1>
 
           {/* Notification Icon */}
           <button
             aria-label="Notifications"
-            className="p-2 rounded-full hover:bg-white/10 transition"
+            onClick={handleNotificationClick}
+            className={`p-2 rounded-full transition transform duration-150 ${
+              isVibrating ? "scale-110" : "scale-100"
+            }`}
           >
             <Bell className="w-5 h-5 text-gray-300" />
           </button>
