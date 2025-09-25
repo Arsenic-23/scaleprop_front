@@ -33,7 +33,7 @@ const Home: React.FC = () => {
               <img
                 src="/logo.png"
                 alt="Scalefund Logo"
-                className="w-6 h-6 object-contain"
+                className="w-5 h-5 object-contain"
               />
             </div>
             <h1
