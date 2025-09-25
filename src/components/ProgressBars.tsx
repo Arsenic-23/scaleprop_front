@@ -55,7 +55,7 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
       </div>
 
       {/* outer rectangular frame */}
-      <div className="w-full h-4 bg-gray-700/30 flex gap-[2px] overflow-hidden">
+      <div className="w-full h-[14px] bg-gray-700/30 flex gap-[2px] overflow-hidden rounded-md">
         {Array.from({ length: segments }).map((_, i) => {
           const isActive = i < activeCount;
           return (
@@ -94,7 +94,7 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
   totalDdMax,
 }) => {
   return (
-    <div className="rounded-lg p-4 **bg-[#1E1E1E]** border border-gray-600/50 space-y-5">
+    <div className="rounded-lg p-4 bg-[#1E1E1E] border border-gray-600/50 space-y-5">
       <h3 className="text-sm font-semibold text-gray-300 mb-2">
         Progress Overview
       </h3>
