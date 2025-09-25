@@ -21,7 +21,7 @@ const colorClassFor = (c: ColorKey) => {
     case "rose":
       return "bg-rose-500";
     default:
-      return "bg-emerald-500";
+      return "bg-rose-500"; // bold red as default
   }
 };
 
@@ -31,7 +31,7 @@ const formatPct = (v: number) => {
 };
 
 /**
- * Evenly sized chopped capsule progress bar
+ * Evenly sized rectangular thin capsule progress bar
  */
 const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
   label,
@@ -47,45 +47,30 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
   const activeColor = colorClassFor(color);
 
   return (
-    <div
-      className="rounded-2xl p-4"
-      style={{
-        background:
-          "linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015))",
-        border: "1px solid rgba(255,255,255,0.05)",
-        WebkitBackdropFilter: "blur(6px)",
-        backdropFilter: "blur(6px)",
-      }}
-    >
+    <div className="w-full">
       {/* top: label and total */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-2">
         <span className="text-sm text-gray-300">{label}</span>
-        <span className="text-base font-semibold text-gray-200">
-          {totalLabel}
-        </span>
+        <span className="text-base font-semibold text-gray-200">{totalLabel}</span>
       </div>
 
-      {/* chopped capsules */}
-      <div className="mt-3 flex gap-[2px]">
+      {/* chopped capsules inside same frame */}
+      <div className="w-full h-4 rounded-xl bg-slate-800/30 flex gap-[2px] overflow-hidden">
         {Array.from({ length: segments }).map((_, i) => {
           const isActive = i < activeCount;
           return (
             <div
               key={i}
-              className={`h-3 w-3 rounded-sm flex-shrink-0 ${
-                isActive ? activeColor : "bg-slate-700/60"
-              }`}
+              className={`flex-1 h-full ${isActive ? activeColor : "bg-slate-700/40"}`}
             />
           );
         })}
       </div>
 
       {/* bottom: used + percentage */}
-      <div className="flex items-center justify-between mt-3">
+      <div className="flex items-center justify-between mt-2">
         <span className="text-xs text-gray-400">{usedLabel}</span>
-        <span className="text-sm font-medium text-gray-300">
-          {formatPct(pct)}%
-        </span>
+        <span className="text-sm font-medium text-gray-300">{formatPct(pct)}%</span>
       </div>
     </div>
   );
@@ -109,42 +94,40 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
   totalDdMax,
 }) => {
   return (
-    <div>
-      <h3 className="text-sm font-semibold text-gray-200 mb-3">
+    <div className="rounded-2xl p-4 bg-slate-900/60 border border-slate-700/50 space-y-5">
+      <h3 className="text-sm font-semibold text-gray-200 mb-2">
         Progress Overview
       </h3>
 
-      <div className="space-y-5">
-        <LinearCapsuleBar
-          label="Profit Target"
-          value={target}
-          max={targetMax}
-          usedLabel={`$${target.toLocaleString()}`}
-          totalLabel={`$${targetMax.toLocaleString()}`}
-          color="emerald"
-          segments={32}
-        />
+      <LinearCapsuleBar
+        label="Profit Target"
+        value={target}
+        max={targetMax}
+        usedLabel={`$${target.toLocaleString()}`}
+        totalLabel={`$${targetMax.toLocaleString()}`}
+        color="emerald"
+        segments={32}
+      />
 
-        <LinearCapsuleBar
-          label="Max Daily Drawdown"
-          value={dailyDd}
-          max={dailyDdMax}
-          usedLabel={`$${dailyDd.toLocaleString()} Used`}
-          totalLabel={`$${dailyDdMax.toLocaleString()}`}
-          color="amber"
-          segments={32}
-        />
+      <LinearCapsuleBar
+        label="Max Daily Drawdown"
+        value={dailyDd}
+        max={dailyDdMax}
+        usedLabel={`$${dailyDd.toLocaleString()} Used`}
+        totalLabel={`$${dailyDdMax.toLocaleString()}`}
+        color="amber"
+        segments={32}
+      />
 
-        <LinearCapsuleBar
-          label="Max Total Drawdown"
-          value={totalDd}
-          max={totalDdMax}
-          usedLabel={`$${totalDd.toLocaleString()} Used`}
-          totalLabel={`$${totalDdMax.toLocaleString()}`}
-          color="rose"
-          segments={32}
-        />
-      </div>
+      <LinearCapsuleBar
+        label="Max Total Drawdown"
+        value={totalDd}
+        max={totalDdMax}
+        usedLabel={`$${totalDd.toLocaleString()} Used`}
+        totalLabel={`$${totalDdMax.toLocaleString()}`}
+        color="rose"
+        segments={32}
+      />
     </div>
   );
 };
