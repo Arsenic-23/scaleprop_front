@@ -2,7 +2,7 @@ import React from "react";
 
 type ColorKey = "emerald" | "amber" | "rose";
 
-interface LinearChoppedBarProps {
+interface LinearCapsuleBarProps {
   label: string;
   value: number;
   max: number;
@@ -12,16 +12,16 @@ interface LinearChoppedBarProps {
   segments?: number;
 }
 
-const gradientClassFor = (c: ColorKey) => {
+const colorClassFor = (c: ColorKey) => {
   switch (c) {
     case "emerald":
-      return "from-emerald-400 to-emerald-600";
+      return "bg-emerald-500";
     case "amber":
-      return "from-amber-400 to-amber-600";
+      return "bg-amber-500";
     case "rose":
-      return "from-rose-500 to-rose-700";
+      return "bg-rose-500";
     default:
-      return "from-emerald-400 to-emerald-600";
+      return "bg-emerald-500";
   }
 };
 
@@ -31,20 +31,20 @@ const formatPct = (v: number) => {
 };
 
 /**
- * Alternating thick-thin chopped progress bar
+ * Evenly sized chopped capsule progress bar
  */
-const LinearChoppedBar: React.FC<LinearChoppedBarProps> = ({
+const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
   label,
   value,
   max,
   usedLabel,
   totalLabel,
   color,
-  segments = 40,
+  segments = 30,
 }) => {
   const pct = Math.min(100, (value / max) * 100);
   const activeCount = Math.round((pct / 100) * segments);
-  const gradient = gradientClassFor(color);
+  const activeColor = colorClassFor(color);
 
   return (
     <div
@@ -65,25 +65,16 @@ const LinearChoppedBar: React.FC<LinearChoppedBarProps> = ({
         </span>
       </div>
 
-      {/* chopped bar */}
-      <div className="mt-3 flex gap-[1px]">
+      {/* chopped capsules */}
+      <div className="mt-3 flex gap-[2px]">
         {Array.from({ length: segments }).map((_, i) => {
           const isActive = i < activeCount;
-          const isThick = i % 2 === 0; // alternate thick/thin
           return (
             <div
               key={i}
-              className={`h-3 rounded-sm flex-shrink-0 ${
-                isActive
-                  ? `bg-gradient-to-b ${gradient}`
-                  : "bg-slate-700/60"
+              className={`h-3 w-3 rounded-sm flex-shrink-0 ${
+                isActive ? activeColor : "bg-slate-700/60"
               }`}
-              style={{
-                width: isThick ? "8px" : "5px", // thick vs thin
-                border: isActive
-                  ? "1px solid rgba(255,255,255,0.06)"
-                  : "1px solid rgba(0,0,0,0.2)",
-              }}
             />
           );
         })}
@@ -124,7 +115,7 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
       </h3>
 
       <div className="space-y-5">
-        <LinearChoppedBar
+        <LinearCapsuleBar
           label="Profit Target"
           value={target}
           max={targetMax}
@@ -134,7 +125,7 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
           segments={32}
         />
 
-        <LinearChoppedBar
+        <LinearCapsuleBar
           label="Max Daily Drawdown"
           value={dailyDd}
           max={dailyDdMax}
@@ -144,7 +135,7 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
           segments={32}
         />
 
-        <LinearChoppedBar
+        <LinearCapsuleBar
           label="Max Total Drawdown"
           value={totalDd}
           max={totalDdMax}
