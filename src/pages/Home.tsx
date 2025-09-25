@@ -2,18 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import BottomNav from "../components/BottomNav";
 import { ProgressBarsGroup } from "../components/ProgressBars";
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-  LineChart,
-  Line,
-} from "recharts";
 
 /* -------------------------
    Small utilities & types
@@ -166,91 +154,6 @@ const Home: React.FC = () => {
               <ActionTile to="/payout" label="Request Payout" emoji="💸" />
               <ActionTile to="/announcements" label="Announcements" emoji="📢" />
               <ActionTile to="/support" label="Support" emoji="📞" />
-            </div>
-          </section>
-
-          {/* Trading metrics */}
-          <section className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Trading Metrics</h2>
-              <div className="text-sm text-gray-400">Real-time overview</div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Balance & Equity chart */}
-              <div className="rounded-2xl p-4 bg-gradient-to-tr from-white/3 to-white/2 border border-white/6 backdrop-blur-md shadow-lg">
-                <p className="text-xs text-gray-400 mb-2">Balance / Equity</p>
-                <div style={{ width: "100%", height: 260 }}>
-                  <ResponsiveContainer>
-                    <AreaChart data={metrics} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
-                      <defs>
-                        <linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#00c853" stopOpacity={0.18} />
-                          <stop offset="95%" stopColor="#00c853" stopOpacity={0.02} />
-                        </linearGradient>
-                        <linearGradient id="colorEquity" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#2979ff" stopOpacity={0.12} />
-                          <stop offset="95%" stopColor="#2979ff" stopOpacity={0.02} />
-                        </linearGradient>
-                      </defs>
-
-                      <XAxis dataKey="time" axisLine={false} tick={{ fill: "#9CA3AF" }} />
-                      <YAxis
-                        tickFormatter={(v) => `$${(v as number).toLocaleString()}`}
-                        axisLine={false}
-                        tick={{ fill: "#9CA3AF" }}
-                      />
-                      <CartesianGrid strokeDasharray="3 6" stroke="#ffffff08" />
-                      <Tooltip
-                        contentStyle={{ background: "#0f1720", border: "1px solid rgba(255,255,255,0.06)" }}
-                        labelStyle={{ color: "#cbd5e1" }}
-                        itemStyle={{ color: "#fff" }}
-                        formatter={(val: any) => `$${Number(val).toLocaleString()}`}
-                      />
-                      <Area type="monotone" dataKey="balance" stroke="#00c853" fillOpacity={1} fill="url(#colorBalance)" strokeWidth={2} />
-                      <Area type="monotone" dataKey="equity" stroke="#2979ff" fillOpacity={1} fill="url(#colorEquity)" strokeWidth={2} />
-                      <Legend wrapperStyle={{ color: "#cbd5e1" }} />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* Equity & DD line chart */}
-              <div className="rounded-2xl p-4 bg-gradient-to-tr from-white/3 to-white/2 border border-white/6 backdrop-blur-md shadow-lg">
-                <p className="text-xs text-gray-400 mb-2">Equity Curve & Drawdown</p>
-                <div style={{ width: "100%", height: 260 }}>
-                  <ResponsiveContainer>
-                    <LineChart data={metrics} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
-                      <XAxis dataKey="time" tick={{ fill: "#9CA3AF" }} />
-                      <YAxis tickFormatter={(v) => `$${(v as number).toLocaleString()}`} tick={{ fill: "#9CA3AF" }} />
-                      <CartesianGrid stroke="#ffffff08" strokeDasharray="3 6" />
-                      <Tooltip
-                        contentStyle={{ background: "#0f1720", border: "1px solid rgba(255,255,255,0.06)" }}
-                        formatter={(val: any) => `$${Number(val).toLocaleString()}`}
-                      />
-                      <Line type="monotone" dataKey="equity" stroke="#2979ff" strokeWidth={2} dot={false} />
-                      <Line type="monotone" dataKey="dd" stroke="#ff7043" strokeWidth={1.5} strokeDasharray="4 4" dot={{ r: 2 }} />
-                      <Legend wrapperStyle={{ color: "#cbd5e1" }} />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-
-                {/* quick stats */}
-                <div className="mt-4 grid grid-cols-3 gap-3">
-                  <div className="text-center">
-                    <p className="text-xs text-gray-400">Current Equity</p>
-                    <p className="font-semibold">${metrics[metrics.length - 1].equity.toLocaleString()}</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs text-gray-400">Peak Balance</p>
-                    <p className="font-semibold">${Math.max(...metrics.map((m) => m.balance)).toLocaleString()}</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-xs text-gray-400">Current DD</p>
-                    <p className="font-semibold text-red-400">{metrics[metrics.length - 1].dd}</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </section>
         </div>
