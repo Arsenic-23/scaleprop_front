@@ -27,16 +27,23 @@ const Home: React.FC = () => {
       {/* Header */}
       <header className="sticky top-0 z-40 backdrop-blur-md bg-black/40 border-b border-white/10">
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
-          {/* Brand */}
-          <h1
-            className="text-xl font-bold text-gray-300 tracking-tight"
-            style={{
-              fontFamily:
-                "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-            }}
-          >
-            Scalefund
-          </h1>
+          {/* Brand with Logo */}
+          <div className="flex items-center gap-3">
+            <img
+              src="/logo.png"
+              alt="Scalefund Logo"
+              className="w-8 h-8 object-contain"
+            />
+            <h1
+              className="text-2xl font-bold text-gray-300 tracking-tight"
+              style={{
+                fontFamily:
+                  "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+              }}
+            >
+              Scalefund
+            </h1>
+          </div>
 
           {/* Notification Icon */}
           <button
