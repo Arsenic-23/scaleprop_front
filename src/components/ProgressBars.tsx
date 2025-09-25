@@ -2,20 +2,16 @@ import React from "react";
 
 type ColorKey = "emerald" | "amber" | "rose";
 
-interface SegmentedCapsuleBarProps {
+interface LinearChoppedBarProps {
   label: string;
-  value: number; // current used value
-  max: number; // total / cap
-  color?: ColorKey;
+  value: number;
+  max: number;
+  usedLabel?: string;
+  totalLabel?: string;
+  color: ColorKey;
   segments?: number;
-  prefix?: string;
-  showUsedSuffix?: boolean;
 }
 
-/**
- * Small utility: maps a color key to a subtle vertical gradient that reads well
- * at small capsule sizes.
- */
 const gradientClassFor = (c: ColorKey) => {
   switch (c) {
     case "emerald":
@@ -35,107 +31,75 @@ const formatPct = (v: number) => {
 };
 
 /**
- * Segmented capsule bar component.
- *
- * Visual details matched:
- * - thin capsule blocks (rounded-full)
- * - very small gap between blocks (gap-0.5)
- * - subtle vertical gradient on active blocks
- * - darker bluish/gray inactive blocks
- * - top row: label (left) and total (right)
- * - bottom row: used (left) and percentage (right)
+ * Alternating thick-thin chopped progress bar
  */
-export const SegmentedCapsuleBar: React.FC<SegmentedCapsuleBarProps> = ({
+const LinearChoppedBar: React.FC<LinearChoppedBarProps> = ({
   label,
   value,
   max,
-  color = "emerald",
-  segments = 32,
-  prefix = "$",
-  showUsedSuffix = false,
+  usedLabel,
+  totalLabel,
+  color,
+  segments = 40,
 }) => {
-  const pctRaw = Math.min(100, (max <= 0 ? 0 : (value / max) * 100));
-  const pct = pctRaw;
-  const activeCount = Math.max(
-    0,
-    Math.min(segments, Math.round((pct / 100) * segments))
-  );
-
-  // visual sizes tuned to match screenshot: narrow height, short width -> capsule look
-  // w-2.5 = 10px, h-2.5 = 10px, gap-0.5 small space
-  const activeGradient = gradientClassFor(color);
+  const pct = Math.min(100, (value / max) * 100);
+  const activeCount = Math.round((pct / 100) * segments);
+  const gradient = gradientClassFor(color);
 
   return (
     <div
       className="rounded-2xl p-4"
       style={{
-        // subtle blending background like your screenshot
         background:
           "linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015))",
-        border: "1px solid rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.05)",
         WebkitBackdropFilter: "blur(6px)",
         backdropFilter: "blur(6px)",
       }}
     >
-      {/* top: label left, total right */}
+      {/* top: label and total */}
       <div className="flex items-center justify-between">
-        <div className="text-sm text-gray-300">{label}</div>
-        <div className="text-base font-semibold text-gray-200">
-          {prefix}
-          {max.toLocaleString()}
-        </div>
+        <span className="text-sm text-gray-300">{label}</span>
+        <span className="text-base font-semibold text-gray-200">
+          {totalLabel}
+        </span>
       </div>
 
-      {/* segmented capsules */}
-      <div className="mt-3">
-        <div className="w-full overflow-hidden">
-          <div className="flex items-center gap-0.5">
-            {Array.from({ length: segments }).map((_, i) => {
-              const isActive = i < activeCount;
-              return (
-                <div
-                  key={i}
-                  aria-hidden
-                  className={`w-2.5 h-2.5 rounded-full flex-shrink-0
-                    ${isActive ? `bg-gradient-to-b ${activeGradient}` : "bg-slate-700/60"}
-                    ${isActive ? "shadow-[0_1px_0_rgba(0,0,0,0.25)]" : "opacity-90"}
-                  `}
-                  style={{
-                    // subtle inner highlight for active capsules
-                    boxShadow: isActive
-                      ? "inset 0 -6px 6px rgba(255,255,255,0.02), 0 1px 0 rgba(0,0,0,0.25)"
-                      : undefined,
-                    border: isActive ? "1px solid rgba(255,255,255,0.02)" : "1px solid rgba(0,0,0,0.12)",
-                  }}
-                />
-              );
-            })}
-          </div>
-        </div>
+      {/* chopped bar */}
+      <div className="mt-3 flex gap-[1px]">
+        {Array.from({ length: segments }).map((_, i) => {
+          const isActive = i < activeCount;
+          const isThick = i % 2 === 0; // alternate thick/thin
+          return (
+            <div
+              key={i}
+              className={`h-3 rounded-sm flex-shrink-0 ${
+                isActive
+                  ? `bg-gradient-to-b ${gradient}`
+                  : "bg-slate-700/60"
+              }`}
+              style={{
+                width: isThick ? "8px" : "5px", // thick vs thin
+                border: isActive
+                  ? "1px solid rgba(255,255,255,0.06)"
+                  : "1px solid rgba(0,0,0,0.2)",
+              }}
+            />
+          );
+        })}
       </div>
 
-      {/* bottom: used left, percent right */}
+      {/* bottom: used + percentage */}
       <div className="flex items-center justify-between mt-3">
-        <div className="text-xs text-gray-400">
-          {prefix}
-          {value.toLocaleString()}
-          {showUsedSuffix ? " Used" : ""}
-        </div>
-        <div className="text-sm font-medium text-gray-300">
+        <span className="text-xs text-gray-400">{usedLabel}</span>
+        <span className="text-sm font-medium text-gray-300">
           {formatPct(pct)}%
-        </div>
+        </span>
       </div>
     </div>
   );
 };
 
-/**
- * Group wrapper matching your dashboard layout.
- * Use values exactly like your screenshot:
- * - Profit Target: value=5000 max=8000 (62.5%)
- * - Max Daily Drawdown: value=1000 max=5000 (20%)
- * - Max Total Drawdown: value=3000 max=10000 (30%)
- */
 interface ProgressBarsGroupProps {
   target: number;
   targetMax: number;
@@ -155,33 +119,39 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
 }) => {
   return (
     <div>
-      <h3 className="text-sm font-semibold text-gray-200 mb-3">Progress Overview</h3>
+      <h3 className="text-sm font-semibold text-gray-200 mb-3">
+        Progress Overview
+      </h3>
 
-      <div className="space-y-4">
-        <SegmentedCapsuleBar
+      <div className="space-y-5">
+        <LinearChoppedBar
           label="Profit Target"
           value={target}
           max={targetMax}
+          usedLabel={`$${target.toLocaleString()}`}
+          totalLabel={`$${targetMax.toLocaleString()}`}
           color="emerald"
-          segments={40}
+          segments={32}
         />
 
-        <SegmentedCapsuleBar
+        <LinearChoppedBar
           label="Max Daily Drawdown"
           value={dailyDd}
           max={dailyDdMax}
+          usedLabel={`$${dailyDd.toLocaleString()} Used`}
+          totalLabel={`$${dailyDdMax.toLocaleString()}`}
           color="amber"
-          segments={40}
-          showUsedSuffix
+          segments={32}
         />
 
-        <SegmentedCapsuleBar
+        <LinearChoppedBar
           label="Max Total Drawdown"
           value={totalDd}
           max={totalDdMax}
+          usedLabel={`$${totalDd.toLocaleString()} Used`}
+          totalLabel={`$${totalDdMax.toLocaleString()}`}
           color="rose"
-          segments={40}
-          showUsedSuffix
+          segments={32}
         />
       </div>
     </div>
