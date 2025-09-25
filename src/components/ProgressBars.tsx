@@ -1,7 +1,6 @@
-// src/components/ProgressBars.tsx
 import React from "react";
 
-type ColorKey = "emerald" | "amber" | "rose";
+type HtmlColorKey = "green" | "amber" | "red";
 
 interface LinearCapsuleBarProps {
   label: string;
@@ -9,31 +8,28 @@ interface LinearCapsuleBarProps {
   max: number;
   usedLabel?: string;
   totalLabel?: string;
-  color: ColorKey;
+  color: HtmlColorKey;
   segments?: number;
 }
 
-const colorClassFor = (c: ColorKey) => {
+const htmlColorClassFor = (c: HtmlColorKey) => {
   switch (c) {
-    case "emerald":
-      return "bg-emerald-500";
+    case "green":
+      return "bg-accent-green"; // #22c55e
     case "amber":
-      return "bg-amber-500";
-    case "rose":
-      return "bg-rose-500";
+      return "bg-yellow-500"; // #eab308
+    case "red":
+      return "bg-red-500"; // #ef4444
     default:
-      return "bg-rose-500";
+      return "bg-slate-700";
   }
 };
 
-const formatPct = (v: number) => {
-  const s = v.toFixed(1);
-  return s.endsWith(".0") ? s.replace(".0", "") : s;
+const formatPct = (value: number, max: number) => {
+  const pct = (value / max) * 100;
+  return pct % 1 === 0 ? pct.toFixed(0) : pct.toFixed(1);
 };
 
-/**
- * Rectangular thin capsule progress bar
- */
 const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
   label,
   value,
@@ -41,102 +37,83 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
   usedLabel,
   totalLabel,
   color,
-  segments = 30,
+  segments = 40,
 }) => {
-  const pct = Math.min(100, (value / max) * 100);
-  const activeCount = Math.round((pct / 100) * segments);
-  const activeColor = colorClassFor(color);
+  const currentFillPercentage = Math.min(100, (value / max) * 100);
+  const filledSegments = Math.round((currentFillPercentage / 100) * segments);
+  const fillColorClass = htmlColorClassFor(color);
 
   return (
     <div className="w-full">
-      {/* Top: label and total */}
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-gray-400">{label}</span>
-        <span className="text-sm font-semibold text-gray-200">
-          {totalLabel}
-        </span>
+      <div className="flex justify-between text-sm font-medium text-text-secondary-dark">
+        <span>{label}</span>
+        <span>{totalLabel}</span>
       </div>
 
-      {/* Outer rectangular thin capsule frame */}
-      <div className="w-full h-3 bg-gray-800/60 flex gap-[2px] rounded-md overflow-hidden">
-        {Array.from({ length: segments }).map((_, i) => {
-          const isActive = i < activeCount;
-          return (
-            <div
-              key={i}
-              className={`flex-1 h-full transition-colors ${
-                isActive ? activeColor : "bg-gray-700"
-              }`}
-            />
-          );
-        })}
+      <div className="mt-2 flex gap-[2px] h-[12px]">
+        {Array.from({ length: segments }).map((_, i) => (
+          <div
+            key={i}
+            className={`flex-grow h-full rounded-[1px] ${
+              i < filledSegments ? fillColorClass : "bg-slate-700"
+            }`}
+          />
+        ))}
       </div>
 
-      {/* Bottom: used + percentage */}
-      <div className="flex items-center justify-between mt-2">
-        <span className="text-xs text-gray-400">{usedLabel}</span>
-        <span className="text-xs font-medium text-gray-300">
-          {formatPct(pct)}%
-        </span>
+      <div className="mt-2 flex justify-between text-xs text-text-secondary-dark">
+        <span>{usedLabel}</span>
+        <span>{formatPct(value, max)}%</span>
       </div>
     </div>
   );
 };
 
 interface ProgressBarsGroupProps {
-  target: number;
-  targetMax: number;
-  dailyDd: number;
-  dailyDdMax: number;
-  totalDd: number;
-  totalDdMax: number;
+  profitTargetValue: number;
+  profitTargetMax: number;
+  dailyDrawdownValue: number;
+  dailyDrawdownMax: number;
+  totalDrawdownValue: number;
+  totalDrawdownMax: number;
 }
 
 export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
-  target,
-  targetMax,
-  dailyDd,
-  dailyDdMax,
-  totalDd,
-  totalDdMax,
+  profitTargetValue,
+  profitTargetMax,
+  dailyDrawdownValue,
+  dailyDrawdownMax,
+  totalDrawdownValue,
+  totalDrawdownMax,
 }) => {
   return (
-    <div className="rounded-lg p-5 bg-[#1E1E1E] border border-gray-700/50 space-y-6">
-      <h3 className="text-sm font-semibold text-gray-200">
-        Progress Overview
-      </h3>
-
+    <div className="space-y-6">
       <LinearCapsuleBar
-        label="Profit Target"
-        value={target}
-        max={targetMax}
-        usedLabel={`$${target.toLocaleString()}`}
-        totalLabel={`$${targetMax.toLocaleString()}`}
-        color="emerald"
-        segments={32}
+        label="profit target"
+        value={profitTargetValue}
+        max={profitTargetMax}
+        usedLabel={`$${profitTargetValue.toLocaleString()}`}
+        totalLabel={`$${profitTargetMax.toLocaleString()}`}
+        color="green"
       />
 
       <LinearCapsuleBar
-        label="Max Daily Drawdown"
-        value={dailyDd}
-        max={dailyDdMax}
-        usedLabel={`$${dailyDd.toLocaleString()} Used`}
-        totalLabel={`$${dailyDdMax.toLocaleString()}`}
+        label="max daily drawdown"
+        value={dailyDrawdownValue}
+        max={dailyDrawdownMax}
+        usedLabel={`$${dailyDrawdownValue.toLocaleString()} used`}
+        totalLabel={`$${dailyDrawdownMax.toLocaleString()}`}
         color="amber"
-        segments={32}
       />
 
       <LinearCapsuleBar
-        label="Max Total Drawdown"
-        value={totalDd}
-        max={totalDdMax}
-        usedLabel={`$${totalDd.toLocaleString()} Used`}
-        totalLabel={`$${totalDdMax.toLocaleString()}`}
-        color="rose"
-        segments={32}
+        label="max total drawdown"
+        value={totalDrawdownValue}
+        max={totalDrawdownMax}
+        usedLabel={`$${totalDrawdownValue.toLocaleString()} used`}
+        totalLabel={`$${totalDrawdownMax.toLocaleString()}`}
+        color="red"
       />
     </div>
   );
 };
-
-export default ProgressBarsGroup;
