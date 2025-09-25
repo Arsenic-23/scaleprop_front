@@ -15,11 +15,11 @@ interface LinearCapsuleBarProps {
 const colorClassFor = (c: ColorKey) => {
   switch (c) {
     case "emerald":
-      return "bg-emerald-500"; // exact bold emerald
+      return "bg-emerald-500";
     case "amber":
-      return "bg-amber-500"; // exact bold amber
+      return "bg-amber-500";
     case "rose":
-      return "bg-rose-500"; // exact bold rose
+      return "bg-rose-500";
     default:
       return "bg-rose-500";
   }
@@ -50,18 +50,18 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
     <div className="w-full">
       {/* top: label and total */}
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm text-gray-300">{label}</span>
-        <span className="text-base font-semibold text-gray-200">{totalLabel}</span>
+        <span className="text-sm text-gray-400">{label}</span>
+        <span className="text-base font-semibold text-gray-300">{totalLabel}</span>
       </div>
 
       {/* outer rectangular frame */}
-      <div className="w-full h-4 bg-slate-800/40 flex gap-[2px] overflow-hidden">
+      <div className="w-full h-4 bg-gray-700/30 flex gap-[2px] overflow-hidden">
         {Array.from({ length: segments }).map((_, i) => {
           const isActive = i < activeCount;
           return (
             <div
               key={i}
-              className={`flex-1 h-full ${isActive ? activeColor : "bg-slate-700/40"}`}
+              className={`flex-1 h-full ${isActive ? activeColor : "bg-gray-600/40"}`}
             />
           );
         })}
@@ -94,8 +94,8 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
   totalDdMax,
 }) => {
   return (
-    <div className="rounded-lg p-4 bg-slate-900/60 border border-slate-700/50 space-y-5">
-      <h3 className="text-sm font-semibold text-gray-200 mb-2">
+    <div className="rounded-lg p-4 bg-gray-800/60 border border-gray-600/50 space-y-5">
+      <h3 className="text-sm font-semibold text-gray-300 mb-2">
         Progress Overview
       </h3>
 
