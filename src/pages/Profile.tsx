@@ -12,7 +12,7 @@ const mockUser = {
   id: "mock-user-123",
   first_name: "Arsenic",
   username: "arsenxxc",
-  photo_url: "https://i.pravatar.cc/150?img=6", // Placeholder image URL
+  photo_url: "https://i.pravatar.cc/150?img=6",
 };
 
 type AchievementKey = "profit" | "streak" | "risk";
