@@ -14,8 +14,8 @@ import {
 
 const mockUser = {
   id: "mock-user-123",
-  first_name: "Mock Trader",
-  username: "ProMockster",
+  first_name: "arsenic",
+  username: "arsenxxc",
   photo_url: "https://i.pravatar.cc/150?img=6", // Placeholder image URL
 };
 
