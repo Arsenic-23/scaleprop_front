@@ -44,7 +44,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   const containerStyle = {
     backgroundColor: COLORS.surfaceDark,
     borderRadius: "1rem",
-    fontFamily: "Manrope, sans-serif", // enforce normal font
+    fontFamily: "Manrope, sans-serif",
   };
 
   return (
@@ -148,6 +148,18 @@ const Notifications: React.FC = () => {
     fontFamily: "Manrope, sans-serif",
   };
 
+  // iOS-style vibration (short, sharp haptic feedback)
+  const triggerVibration = () => {
+    if (navigator.vibrate) {
+      navigator.vibrate(30); // short 30ms buzz
+    }
+  };
+
+  const handleBack = () => {
+    triggerVibration();
+    window.history.back();
+  };
+
   return (
     <div
       style={bodyStyle}
@@ -158,7 +170,7 @@ const Notifications: React.FC = () => {
         style={headerBgStyle}
       >
         <button
-          onClick={() => window.history.back()}
+          onClick={handleBack}
           className="flex h-11 w-11 items-center justify-center rounded-full"
           style={{ color: COLORS.textDark }}
         >
