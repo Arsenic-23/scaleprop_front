@@ -44,7 +44,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   const containerStyle = {
     backgroundColor: COLORS.surfaceDark,
     borderRadius: "1rem",
-    fontFamily: "Manrope, sans-serif", // ensure normal font
+    fontFamily: "Manrope, sans-serif", // enforce normal font
   };
 
   return (
@@ -60,7 +60,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 
       <div className="flex-1" style={{ fontFamily: "Manrope, sans-serif" }}>
         <div className="flex items-center justify-between">
-          <p className="font-semibold" style={{ color: COLORS.textDark }}>
+          <p className="font-semibold text-base" style={{ color: COLORS.textDark }}>
             {title}
           </p>
           <p className="text-xs" style={{ color: COLORS.textMutedDark }}>
@@ -154,7 +154,7 @@ const Notifications: React.FC = () => {
       className="relative flex h-screen min-h-screen w-full flex-col overflow-y-auto text-white"
     >
       <header
-        className="sticky top-0 z-10 flex items-center justify-between border-b border-white/10 p-4 backdrop-blur-sm"
+        className="sticky top-0 z-10 flex items-center border-b border-white/10 p-4 backdrop-blur-sm"
         style={headerBgStyle}
       >
         <button
@@ -166,7 +166,11 @@ const Notifications: React.FC = () => {
             arrow_back_ios_new
           </span>
         </button>
-        <h1 className="text-xl font-bold">Notifications</h1>
+        <h1 className="flex-1 text-center text-xl font-bold">
+          Notifications
+        </h1>
+        {/* Empty spacer to balance layout */}
+        <div className="h-11 w-11" />
       </header>
 
       <main className="flex-1 overflow-y-auto px-4 pt-6 pb-8">
