@@ -166,7 +166,10 @@ const Notifications: React.FC = () => {
             arrow_back_ios_new
           </span>
         </button>
-        <h1 className="flex-1 text-center text-xl font-bold">
+        <h1
+          className="flex-1 text-center text-xl font-bold"
+          style={{ fontFamily: "Manrope, sans-serif", color: COLORS.textDark }}
+        >
           Notifications
         </h1>
         {/* Empty spacer to balance layout */}
@@ -177,7 +180,10 @@ const Notifications: React.FC = () => {
         <div className="space-y-8">
           <div>
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-lg font-semibold" style={{ color: COLORS.textDark }}>
+              <h2
+                className="text-lg font-semibold"
+                style={{ color: COLORS.textDark, fontFamily: "Manrope, sans-serif" }}
+              >
                 New
               </h2>
               <button
@@ -195,7 +201,10 @@ const Notifications: React.FC = () => {
           </div>
 
           <div>
-            <h2 className="mb-5 text-lg font-semibold" style={{ color: COLORS.textDark }}>
+            <h2
+              className="mb-5 text-lg font-semibold"
+              style={{ color: COLORS.textDark, fontFamily: "Manrope, sans-serif" }}
+            >
               Earlier
             </h2>
             <div className="space-y-3">
