@@ -1,7 +1,5 @@
 // src/App.tsx
-import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { init, isTMA } from '@telegram-apps/sdk';
 import { useUser, UserProvider } from './context/UserContext';
 
 import LandingPage from './pages/LandingPage';
@@ -16,7 +14,7 @@ import Profile from './pages/Profile';
 import AdminPanel from './pages/AdminPanel';
 import Announcements from './pages/Announcements';
 import Support from './pages/Support';
-import Notifications from './pages/Notifications'; 
+import Notifications from './pages/Notifications';
 
 import BottomNav from './components/BottomNav';
 
@@ -34,35 +32,13 @@ function AppWrapper() {
 
   const showBottomNav = showBottomNavRoutes.includes(location.pathname);
 
-  useEffect(() => {
-    const initTelegram = async () => {
-      if (await isTMA()) {
-        init();
-
-        const tg = window.Telegram?.WebApp;
-        if (tg) {
-          tg.ready();
-
-          const user = tg.initDataUnsafe?.user;
-          if (user) {
-            setUser(user);
-            localStorage.setItem("tg_user", JSON.stringify(user));
-            if (user.id) {
-              localStorage.setItem("user_id", user.id.toString());
-            }
-          }
-        }
-      } else {
-        // fallback for local testing
-        const cachedUser = localStorage.getItem("tg_user");
-        if (cachedUser) {
-          setUser(JSON.parse(cachedUser));
-        }
-      }
-    };
-
-    initTelegram();
-  }, [setUser]);
+  // Simple fallback: use cached user if available
+  if (!localStorage.getItem("user_id")) {
+    const cachedUser = localStorage.getItem("tg_user");
+    if (cachedUser) {
+      setUser(JSON.parse(cachedUser));
+    }
+  }
 
   return (
     <>
