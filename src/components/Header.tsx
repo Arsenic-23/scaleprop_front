@@ -6,8 +6,8 @@ const COLORS = {
 };
 
 interface HeaderProps {
-  title: string;      
-  onBack?: () => void;  
+  title: string;
+  onBack?: () => void;
 }
 
 const Header: React.FC<HeaderProps> = ({ title, onBack }) => {
@@ -28,13 +28,16 @@ const Header: React.FC<HeaderProps> = ({ title, onBack }) => {
 
   return (
     <header
-      className="sticky top-0 z-10 flex items-center border-b border-white/10 p-4 backdrop-blur-sm"
+      className="sticky top-0 z-10 flex items-center p-3 backdrop-blur-sm relative"
       style={{ backgroundColor: `${COLORS.backgroundDark}cc` }}
     >
+      {/* Custom top border */}
+      <div className="absolute top-0 left-0 w-full border-t border-white/20" />
+
       {/* Back button */}
       <button
         onClick={handleBack}
-        className="flex h-11 w-11 items-center justify-center rounded-full"
+        className="flex h-full w-11 items-center justify-center"
         style={{ color: COLORS.textDark }}
       >
         <span className="material-symbols-outlined">arrow_back_ios_new</span>
@@ -49,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({ title, onBack }) => {
       </h1>
 
       {/* Spacer for symmetry */}
-      <div className="h-11 w-11" />
+      <div className="h-full w-11" />
     </header>
   );
 };
