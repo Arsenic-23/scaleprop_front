@@ -41,16 +41,14 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     iconColorClass = `text-[${COLORS.textMutedDark}]`;
   }
 
-  const containerStyle = {
-    backgroundColor: COLORS.surfaceDark,
-    borderRadius: "1rem",
-    fontFamily: "Manrope, sans-serif",
-  };
-
   return (
     <div
       className={`flex items-start gap-4 p-4 relative ${opacityClass}`}
-      style={containerStyle}
+      style={{
+        backgroundColor: COLORS.surfaceDark,
+        borderRadius: "1rem",
+        fontFamily: "Manrope, sans-serif",
+      }}
     >
       <div
         className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${iconWrapperClasses} ${iconColorClass}`}
@@ -138,17 +136,6 @@ const Notifications: React.FC = () => {
     },
   ]);
 
-  const headerBgStyle = {
-    backgroundColor: `${COLORS.backgroundDark}cc`,
-  };
-
-  const bodyStyle = {
-    backgroundColor: COLORS.backgroundDark,
-    minHeight: "100dvh",
-    fontFamily: "Manrope, sans-serif",
-    WebkitOverflowScrolling: "touch" as const, // improves smoothness on iOS
-  };
-
   const triggerVibration = () => {
     if (navigator.vibrate) {
       navigator.vibrate(100);
@@ -161,28 +148,35 @@ const Notifications: React.FC = () => {
   };
 
   const handleMarkAllAsRead = () => {
-    const marked = newNotifications.map((n) => ({ ...n, isRead: true, colorType: "muted" as const }));
+    const marked = newNotifications.map((n) => ({
+      ...n,
+      isRead: true,
+      colorType: "muted" as const,
+    }));
     setEarlierNotifications((prev) => [...marked, ...prev]);
     setNewNotifications([]);
   };
 
   return (
     <div
-      style={bodyStyle}
-      className="relative flex h-screen min-h-screen w-full flex-col overflow-y-auto text-white"
+      style={{
+        backgroundColor: COLORS.backgroundDark,
+        minHeight: "100dvh",
+        fontFamily: "Manrope, sans-serif",
+        WebkitOverflowScrolling: "touch",
+      }}
+      className="relative flex h-screen min-h-screen w-full flex-col text-white overflow-hidden"
     >
       <header
         className="sticky top-0 z-10 flex items-center border-b border-white/10 p-4 backdrop-blur-sm"
-        style={headerBgStyle}
+        style={{ backgroundColor: `${COLORS.backgroundDark}cc` }}
       >
         <button
           onClick={handleBack}
           className="flex h-11 w-11 items-center justify-center rounded-full"
           style={{ color: COLORS.textDark }}
         >
-          <span className="material-symbols-outlined">
-            arrow_back_ios_new
-          </span>
+          <span className="material-symbols-outlined">arrow_back_ios_new</span>
         </button>
         <h1
           className="flex-1 text-center text-xl font-bold"
@@ -193,46 +187,45 @@ const Notifications: React.FC = () => {
         <div className="h-11 w-11" />
       </header>
 
+      {/* unified scroll container */}
       <main className="flex-1 overflow-y-auto px-4 pt-6 pb-8 will-change-transform">
-        <div className="space-y-8">
-          {newNotifications.length > 0 && (
-            <div>
-              <div className="mb-5 flex items-center justify-between">
-                <h2
-                  className="text-lg font-semibold"
-                  style={{ color: COLORS.textDark, fontFamily: "Manrope, sans-serif" }}
-                >
-                  New
-                </h2>
-                <button
-                  onClick={handleMarkAllAsRead}
-                  className="text-sm hover:opacity-80 transition-colors"
-                  style={{ color: COLORS.accentBlue }}
-                >
-                  Mark all as read
-                </button>
-              </div>
-              <div className="space-y-3">
-                {newNotifications.map((n) => (
-                  <NotificationItem key={n.id} {...n} />
-                ))}
-              </div>
+        {newNotifications.length > 0 && (
+          <>
+            <div className="mb-5 flex items-center justify-between">
+              <h2
+                className="text-lg font-semibold"
+                style={{ color: COLORS.textDark, fontFamily: "Manrope, sans-serif" }}
+              >
+                New
+              </h2>
+              <button
+                onClick={handleMarkAllAsRead}
+                className="text-sm hover:opacity-80 transition-colors"
+                style={{ color: COLORS.accentBlue }}
+              >
+                Mark all as read
+              </button>
             </div>
-          )}
-
-          <div>
-            <h2
-              className="mb-5 text-lg font-semibold"
-              style={{ color: COLORS.textDark, fontFamily: "Manrope, sans-serif" }}
-            >
-              Earlier
-            </h2>
-            <div className="space-y-3">
-              {earlierNotifications.map((n) => (
+            <div className="space-y-3 mb-8">
+              {newNotifications.map((n) => (
                 <NotificationItem key={n.id} {...n} />
               ))}
             </div>
-          </div>
+          </>
+        )}
+
+        <div className="mb-5">
+          <h2
+            className="text-lg font-semibold"
+            style={{ color: COLORS.textDark, fontFamily: "Manrope, sans-serif" }}
+          >
+            Earlier
+          </h2>
+        </div>
+        <div className="space-y-3">
+          {earlierNotifications.map((n) => (
+            <NotificationItem key={n.id} {...n} />
+          ))}
         </div>
       </main>
     </div>
