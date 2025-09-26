@@ -44,6 +44,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   const containerStyle = {
     backgroundColor: COLORS.surfaceDark,
     borderRadius: "1rem",
+    fontFamily: "Manrope, sans-serif", // ensure normal font
   };
 
   return (
@@ -57,9 +58,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         <span className="material-symbols-outlined text-2xl">{icon}</span>
       </div>
 
-      <div className="flex-1">
+      <div className="flex-1" style={{ fontFamily: "Manrope, sans-serif" }}>
         <div className="flex items-center justify-between">
-          <p className="text-sm" style={{ color: COLORS.textDark }}>
+          <p className="font-semibold" style={{ color: COLORS.textDark }}>
             {title}
           </p>
           <p className="text-xs" style={{ color: COLORS.textMutedDark }}>
@@ -157,25 +158,22 @@ const Notifications: React.FC = () => {
         style={headerBgStyle}
       >
         <button
+          onClick={() => window.history.back()}
           className="flex h-11 w-11 items-center justify-center rounded-full"
           style={{ color: COLORS.textDark }}
         >
-          <span className="material-symbols-outlined"> arrow_back_ios_new </span>
+          <span className="material-symbols-outlined">
+            arrow_back_ios_new
+          </span>
         </button>
         <h1 className="text-xl font-bold">Notifications</h1>
-        <button
-          className="flex h-11 w-11 items-center justify-center rounded-full"
-          style={{ color: COLORS.textDark }}
-        >
-          <span className="material-symbols-outlined"> more_horiz </span>
-        </button>
       </header>
 
       <main className="flex-1 overflow-y-auto px-4 pt-6 pb-8">
         <div className="space-y-8">
           <div>
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-lg" style={{ color: COLORS.textDark }}>
+              <h2 className="text-lg font-semibold" style={{ color: COLORS.textDark }}>
                 New
               </h2>
               <button
@@ -193,7 +191,7 @@ const Notifications: React.FC = () => {
           </div>
 
           <div>
-            <h2 className="mb-5 text-lg" style={{ color: COLORS.textDark }}>
+            <h2 className="mb-5 text-lg font-semibold" style={{ color: COLORS.textDark }}>
               Earlier
             </h2>
             <div className="space-y-3">
