@@ -28,12 +28,9 @@ const Header: React.FC<HeaderProps> = ({ title, onBack }) => {
 
   return (
     <header
-      className="sticky top-0 z-10 flex items-center p-3 backdrop-blur-sm relative"
+      className="sticky top-0 z-10 flex items-center border-b border-white/20 p-3 backdrop-blur-sm"
       style={{ backgroundColor: `${COLORS.backgroundDark}cc` }}
     >
-      {/* Custom top border */}
-      <div className="absolute top-0 left-0 w-full border-t border-white/20" />
-
       {/* Back button */}
       <button
         onClick={handleBack}
