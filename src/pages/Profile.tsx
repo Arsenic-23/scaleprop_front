@@ -1,12 +1,12 @@
 import React from "react";
 import {
-  ArrowLeft,
   Filter,
   Star,
   Rocket,
   ShieldCheck,
   Lock,
 } from "lucide-react";
+import Header from "../components/Header"; 
 
 const mockUser = {
   id: "mock-user-123",
@@ -180,18 +180,8 @@ const Profile: React.FC = () => {
       style={{ backgroundColor: tailwindColors["background-dark"] }}
     >
       <div className="flex-grow">
-        {/* Header */}
-        <header
-          className="flex items-center p-4 border-b"
-          style={{ borderColor: "#1f2937" }}
-        >
-          <button className="text-white">
-            <ArrowLeft size={24} />
-          </button>
-          <h1 className="flex-1 text-center text-lg font-bold text-white pr-6">
-            Profile
-          </h1>
-        </header>
+        {/* 🔹 Reusable Header */}
+        <Header title="Profile" />
 
         {/* Main Content */}
         <main className="p-4">
