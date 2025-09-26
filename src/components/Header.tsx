@@ -6,8 +6,8 @@ const COLORS = {
 };
 
 interface HeaderProps {
-  title: string;          // center heading
-  onBack?: () => void;    // optional custom back action
+  title: string;      
+  onBack?: () => void;  
 }
 
 const Header: React.FC<HeaderProps> = ({ title, onBack }) => {
