@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { Bell } from "lucide-react";
 import { ProgressBarsGroup } from "../components/ProgressBars";
+import { useNavigate } from "react-router-dom"; // add this
 
 const Home: React.FC = () => {
+  const navigate = useNavigate(); // hook for routing
+
   const [target, setTarget] = useState(3000);
   const [targetMax] = useState(5000);
 
@@ -15,11 +18,12 @@ const Home: React.FC = () => {
   const [isVibrating, setIsVibrating] = useState(false);
 
   const handleNotificationClick = () => {
-    if (navigator.vibrate) {
-      navigator.vibrate(150);
-    }
+    if (navigator.vibrate) navigator.vibrate(150);
+
     setIsVibrating(true);
     setTimeout(() => setIsVibrating(false), 200);
+
+    navigate("/notifications"); // go to Notifications page
   };
 
   return (
@@ -27,7 +31,7 @@ const Home: React.FC = () => {
       {/* Header */}
       <header className="sticky top-0 z-40 backdrop-blur-md bg-black/40 border-b border-white/10">
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
-          {/* Brand with Logo and Grey Circle */}
+          {/* Brand with Logo */}
           <div className="flex items-center gap-3">
             <div className="relative w-10 h-10 flex items-center justify-center">
               <img
