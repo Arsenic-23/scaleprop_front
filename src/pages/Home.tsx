@@ -49,7 +49,7 @@ const Home: React.FC = () => {
                 lineHeight: "2.5rem",
               }}
             >
-              Scale Fund
+              Scalefund
             </h1>
           </div>
 
