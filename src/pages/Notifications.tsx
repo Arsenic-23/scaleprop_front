@@ -151,7 +151,7 @@ const Notifications: React.FC = () => {
   // iOS-style vibration (short, sharp haptic feedback)
   const triggerVibration = () => {
     if (navigator.vibrate) {
-      navigator.vibrate(30); // short 30ms buzz
+      navigator.vibrate(60);
     }
   };
 
