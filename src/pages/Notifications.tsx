@@ -150,7 +150,7 @@ const Notifications: React.FC = () => {
 
   const triggerVibration = () => {
     if (navigator.vibrate) {
-      navigator.vibrate(60);
+      navigator.vibrate(100);
     }
   };
 
