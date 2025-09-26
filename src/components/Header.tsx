@@ -28,13 +28,13 @@ const Header: React.FC<HeaderProps> = ({ title, onBack }) => {
 
   return (
     <header
-      className="sticky top-0 z-10 flex items-center border-b border-white/20 p-3 backdrop-blur-sm"
+      className="sticky top-0 z-10 flex items-center border-b border-white/20 p-4 backdrop-blur-sm"
       style={{ backgroundColor: `${COLORS.backgroundDark}cc` }}
     >
       {/* Back button */}
       <button
         onClick={handleBack}
-        className="flex h-full w-11 items-center justify-center"
+        className="flex h-full w-12 items-center justify-center"
         style={{ color: COLORS.textDark }}
       >
         <span className="material-symbols-outlined">arrow_back_ios_new</span>
@@ -49,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ title, onBack }) => {
       </h1>
 
       {/* Spacer for symmetry */}
-      <div className="h-full w-11" />
+      <div className="h-full w-12" />
     </header>
   );
 };
