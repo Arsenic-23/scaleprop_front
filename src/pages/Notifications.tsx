@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const COLORS = {
   primary: "#3B82F6",
@@ -63,11 +63,11 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           <p className="font-semibold text-base" style={{ color: COLORS.textDark }}>
             {title}
           </p>
-          <p className="text-xs" style={{ color: COLORS.textMutedDark }}>
+          <p className="text-xs whitespace-nowrap" style={{ color: COLORS.textMutedDark }}>
             {timestamp}
           </p>
         </div>
-        <p className="mt-1 text-sm" style={{ color: COLORS.textMutedDark }}>
+        <p className="mt-1 text-sm leading-snug" style={{ color: COLORS.textMutedDark }}>
           {message}
         </p>
       </div>
@@ -83,7 +83,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 };
 
 const Notifications: React.FC = () => {
-  const newNotifications = [
+  const [newNotifications, setNewNotifications] = useState([
     {
       id: 1,
       title: "Payout Confirmed",
@@ -103,9 +103,9 @@ const Notifications: React.FC = () => {
       colorType: "green" as const,
       isRead: false,
     },
-  ];
+  ]);
 
-  const earlierNotifications = [
+  const [earlierNotifications, setEarlierNotifications] = useState([
     {
       id: 3,
       title: "Margin Call",
@@ -136,7 +136,7 @@ const Notifications: React.FC = () => {
       colorType: "muted" as const,
       isRead: true,
     },
-  ];
+  ]);
 
   const headerBgStyle = {
     backgroundColor: `${COLORS.backgroundDark}cc`,
@@ -146,6 +146,7 @@ const Notifications: React.FC = () => {
     backgroundColor: COLORS.backgroundDark,
     minHeight: "100dvh",
     fontFamily: "Manrope, sans-serif",
+    WebkitOverflowScrolling: "touch" as const, // improves smoothness on iOS
   };
 
   const triggerVibration = () => {
@@ -157,6 +158,12 @@ const Notifications: React.FC = () => {
   const handleBack = () => {
     triggerVibration();
     window.history.back();
+  };
+
+  const handleMarkAllAsRead = () => {
+    const marked = newNotifications.map((n) => ({ ...n, isRead: true, colorType: "muted" as const }));
+    setEarlierNotifications((prev) => [...marked, ...prev]);
+    setNewNotifications([]);
   };
 
   return (
@@ -183,33 +190,35 @@ const Notifications: React.FC = () => {
         >
           Notifications
         </h1>
-        {/* Empty spacer to balance layout */}
         <div className="h-11 w-11" />
       </header>
 
-      <main className="flex-1 overflow-y-auto px-4 pt-6 pb-8">
+      <main className="flex-1 overflow-y-auto px-4 pt-6 pb-8 will-change-transform">
         <div className="space-y-8">
-          <div>
-            <div className="mb-5 flex items-center justify-between">
-              <h2
-                className="text-lg font-semibold"
-                style={{ color: COLORS.textDark, fontFamily: "Manrope, sans-serif" }}
-              >
-                New
-              </h2>
-              <button
-                className="text-sm hover:opacity-80 transition-colors"
-                style={{ color: COLORS.accentBlue }}
-              >
-                Mark all as read
-              </button>
+          {newNotifications.length > 0 && (
+            <div>
+              <div className="mb-5 flex items-center justify-between">
+                <h2
+                  className="text-lg font-semibold"
+                  style={{ color: COLORS.textDark, fontFamily: "Manrope, sans-serif" }}
+                >
+                  New
+                </h2>
+                <button
+                  onClick={handleMarkAllAsRead}
+                  className="text-sm hover:opacity-80 transition-colors"
+                  style={{ color: COLORS.accentBlue }}
+                >
+                  Mark all as read
+                </button>
+              </div>
+              <div className="space-y-3">
+                {newNotifications.map((n) => (
+                  <NotificationItem key={n.id} {...n} />
+                ))}
+              </div>
             </div>
-            <div className="space-y-3">
-              {newNotifications.map((n) => (
-                <NotificationItem key={n.id} {...n} />
-              ))}
-            </div>
-          </div>
+          )}
 
           <div>
             <h2
