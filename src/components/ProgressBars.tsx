@@ -15,11 +15,11 @@ interface LinearCapsuleBarProps {
 const htmlColorClassFor = (c: HtmlColorKey) => {
   switch (c) {
     case "green":
-      return "bg-accent-green"; // #22c55e
+      return "bg-green-500"; // Tailwind default green
     case "amber":
-      return "bg-yellow-500"; // #eab308
+      return "bg-yellow-500"; // Tailwind amber
     case "red":
-      return "bg-red-500"; // #ef4444
+      return "bg-red-500"; // Tailwind red
     default:
       return "bg-slate-700";
   }
