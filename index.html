@@ -1,32 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Scale Fund - PropFirm Mini App</title>
+    <title>Stitch Design - Notifications App</title>
 
-    <!-- ✅ Modern Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- ✅ Meta Tags for Appearance -->
-    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="theme-color" content="#000000" />
     <meta
       name="description"
       content="Enter the premium world of trading with Scale Fund."
     />
+
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3B82F6", // A professional blue
+              "background-light": "#FFFFFF",
+              "background-dark": "#000000", // Main black background
+              "surface-dark": "#101010", // Dark surface for cards
+              "text-light": "#000000",
+              "text-dark": "#FFFFFF", // Main white text
+              "text-muted-dark": "#8A8A8A", // Muted gray text
+              "accent-blue": "#3B82F6", // Primary accent color
+            },
+            fontFamily: {
+              // Using Manrope from the font links above
+              display: ["Manrope", "sans-serif"],
+            },
+            borderRadius: {
+              DEFAULT: "1rem",
+              lg: "1.25rem",
+              xl: "1.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    
+    <style>
+      /* Ensure icons are displayed correctly with variable font settings */
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24;
+      }
+      /* Ensure the body takes up the full viewport height */
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
   </head>
 
-  <body class="bg-black text-white overflow-x-hidden">
+  <body class="bg-background-dark font-display text-text-dark overflow-x-hidden">
     <div id="root"></div>
 
-    <!-- ✅ Entry Point -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
