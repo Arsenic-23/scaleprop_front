@@ -16,6 +16,7 @@ import Profile from './pages/Profile';
 import AdminPanel from './pages/AdminPanel';
 import Announcements from './pages/Announcements';
 import Support from './pages/Support';
+import Notifications from './pages/Notifications'; 
 
 import BottomNav from './components/BottomNav';
 
@@ -78,6 +79,7 @@ function AppWrapper() {
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/announcements" element={<Announcements />} />
         <Route path="/support" element={<Support />} />
+        <Route path="/notifications" element={<Notifications />} />
       </Routes>
 
       {showBottomNav && <BottomNav />}
