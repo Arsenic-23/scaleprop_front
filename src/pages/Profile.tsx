@@ -10,7 +10,7 @@ import {
   Rocket,
   ShieldCheck,
   Lock,
-} from "lucide";
+} from "lucide-react";
 // import { useUser } from "../context/UserContext"; // Removed useUser import
 
 // Mock User Data for direct display
