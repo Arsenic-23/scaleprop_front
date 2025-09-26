@@ -10,8 +10,16 @@ import {
   Rocket,
   ShieldCheck,
   Lock,
-} from "lucide-react";
-import { useUser } from "../context/UserContext";
+} from "lucide";
+// import { useUser } from "../context/UserContext"; // Removed useUser import
+
+// Mock User Data for direct display
+const mockUser = {
+  id: "mock-user-123",
+  first_name: "Mock Trader",
+  username: "ProMockster",
+  photo_url: "https://i.pravatar.cc/150?img=6", // Placeholder image URL
+};
 
 type AchievementKey = "profit" | "streak" | "risk";
 
@@ -122,7 +130,8 @@ const AchievementBadge: React.FC<{
 };
 
 const Profile: React.FC = () => {
-  const { user } = useUser();
+  // Replaced useUser() with a direct mock user assignment
+  const user = mockUser;
   const [showFilters, setShowFilters] = React.useState(false);
   const [openAchievement, setOpenAchievement] =
     React.useState<AchievementKey | null>(null);
@@ -160,7 +169,7 @@ const Profile: React.FC = () => {
       type: "BUY",
       range: "182.30 → 183.00",
       profit: 350.0,
-      date: "Oct 24, 202      3",
+      date: "Oct 24, 2023",
       profitColor: "text-green-400",
       typeColor: "text-green-400",
     },
@@ -170,16 +179,7 @@ const Profile: React.FC = () => {
     setOpenAchievement(openAchievement === key ? null : key);
   };
 
-  if (!user) {
-    return (
-      <div
-        className="min-h-screen flex items-center justify-center text-gray-400"
-        style={{ backgroundColor: tailwindColors["background-dark"] }}
-      >
-        Loading profile...
-      </div>
-    );
-  }
+  // Removed the conditional loading block (`if (!user) { ... }`)
 
   const profitProgress = Math.min(100, (stats.totalEarnings / 10000) * 100);
 
@@ -247,7 +247,7 @@ const Profile: React.FC = () => {
               <p className="text-sm font-medium text-gray-400">Total Payout</p>
               <p className="text-2xl font-bold text-white">
                 {formatCurrency(stats.totalWithdrawals)}
-              </p>            
+              </p>
             </div>
           </section>
 
