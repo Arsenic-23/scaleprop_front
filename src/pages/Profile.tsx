@@ -1,4 +1,4 @@
-import React from "react";
+Import React from "react";
 import {
   ArrowLeft,
   Filter,
@@ -534,40 +534,6 @@ const Profile: React.FC = () => {
           </section>
         </main>
       </div>
-
-      {/* Footer Navigation (Sticky) */}
-      <footer
-        className="sticky bottom-0 border-t border-gray-800 backdrop-blur-sm py-2"
-        style={{ backgroundColor: `${tailwindColors["background-dark"]}D9` }}
-      >
-        <nav className="flex justify-around">
-          <a
-            className="flex flex-col items-center gap-1 text-gray-400"
-            href="#"
-          >
-            <Home size={24} />
-            <span className="text-xs font-medium">Home</span>
-          </a>
-          <a
-            className="flex flex-col items-center gap-1 text-gray-400"
-            href="#"
-          >
-            <Trophy size={24} />
-            <span className="text-xs font-medium">Challenges</span>
-          </a>
-          <a className="flex flex-col items-center gap-1 text-white" href="#">
-            <User size={24} />
-            <span className="text-xs font-medium">Profile</span>
-          </a>
-          <a
-            className="flex flex-col items-center gap-1 text-gray-400"
-            href="#"
-          >
-            <Settings size={24} />
-            <span className="text-xs font-medium">Settings</span>
-          </a>
-        </nav>
-      </footer>
     </div>
   );
 };
