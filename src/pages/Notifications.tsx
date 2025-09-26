@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Header from "./Header"; // adjust import path
+import Header from "../components/Header"; // adjust import path
 
 const COLORS = {
   primary: "#3B82F6",
