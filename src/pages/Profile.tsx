@@ -19,7 +19,7 @@ type AchievementKey = "profit" | "streak" | "risk";
 
 const tailwindColors = {
   primary: "#4f46e5",
-  "background-dark": "#0D0D0D",
+  "background-dark": "#000000",
   "card-dark": "#1A1A1A",
 };
 
