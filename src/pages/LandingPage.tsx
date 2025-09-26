@@ -37,7 +37,7 @@ export default function LandingPage() {
             fontSize: "clamp(1.25rem, 2.5vw, 2rem)",
           }}
         >
-          Scale Fund
+          Scalefund
         </h1>
       </div>
 
