@@ -11,9 +11,7 @@ import {
   ShieldCheck,
   Lock,
 } from "lucide-react";
-// import { useUser } from "../context/UserContext"; // Removed useUser import
 
-// Mock User Data for direct display
 const mockUser = {
   id: "mock-user-123",
   first_name: "Mock Trader",
