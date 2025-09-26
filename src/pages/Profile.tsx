@@ -1,11 +1,7 @@
-Import React from "react";
+import React from "react";
 import {
   ArrowLeft,
   Filter,
-  Home,
-  Trophy,
-  User,
-  Settings,
   Star,
   Rocket,
   ShieldCheck,
@@ -14,7 +10,7 @@ import {
 
 const mockUser = {
   id: "mock-user-123",
-  first_name: "arsenic",
+  first_name: "Arsenic",
   username: "arsenxxc",
   photo_url: "https://i.pravatar.cc/150?img=6", // Placeholder image URL
 };
@@ -128,7 +124,6 @@ const AchievementBadge: React.FC<{
 };
 
 const Profile: React.FC = () => {
-  // Replaced useUser() with a direct mock user assignment
   const user = mockUser;
   const [showFilters, setShowFilters] = React.useState(false);
   const [openAchievement, setOpenAchievement] =
@@ -176,8 +171,6 @@ const Profile: React.FC = () => {
   const toggleAchievement = (key: AchievementKey) => {
     setOpenAchievement(openAchievement === key ? null : key);
   };
-
-  // Removed the conditional loading block (`if (!user) { ... }`)
 
   const profitProgress = Math.min(100, (stats.totalEarnings / 10000) * 100);
 
