@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Bell } from "lucide-react";
 import { ProgressBarsGroup } from "../components/ProgressBars";
-import { useNavigate } from "react-router-dom"; // add this
+import { useNavigate } from "react-router-dom"; 
 
 const Home: React.FC = () => {
-  const navigate = useNavigate(); // hook for routing
+  const navigate = useNavigate(); 
 
   const [target, setTarget] = useState(3000);
   const [targetMax] = useState(5000);
@@ -27,7 +27,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-black to-neutral-900 text-white flex flex-col">
+    <div className="min-h-screen bg-black text-white flex flex-col">
       {/* Header */}
       <header className="sticky top-0 z-40 backdrop-blur-md bg-black/40 border-b border-white/10">
         <div className="max-w-5xl mx-auto px-5 py-4 flex items-center justify-between">
