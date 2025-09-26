@@ -148,7 +148,6 @@ const Notifications: React.FC = () => {
     fontFamily: "Manrope, sans-serif",
   };
 
-  // iOS-style vibration (short, sharp haptic feedback)
   const triggerVibration = () => {
     if (navigator.vibrate) {
       navigator.vibrate(60);
