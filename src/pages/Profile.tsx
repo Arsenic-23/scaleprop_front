@@ -181,7 +181,10 @@ const Profile: React.FC = () => {
     >
       <div className="flex-grow">
         {/* Header */}
-        <header className="flex items-center p-4">
+        <header
+          className="flex items-center p-4 border-b"
+          style={{ borderColor: "#1f2937" }}
+        >
           <button className="text-white">
             <ArrowLeft size={24} />
           </button>
