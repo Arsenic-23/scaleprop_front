@@ -1,4 +1,3 @@
-
 import { LogoScroller } from "../components/LogoScroller";
 import { TypewriterTimeline } from "../components/TypewriterTimeline";
 import { useNavigate } from "react-router-dom";
