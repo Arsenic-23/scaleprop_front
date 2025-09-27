@@ -35,7 +35,7 @@ const Home: React.FC = () => {
           <div className="flex items-center gap-3">
             <div className="relative w-10 h-10 flex items-center justify-center">
               <img
-                src="/logo.png"
+                src="/scale.png"
                 alt="Scalefund Logo"
                 className="w-8 h-8 object-contain z-10"
               />
