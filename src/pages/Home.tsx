@@ -23,7 +23,7 @@ const Home: React.FC = () => {
     setIsVibrating(true);
     setTimeout(() => setIsVibrating(false), 200);
 
-    navigate("/notifications"); // go to Notifications page
+    navigate("/notifications");
   };
 
   return (
@@ -61,7 +61,10 @@ const Home: React.FC = () => {
               isVibrating ? "scale-110" : "scale-100"
             }`}
           >
-            <Bell className="w-6 h-6 text-gray-300" />
+            <Bell
+              className="text-gray-300"
+              style={{ width: "22px", height: "22px" }}
+            />
           </button>
         </div>
       </header>
