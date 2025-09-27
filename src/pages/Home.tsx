@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Bell } from "lucide-react";
 import { ProgressBarsGroup } from "../components/ProgressBars";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const [target, setTarget] = useState(3000);
   const [targetMax] = useState(5000);
@@ -39,7 +39,7 @@ const Home: React.FC = () => {
                 alt="Scalefund Logo"
                 className="w-8 h-8 object-contain z-10"
               />
-              <div className="absolute inset-0 rounded-full border-2 border-gray-500 z-0" />
+              <div className="absolute inset-0 rounded-full border border-gray-500 z-0" />
             </div>
             <h1
               className="text-2xl font-bold text-gray-300 tracking-tight"
@@ -61,7 +61,7 @@ const Home: React.FC = () => {
               isVibrating ? "scale-110" : "scale-100"
             }`}
           >
-            <Bell className="w-5 h-5 text-gray-300" />
+            <Bell className="w-6 h-6 text-gray-300" />
           </button>
         </div>
       </header>
