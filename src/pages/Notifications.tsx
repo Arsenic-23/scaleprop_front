@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Header from "../components/Header"; // adjust import path
+import Header from "../components/Header"; 
+import SwipeableNotification from "../components/Swipeable";
 
 const COLORS = {
   primary: "#3B82F6",
@@ -155,12 +156,19 @@ const Notifications: React.FC = () => {
       isRead: true,
       colorType: "muted" as const,
     }));
-    // Instead of instantly moving them, we give time for fade animation
     setNewNotifications(marked);
     setTimeout(() => {
       setEarlierNotifications((prev) => [...marked, ...prev]);
       setNewNotifications([]);
-    }, 600); // matches transition duration
+    }, 600);
+  };
+
+  const handleRemoveNew = (id: number) => {
+    setNewNotifications((prev) => prev.filter((n) => n.id !== id));
+  };
+
+  const handleRemoveEarlier = (id: number) => {
+    setEarlierNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
   return (
@@ -173,10 +181,8 @@ const Notifications: React.FC = () => {
       }}
       className="relative flex h-screen min-h-screen w-full flex-col text-white overflow-hidden"
     >
-      {/* Reusable Header */}
       <Header title="Notifications" />
 
-      {/* unified scroll container */}
       <main className="flex-1 overflow-y-auto px-4 pt-6 pb-8 will-change-transform">
         {newNotifications.length > 0 && (
           <>
@@ -200,7 +206,13 @@ const Notifications: React.FC = () => {
             </div>
             <div className="space-y-3 mb-8">
               {newNotifications.map((n) => (
-                <NotificationItem key={n.id} {...n} />
+                <SwipeableNotification
+                  key={n.id}
+                  id={n.id}
+                  onRemove={handleRemoveNew}
+                >
+                  <NotificationItem {...n} />
+                </SwipeableNotification>
               ))}
             </div>
           </>
@@ -219,7 +231,13 @@ const Notifications: React.FC = () => {
         </div>
         <div className="space-y-3">
           {earlierNotifications.map((n) => (
-            <NotificationItem key={n.id} {...n} />
+            <SwipeableNotification
+              key={n.id}
+              id={n.id}
+              onRemove={handleRemoveEarlier}
+            >
+              <NotificationItem {...n} />
+            </SwipeableNotification>
           ))}
         </div>
       </main>
