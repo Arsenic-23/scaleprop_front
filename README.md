@@ -1,1 +1,1 @@
-# crafted by arsenic! 
+# Frontend of Scalefund 
