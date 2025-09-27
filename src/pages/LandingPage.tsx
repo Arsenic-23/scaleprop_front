@@ -25,7 +25,7 @@ export default function LandingPage() {
       <div className="z-10 flex items-center space-x-2 mb-6">
         <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center">
           <img
-            src="/logo.png"
+            src="/scale.png"
             alt="Scale Fund"
             className="w-10 h-10 sm:w-12 sm:h-12"
           />
