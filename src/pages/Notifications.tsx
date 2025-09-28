@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import Header from "../components/Header"; 
+import { motion, AnimatePresence } from "framer-motion";
+import Header from "../components/Header";
 import SwipeableNotification from "../components/Swipeable";
 
 const COLORS = {
@@ -156,11 +157,17 @@ const Notifications: React.FC = () => {
       isRead: true,
       colorType: "muted" as const,
     }));
-    setNewNotifications(marked);
+
+    // animate out first
+    setNewNotifications((prev) =>
+      prev.map((n) => ({ ...n, isRead: true, colorType: "muted" as const }))
+    );
+
+    // after animation, move them down
     setTimeout(() => {
       setEarlierNotifications((prev) => [...marked, ...prev]);
       setNewNotifications([]);
-    }, 600);
+    }, 500); // matches motion animation duration
   };
 
   const handleRemoveNew = (id: number) => {
@@ -205,15 +212,24 @@ const Notifications: React.FC = () => {
               </button>
             </div>
             <div className="space-y-3 mb-8">
-              {newNotifications.map((n) => (
-                <SwipeableNotification
-                  key={n.id}
-                  id={n.id}
-                  onRemove={handleRemoveNew}
-                >
-                  <NotificationItem {...n} />
-                </SwipeableNotification>
-              ))}
+              <AnimatePresence>
+                {newNotifications.map((n) => (
+                  <motion.div
+                    key={n.id}
+                    initial={{ opacity: 1, y: 0 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 30 }}
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                  >
+                    <SwipeableNotification
+                      id={n.id}
+                      onRemove={handleRemoveNew}
+                    >
+                      <NotificationItem {...n} />
+                    </SwipeableNotification>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           </>
         )}
@@ -230,15 +246,24 @@ const Notifications: React.FC = () => {
           </h2>
         </div>
         <div className="space-y-3">
-          {earlierNotifications.map((n) => (
-            <SwipeableNotification
-              key={n.id}
-              id={n.id}
-              onRemove={handleRemoveEarlier}
-            >
-              <NotificationItem {...n} />
-            </SwipeableNotification>
-          ))}
+          <AnimatePresence>
+            {earlierNotifications.map((n) => (
+              <motion.div
+                key={n.id}
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+              >
+                <SwipeableNotification
+                  id={n.id}
+                  onRemove={handleRemoveEarlier}
+                >
+                  <NotificationItem {...n} />
+                </SwipeableNotification>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       </main>
     </div>
