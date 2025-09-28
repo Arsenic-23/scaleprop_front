@@ -14,23 +14,20 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
 }) => {
   const x = useMotionValue(0);
 
-  const rotate = useTransform(x, [-150, 150], [-6, 6]);
-
-  const scale = useTransform(x, [-150, 0, 150], [1.05, 1, 1.05]);
+  const scale = useTransform(x, [-120, 0], [1.02, 1]);
 
   const shadow = useTransform(
     x,
-    [-150, 0, 150],
+    [-120, 0],
     [
-      "0px 12px 24px rgba(0,0,0,0.35)",
+      "0px 8px 20px rgba(0,0,0,0.25)",
       "0px 4px 10px rgba(0,0,0,0.15)",
-      "0px 12px 24px rgba(0,0,0,0.35)",
     ]
   );
 
   const handleRemove = () => {
     if (navigator.vibrate) {
-      navigator.vibrate(30); // subtle vibration feedback
+      navigator.vibrate(35); // haptic feedback
     }
     onRemove(id);
   };
@@ -38,23 +35,28 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
   return (
     <motion.div
       drag="x"
-      style={{ x, rotate, scale, boxShadow: shadow, borderRadius: "1rem" }}
       dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.35} // smoother, more "free" swipe
+      dragElastic={0.25} // smooth, natural feel
+      style={{ x, scale, boxShadow: shadow, borderRadius: "1rem" }}
       whileDrag={{ cursor: "grabbing" }}
       onDragEnd={(event, info) => {
-        if (info.offset.x < -90 || info.offset.x > 90) {
+
+        if (info.offset.x < -100) {
           handleRemove();
         }
       }}
-      initial={{ opacity: 1, x: 0, scale: 1 }}
-      animate={{ opacity: 1, x: 0, scale: 1 }}
-      exit={{ opacity: 0, x: -150, scale: 0.9 }}
+      initial={{ opacity: 1, x: 0 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{
+        opacity: 0,
+        x: -200, // slide left smoothly
+        scale: 0.95,
+        transition: { duration: 0.25, ease: "easeOut" },
+      }}
       transition={{
         type: "spring",
-        stiffness: 400,
+        stiffness: 350,
         damping: 30,
-        mass: 0.8,
       }}
       className="cursor-pointer select-none bg-[#1a1a1a] text-white"
     >
