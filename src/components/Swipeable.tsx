@@ -1,4 +1,3 @@
-
 import React, { useRef } from "react";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import { Trash2 } from "lucide-react";
@@ -17,15 +16,17 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
   const rawX = useMotionValue(0);
   const ref = useRef<HTMLDivElement>(null);
 
+  // Sensitivity mapping
   const x = useTransform(rawX, (latest) => {
-    if (latest > 0) return latest * 0.5; // right swipe: softer
+    if (latest > 0) return latest * 0.5; // softer right swipe
     if (latest < -80) {
       const beyond = latest + 80;
-      return -80 + beyond * 0.8; // less resistance, smoother past 80px
+      return -80 + beyond * 0.8; // less resistance
     }
-    return latest * 1.6; // amplify sensitivity strongly
+    return latest * 1.6; // amplify sensitivity
   });
 
+  // Visual feedback
   const scale = useTransform(x, [-150, 0], [1.02, 1]);
   const shadow = useTransform(
     x,
@@ -36,6 +37,7 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     ]
   );
 
+  // Background feedback
   const bgOpacity = useTransform(x, [-150, -40], [1, 0], { clamp: true });
   const binScale = useTransform(x, [-150, -40], [1.2, 0.5], { clamp: true });
   const binOpacity = useTransform(x, [-150, -40], [1, 0], { clamp: true });
@@ -71,13 +73,23 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
         dragElastic={0.25}
         style={{ x: rawX, scale, boxShadow: shadow, borderRadius: "1rem" }}
         whileDrag={{ cursor: "grabbing" }}
-        onDragEnd={() => {
+        onDragEnd={(_, info) => {
           const width = ref.current?.offsetWidth || 300;
-          const threshold = -width * 0.25; // 25% width = easier swipe
+          const threshold = -width * 0.25; // 25% width
+          const velocity = info.velocity.x; // swipe speed
+          const offset = info.offset.x; // total drag distance
 
-          if (x.get() <= threshold) {
-            handleRemove();
+          // iOS inertia logic:
+          if (x.get() <= threshold || velocity < -600) {
+            // Strong flick left OR dragged past threshold
+            animate(rawX, -width, {
+              type: "tween",
+              duration: 0.25,
+              ease: "easeOut",
+              onComplete: handleRemove,
+            });
           } else {
+            // Otherwise snap back smoothly
             animate(rawX, 0, {
               type: "spring",
               stiffness: 250,
