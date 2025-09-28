@@ -136,23 +136,21 @@ const Notifications: React.FC = () => {
   ]);
 
   const handleMarkAllAsRead = () => {
-    // Convert new notifications into muted ones
+    // Convert to muted
     const marked = newNotifications.map((n) => ({
       ...n,
       isRead: true,
       colorType: "muted" as const,
     }));
 
-    // Smoothly animate them out of New
-    setNewNotifications((prev) =>
-      prev.map((n) => ({ ...n, isRead: true, colorType: "muted" as const }))
-    );
+    // Stage transition
+    setNewNotifications(marked);
 
-    // After short delay, push to Earlier
+    // Move down after animation completes
     setTimeout(() => {
       setEarlierNotifications((prev) => [...marked, ...prev]);
       setNewNotifications([]);
-    }, 450); // matches exit animation
+    }, 480);
   };
 
   const handleRemoveNew = (id: number) => {
@@ -196,19 +194,19 @@ const Notifications: React.FC = () => {
                     <motion.div
                       key={n.id}
                       layoutId={`notif-${n.id}`}
-                      initial={{ opacity: 0.6, y: -12 }}
+                      initial={{ opacity: 0.7, y: -10 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{
                         opacity: 0,
-                        y: 18,
-                        scale: 0.96,
+                        scale: 0.95,
+                        y: 10,
                         transition: { duration: 0.35, ease: "easeInOut" },
                       }}
                       transition={{
                         type: "spring",
                         stiffness: 280,
                         damping: 28,
-                        delay: index * 0.05,
+                        delay: index * 0.06,
                       }}
                     >
                       <SwipeableNotification id={n.id} onRemove={handleRemoveNew}>
@@ -232,12 +230,12 @@ const Notifications: React.FC = () => {
                 <motion.div
                   key={n.id}
                   layoutId={`notif-${n.id}`}
-                  initial={{ opacity: 0, y: -10, scale: 0.97 }}
+                  initial={{ opacity: 0, y: -6, scale: 0.97 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 15, scale: 0.96 }}
+                  exit={{ opacity: 0, y: 12, scale: 0.96 }}
                   transition={{
                     type: "spring",
-                    stiffness: 260,
+                    stiffness: 250,
                     damping: 26,
                     delay: index * 0.04,
                   }}
