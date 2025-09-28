@@ -1,151 +1,249 @@
-import React, { useRef } from "react";
-import { motion, useMotionValue, useTransform, animate } from "framer-motion";
-import { Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Header from "../components/Header";
+import SwipeableNotification from "../components/Swipeable";
 
-interface SwipeableNotificationProps {
-  id: number;
-  children: React.ReactNode;
-  onRemove: (id: number) => void;
+const COLORS = {
+  primary: "#3B82F6",
+  backgroundDark: "#000000",
+  surfaceDark: "#101010",
+  textDark: "#FFFFFF",
+  textMutedDark: "#8A8A8A",
+  accentBlue: "#3B82F6",
+};
+
+interface NotificationItemProps {
+  title: string;
+  message: string;
+  timestamp: string;
+  icon: string;
+  colorType: "blue" | "green" | "muted";
+  isRead: boolean;
 }
 
-const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
-  id,
-  children,
-  onRemove,
+const NotificationItem: React.FC<NotificationItemProps> = ({
+  title,
+  message,
+  timestamp,
+  icon,
+  colorType,
+  isRead,
 }) => {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const rawX = useMotionValue(0);
+  let iconWrapperClasses = "";
+  let iconColorClass = "";
+  let opacityClass = isRead ? "opacity-60" : "";
 
-  // Smooth, dynamic sensitivity:
-  // small drags are amplified; amplification decays as drag grows.
-  const x = useTransform(rawX, (latest) => {
-    const w = ref.current?.offsetWidth ?? 320;
-    const maxRange = Math.max(140, w * 0.6); // range where gain falls to min
-    const abs = Math.abs(latest);
-    const t = Math.min(abs / maxRange, 1); // 0..1
-    const maxGain = 1.9; // for near-zero drags
-    const minGain = 0.5; // for very large drags
-    const gain = maxGain + (minGain - maxGain) * t; // interpolate
-    if (latest >= 0) return latest * 0.25; // keep right-swipe heavy
-    const transformed = -Math.min(abs * gain, maxRange + 80); // cap magnitude
-    return transformed;
-  });
-
-  // visuals (scale, shadow) driven by transformed x
-  const scale = useTransform(x, [-300, 0], [1.03, 1]);
-  const shadow = useTransform(
-    x,
-    [-300, 0],
-    [
-      "0px 18px 40px rgba(0,0,0,0.35)",
-      "0px 6px 14px rgba(0,0,0,0.12)",
-    ]
-  );
-
-  // dynamic threshold (visual) based on current width
-  const visualThreshold = () => {
-    const w = ref.current?.offsetWidth ?? 320;
-    return -w * 0.32;
-  };
-
-  // background opacity (blackish red) that fades in as you approach threshold
-  const bgOpacity = useTransform(x, (latest) => {
-    const threshold = visualThreshold();
-    const start = threshold * 0.45; // begin showing near half the threshold
-    if (latest >= start) return 0;
-    if (latest <= threshold) return 1;
-    // linear map from start..threshold -> 0..1
-    return (start - latest) / (start - threshold);
-  });
-
-  // bin icon scale + opacity depending on progress toward threshold
-  const binScale = useTransform(x, (latest) => {
-    const threshold = visualThreshold();
-    const progress = Math.min(Math.max((threshold - latest) / Math.abs(threshold), 0), 1);
-    // subtle baseline, grows up to a small pop
-    return 0.85 + progress * 0.65; // 0.85 -> 1.5
-  });
-  const binOpacity = useTransform(x, (latest) => {
-    const threshold = visualThreshold();
-    const progress = Math.min(Math.max((threshold - latest) / Math.abs(threshold), 0), 1);
-    return 0.25 + progress * 0.85; // 0.25 -> 1.1 (clamped by CSS)
-  });
-
-  const handleRemove = () => {
-    if (navigator.vibrate) navigator.vibrate(50);
-    onRemove(id);
-  };
+  if (colorType === "blue") {
+    iconWrapperClasses = "bg-blue-500/10";
+    iconColorClass = "text-blue-500";
+  } else if (colorType === "green") {
+    iconWrapperClasses = "bg-green-500/10";
+    iconColorClass = "text-green-500";
+  } else {
+    iconWrapperClasses = "bg-white/5";
+    iconColorClass = `text-[${COLORS.textMutedDark}]`;
+  }
 
   return (
-    <div className="relative w-full">
-      {/* background layer */}
-      <motion.div
-        className="absolute inset-0 flex items-center justify-start pl-5 rounded-xl pointer-events-none"
-        style={{
-          backgroundColor: "rgba(40,10,10,0.6)", // blackish dark-red
-          opacity: bgOpacity,
-          willChange: "opacity, transform",
-        }}
-        aria-hidden
+    <div
+      className={`flex items-start gap-4 p-4 relative ${opacityClass}`}
+      style={{
+        backgroundColor: COLORS.surfaceDark,
+        borderRadius: "1rem",
+        fontFamily: "Manrope, sans-serif",
+      }}
+    >
+      <div
+        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${iconWrapperClasses} ${iconColorClass}`}
       >
-        <motion.div
-          style={{ scale: binScale, opacity: binOpacity }}
-          className="flex items-center justify-center text-red-300"
-        >
-          <Trash2 size={20} />
-        </motion.div>
-      </motion.div>
+        <span className="material-symbols-outlined text-2xl">{icon}</span>
+      </div>
 
-      {/* foreground card */}
-      <motion.div
-        ref={ref}
-        className="relative z-10 cursor-grab select-none bg-[#111111] text-white rounded-xl overflow-hidden"
-        drag="x"
-        dragElastic={0.15}
-        dragConstraints={{ left: 0, right: 0 }}
-        style={{
-          x,
-          scale,
-          boxShadow: shadow,
-          borderRadius: 12,
-          willChange: "transform, box-shadow",
-        }}
-        whileDrag={{ cursor: "grabbing" }}
-        onDragEnd={() => {
-          const w = ref.current?.offsetWidth ?? 320;
-          const vThreshold = -w * 0.32; // visual threshold (px)
-          // compare transformed x (visual) to visual threshold
-          if (x.get() <= vThreshold) {
-            // slide out visually then remove
-            animate(rawX, -w * 1.08, {
-              type: "spring",
-              stiffness: 320,
-              damping: 28,
-              onComplete: handleRemove,
-            });
-          } else {
-            // spring back
-            animate(rawX, 0, {
-              type: "spring",
-              stiffness: 380,
-              damping: 32,
-            });
-          }
-        }}
-        initial={{ opacity: 1, x: 0 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{
-          opacity: 0,
-          x: -200,
-          scale: 0.96,
-          transition: { duration: 0.22, ease: "easeOut" },
-        }}
-        transition={{ type: "spring", stiffness: 360, damping: 30 }}
-      >
-        {children}
-      </motion.div>
+      <div className="flex-1">
+        <div className="flex items-center justify-between">
+          <p className="font-semibold text-base" style={{ color: COLORS.textDark }}>
+            {title}
+          </p>
+          <p className="text-xs whitespace-nowrap" style={{ color: COLORS.textMutedDark }}>
+            {timestamp}
+          </p>
+        </div>
+        <p className="mt-1 text-sm leading-snug" style={{ color: COLORS.textMutedDark }}>
+          {message}
+        </p>
+      </div>
+
+      {!isRead && (
+        <div
+          className="absolute top-4 right-4 h-2 w-2 rounded-full"
+          style={{ backgroundColor: COLORS.accentBlue }}
+        ></div>
+      )}
     </div>
   );
 };
 
-export default SwipeableNotification;
+const Notifications: React.FC = () => {
+  const [newNotifications, setNewNotifications] = useState([
+    {
+      id: 1,
+      title: "Payout Confirmed",
+      message:
+        "Your payout of $5,231.00 has been processed and is on its way to you.",
+      timestamp: "9:41 AM",
+      icon: "account_balance_wallet",
+      colorType: "blue" as const,
+      isRead: false,
+    },
+    {
+      id: 2,
+      title: "Challenge Passed",
+      message: "Congratulations! You've successfully passed the 100k Challenge.",
+      timestamp: "8:15 AM",
+      icon: "stacked_line_chart",
+      colorType: "green" as const,
+      isRead: false,
+    },
+  ]);
+
+  const [earlierNotifications, setEarlierNotifications] = useState([
+    {
+      id: 3,
+      title: "Margin Call",
+      message:
+        "Your account #123456 is approaching the margin limit. Please take action.",
+      timestamp: "Yesterday, 3:30 PM",
+      icon: "warning",
+      colorType: "muted" as const,
+      isRead: true,
+    },
+    {
+      id: 4,
+      title: "System Update",
+      message:
+        "A new platform update will be deployed on Sunday. Expect brief downtime.",
+      timestamp: "Yesterday, 11:00 AM",
+      icon: "new_releases",
+      colorType: "muted" as const,
+      isRead: true,
+    },
+    {
+      id: 5,
+      title: "Account Funded",
+      message: "Your challenge account #987654 has been successfully funded.",
+      timestamp: "Yesterday, 9:02 AM",
+      icon: "paid",
+      colorType: "muted" as const,
+      isRead: true,
+    },
+  ]);
+
+  const handleMarkAllAsRead = () => {
+    const marked = newNotifications.map((n) => ({
+      ...n,
+      isRead: true,
+      colorType: "muted" as const,
+    }));
+
+    // First, visually mark as read
+    setNewNotifications(marked);
+
+    // Then, let Framer Motion animate them smoothly into "Earlier"
+    setTimeout(() => {
+      setEarlierNotifications((prev) => [...marked, ...prev]);
+      setNewNotifications([]);
+    }, 700); // delay to sync with animation
+  };
+
+  const handleRemoveNew = (id: number) => {
+    setNewNotifications((prev) => prev.filter((n) => n.id !== id));
+  };
+
+  const handleRemoveEarlier = (id: number) => {
+    setEarlierNotifications((prev) => prev.filter((n) => n.id !== id));
+  };
+
+  return (
+    <div
+      style={{
+        backgroundColor: COLORS.backgroundDark,
+        minHeight: "100dvh",
+        fontFamily: "Manrope, sans-serif",
+      }}
+      className="relative flex h-screen min-h-screen w-full flex-col text-white overflow-hidden"
+    >
+      <Header title="Notifications" />
+
+      <main className="flex-1 overflow-y-auto px-4 pt-6 pb-8">
+        {newNotifications.length > 0 && (
+          <>
+            <div className="mb-5 flex items-center justify-between">
+              <h2 className="text-lg font-semibold" style={{ color: COLORS.textDark }}>
+                New
+              </h2>
+              <button
+                onClick={handleMarkAllAsRead}
+                className="text-sm hover:opacity-80 transition-colors"
+                style={{ color: COLORS.accentBlue }}
+              >
+                Mark all as read
+              </button>
+            </div>
+            <motion.div layout className="space-y-3 mb-8">
+              <AnimatePresence>
+                {newNotifications.map((n) => (
+                  <motion.div
+                    key={n.id}
+                    layout
+                    initial={{ opacity: 0.7, y: -10 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 15, scale: 0.98 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 500,
+                      damping: 40,
+                    }}
+                  >
+                    <SwipeableNotification id={n.id} onRemove={handleRemoveNew}>
+                      <NotificationItem {...n} />
+                    </SwipeableNotification>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          </>
+        )}
+
+        <div className="mb-5">
+          <h2 className="text-lg font-semibold" style={{ color: COLORS.textDark }}>
+            Earlier
+          </h2>
+        </div>
+        <motion.div layout className="space-y-3">
+          <AnimatePresence>
+            {earlierNotifications.map((n) => (
+              <motion.div
+                key={n.id}
+                layout
+                initial={{ opacity: 0, y: -10, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.97 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 500,
+                  damping: 35,
+                }}
+              >
+                <SwipeableNotification id={n.id} onRemove={handleRemoveEarlier}>
+                  <NotificationItem {...n} />
+                </SwipeableNotification>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+      </main>
+    </div>
+  );
+};
+
+export default Notifications;
