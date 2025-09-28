@@ -16,35 +16,38 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
   const rawX = useMotionValue(0);
   const ref = useRef<HTMLDivElement>(null);
 
-  // More sensitive + smooth mapping
   const x = useTransform(rawX, (latest) => {
-    if (latest > 0) return latest * 0.7; // softer right swipe
-    if (latest < -80) {
-      const beyond = latest + 80;
-      return -80 + beyond * 0.9; // smooth resistance
+    if (latest > 0) return latest * 0.6; // softer right swipe
+    if (latest < -100) {
+      const beyond = latest + 100;
+      return -100 + beyond * 0.85; // resistance feel
     }
-    return latest * 1.8; // amplify sensitivity
+    return latest * 1.5; // amplify sensitivity
   });
 
-  const scale = useTransform(x, [-150, 0], [1.03, 1]);
+  const scale = useTransform(x, [-150, 0], [1.02, 1]);
   const shadow = useTransform(
     x,
     [-150, 0],
     [
-      "0px 10px 24px rgba(0,0,0,0.28)",
-      "0px 4px 10px rgba(0,0,0,0.18)",
+      "0px 12px 26px rgba(0,0,0,0.28)",
+      "0px 6px 12px rgba(0,0,0,0.18)",
     ]
   );
 
   const bgColor = useTransform(
     x,
     [-150, -40],
-    ["rgba(90,0,0,0.95)", "rgba(200,0,0,0.65)"],
+    ["rgba(180,0,0,0.95)", "rgba(220,0,0,0.6)"],
     { clamp: true }
   );
 
-  const binScale = useTransform(x, [-150, -40], [1.25, 0.6], { clamp: true });
-  const binOpacity = useTransform(x, [-150, -40], [1, 0], { clamp: true });
+  const binScale = useTransform(x, [-150, -40, 0], [1.25, 0.9, 0.6], {
+    clamp: true,
+  });
+  const binOpacity = useTransform(x, [-150, -40, 0], [1, 0.85, 0], {
+    clamp: true,
+  });
 
   const handleRemove = () => {
     if (navigator.vibrate) navigator.vibrate(50);
@@ -53,7 +56,7 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
 
   return (
     <div className="relative w-full">
-      {/* Background */}
+      {/* Background Bin */}
       <motion.div
         className="absolute inset-0 flex items-center justify-end pr-6 rounded-2xl"
         style={{ backgroundColor: bgColor as any }}
@@ -66,20 +69,21 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
         </motion.div>
       </motion.div>
 
-      {/* Foreground */}
+      {/* Foreground Notification */}
       <motion.div
         ref={ref}
         drag="x"
         dragConstraints={{ left: 0, right: 0 }}
-        dragElastic={0.3}
+        dragElastic={0.25}
         style={{ x: rawX, scale, boxShadow: shadow, borderRadius: "1rem" }}
         whileDrag={{ cursor: "grabbing" }}
         onDragEnd={(_, info) => {
           const width = ref.current?.offsetWidth || 300;
-          const threshold = -width * 0.22; // ~22% swipe
+          const threshold = -width * 0.22;
           const velocity = info.velocity.x;
 
-          if (x.get() <= threshold || velocity < -550) {
+          if (x.get() <= threshold || velocity < -600) {
+            // swipe to remove
             animate(rawX, -width, {
               type: "tween",
               duration: 0.28,
@@ -87,9 +91,10 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
               onComplete: handleRemove,
             });
           } else {
+            // reset back
             animate(rawX, 0, {
               type: "spring",
-              stiffness: 280,
+              stiffness: 300,
               damping: 28,
             });
           }
@@ -104,7 +109,7 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
         }}
         transition={{
           type: "spring",
-          stiffness: 340,
+          stiffness: 320,
           damping: 30,
         }}
         className="relative z-10 cursor-pointer select-none bg-[#1a1a1a] text-white"
