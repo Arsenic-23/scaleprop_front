@@ -88,8 +88,7 @@ const Notifications: React.FC = () => {
     {
       id: 1,
       title: "Payout Confirmed",
-      message:
-        "Your payout of $5,231.00 has been processed and is on its way to you.",
+      message: "Your payout of $5,231.00 has been processed and is on its way to you.",
       timestamp: "9:41 AM",
       icon: "account_balance_wallet",
       colorType: "blue" as const,
@@ -110,8 +109,7 @@ const Notifications: React.FC = () => {
     {
       id: 3,
       title: "Margin Call",
-      message:
-        "Your account #123456 is approaching the margin limit. Please take action.",
+      message: "Your account #123456 is approaching the margin limit. Please take action.",
       timestamp: "Yesterday, 3:30 PM",
       icon: "warning",
       colorType: "muted" as const,
@@ -120,8 +118,7 @@ const Notifications: React.FC = () => {
     {
       id: 4,
       title: "System Update",
-      message:
-        "A new platform update will be deployed on Sunday. Expect brief downtime.",
+      message: "A new platform update will be deployed on Sunday. Expect brief downtime.",
       timestamp: "Yesterday, 11:00 AM",
       icon: "new_releases",
       colorType: "muted" as const,
@@ -145,14 +142,14 @@ const Notifications: React.FC = () => {
       colorType: "muted" as const,
     }));
 
-    // First, visually mark as read
+    // Animate "read" first
     setNewNotifications(marked);
 
-    // Then, let Framer Motion animate them smoothly into "Earlier"
+    // Then slide them smoothly into Earlier
     setTimeout(() => {
       setEarlierNotifications((prev) => [...marked, ...prev]);
       setNewNotifications([]);
-    }, 700); // delay to sync with animation
+    }, 500);
   };
 
   const handleRemoveNew = (id: number) => {
@@ -191,17 +188,18 @@ const Notifications: React.FC = () => {
             </div>
             <motion.div layout className="space-y-3 mb-8">
               <AnimatePresence>
-                {newNotifications.map((n) => (
+                {newNotifications.map((n, index) => (
                   <motion.div
                     key={n.id}
                     layout
-                    initial={{ opacity: 0.7, y: -10 }}
+                    initial={{ opacity: 0.6, y: -12 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 15, scale: 0.98 }}
+                    exit={{ opacity: 0, y: 18, scale: 0.97 }}
                     transition={{
                       type: "spring",
-                      stiffness: 500,
-                      damping: 40,
+                      stiffness: 240,
+                      damping: 32,
+                      delay: index * 0.05, // staggered smoothness
                     }}
                   >
                     <SwipeableNotification id={n.id} onRemove={handleRemoveNew}>
@@ -221,17 +219,18 @@ const Notifications: React.FC = () => {
         </div>
         <motion.div layout className="space-y-3">
           <AnimatePresence>
-            {earlierNotifications.map((n) => (
+            {earlierNotifications.map((n, index) => (
               <motion.div
                 key={n.id}
                 layout
-                initial={{ opacity: 0, y: -10, scale: 0.98 }}
+                initial={{ opacity: 0, y: -12, scale: 0.97 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.97 }}
+                exit={{ opacity: 0, y: 15, scale: 0.96 }}
                 transition={{
                   type: "spring",
-                  stiffness: 500,
-                  damping: 35,
+                  stiffness: 230,
+                  damping: 30,
+                  delay: index * 0.04,
                 }}
               >
                 <SwipeableNotification id={n.id} onRemove={handleRemoveEarlier}>
