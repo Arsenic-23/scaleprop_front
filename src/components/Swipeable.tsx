@@ -16,7 +16,6 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
   const rawX = useMotionValue(0);
   const ref = useRef<HTMLDivElement>(null);
 
-  // Sensitivity mapping
   const x = useTransform(rawX, (latest) => {
     if (latest > 0) return latest * 0.5; // softer right swipe
     if (latest < -80) {
@@ -26,7 +25,6 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     return latest * 1.6; // amplify sensitivity
   });
 
-  // Visual feedback
   const scale = useTransform(x, [-150, 0], [1.02, 1]);
   const shadow = useTransform(
     x,
@@ -37,8 +35,13 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     ]
   );
 
-  // Background feedback
-  const bgOpacity = useTransform(x, [-150, -40], [1, 0], { clamp: true });
+  const bgColor = useTransform(
+    x,
+    [-150, -40],
+    ["rgba(90,0,0,0.9)", "rgba(180,0,0,0.6)"], // darker → brighter
+    { clamp: true }
+  );
+
   const binScale = useTransform(x, [-150, -40], [1.2, 0.5], { clamp: true });
   const binOpacity = useTransform(x, [-150, -40], [1, 0], { clamp: true });
 
@@ -51,15 +54,14 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     <div className="relative w-full">
       {/* Background layer */}
       <motion.div
-        className="absolute inset-0 flex items-center justify-start pl-6 rounded-2xl"
+        className="absolute inset-0 flex items-center justify-end pr-6 rounded-2xl"
         style={{
-          backgroundColor: "rgba(139,0,0,0.45)",
-          opacity: bgOpacity,
+          backgroundColor: bgColor as any,
         }}
       >
         <motion.div
           style={{ scale: binScale, opacity: binOpacity }}
-          className="text-red-500/80"
+          className="text-red-500/90"
         >
           <Trash2 size={28} />
         </motion.div>
@@ -77,11 +79,8 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
           const width = ref.current?.offsetWidth || 300;
           const threshold = -width * 0.25; // 25% width
           const velocity = info.velocity.x; // swipe speed
-          const offset = info.offset.x; // total drag distance
 
-          // iOS inertia logic:
           if (x.get() <= threshold || velocity < -600) {
-            // Strong flick left OR dragged past threshold
             animate(rawX, -width, {
               type: "tween",
               duration: 0.25,
@@ -89,7 +88,6 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
               onComplete: handleRemove,
             });
           } else {
-            // Otherwise snap back smoothly
             animate(rawX, 0, {
               type: "spring",
               stiffness: 250,
