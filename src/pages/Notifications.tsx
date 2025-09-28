@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import Header from "../components/Header";
 import SwipeableNotification from "../components/Swipeable";
 
@@ -136,20 +136,23 @@ const Notifications: React.FC = () => {
   ]);
 
   const handleMarkAllAsRead = () => {
+    // Convert new notifications into muted ones
     const marked = newNotifications.map((n) => ({
       ...n,
       isRead: true,
       colorType: "muted" as const,
     }));
 
-    // Animate "read" first
-    setNewNotifications(marked);
+    // Smoothly animate them out of New
+    setNewNotifications((prev) =>
+      prev.map((n) => ({ ...n, isRead: true, colorType: "muted" as const }))
+    );
 
-    // Then slide them smoothly into Earlier
+    // After short delay, push to Earlier
     setTimeout(() => {
       setEarlierNotifications((prev) => [...marked, ...prev]);
       setNewNotifications([]);
-    }, 500);
+    }, 450); // matches exit animation
   };
 
   const handleRemoveNew = (id: number) => {
@@ -171,76 +174,83 @@ const Notifications: React.FC = () => {
     >
       <Header title="Notifications" />
 
-      <main className="flex-1 overflow-y-auto px-4 pt-6 pb-8">
-        {newNotifications.length > 0 && (
-          <>
-            <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-lg font-semibold" style={{ color: COLORS.textDark }}>
-                New
-              </h2>
-              <button
-                onClick={handleMarkAllAsRead}
-                className="text-sm hover:opacity-80 transition-colors"
-                style={{ color: COLORS.accentBlue }}
-              >
-                Mark all as read
-              </button>
-            </div>
-            <motion.div layout className="space-y-3 mb-8">
-              <AnimatePresence>
-                {newNotifications.map((n, index) => (
-                  <motion.div
-                    key={n.id}
-                    layout
-                    initial={{ opacity: 0.6, y: -12 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 18, scale: 0.97 }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 240,
-                      damping: 32,
-                      delay: index * 0.05, // staggered smoothness
-                    }}
-                  >
-                    <SwipeableNotification id={n.id} onRemove={handleRemoveNew}>
-                      <NotificationItem {...n} />
-                    </SwipeableNotification>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </motion.div>
-          </>
-        )}
-
-        <div className="mb-5">
-          <h2 className="text-lg font-semibold" style={{ color: COLORS.textDark }}>
-            Earlier
-          </h2>
-        </div>
-        <motion.div layout className="space-y-3">
-          <AnimatePresence>
-            {earlierNotifications.map((n, index) => (
-              <motion.div
-                key={n.id}
-                layout
-                initial={{ opacity: 0, y: -12, scale: 0.97 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 15, scale: 0.96 }}
-                transition={{
-                  type: "spring",
-                  stiffness: 230,
-                  damping: 30,
-                  delay: index * 0.04,
-                }}
-              >
-                <SwipeableNotification id={n.id} onRemove={handleRemoveEarlier}>
-                  <NotificationItem {...n} />
-                </SwipeableNotification>
+      <LayoutGroup>
+        <main className="flex-1 overflow-y-auto px-4 pt-6 pb-8">
+          {newNotifications.length > 0 && (
+            <>
+              <div className="mb-5 flex items-center justify-between">
+                <h2 className="text-lg font-semibold" style={{ color: COLORS.textDark }}>
+                  New
+                </h2>
+                <button
+                  onClick={handleMarkAllAsRead}
+                  className="text-sm hover:opacity-80 transition-colors"
+                  style={{ color: COLORS.accentBlue }}
+                >
+                  Mark all as read
+                </button>
+              </div>
+              <motion.div layout className="space-y-3 mb-8">
+                <AnimatePresence>
+                  {newNotifications.map((n, index) => (
+                    <motion.div
+                      key={n.id}
+                      layoutId={`notif-${n.id}`}
+                      initial={{ opacity: 0.6, y: -12 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{
+                        opacity: 0,
+                        y: 18,
+                        scale: 0.96,
+                        transition: { duration: 0.35, ease: "easeInOut" },
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 280,
+                        damping: 28,
+                        delay: index * 0.05,
+                      }}
+                    >
+                      <SwipeableNotification id={n.id} onRemove={handleRemoveNew}>
+                        <NotificationItem {...n} />
+                      </SwipeableNotification>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
               </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
-      </main>
+            </>
+          )}
+
+          <div className="mb-5">
+            <h2 className="text-lg font-semibold" style={{ color: COLORS.textDark }}>
+              Earlier
+            </h2>
+          </div>
+          <motion.div layout className="space-y-3">
+            <AnimatePresence>
+              {earlierNotifications.map((n, index) => (
+                <motion.div
+                  key={n.id}
+                  layoutId={`notif-${n.id}`}
+                  initial={{ opacity: 0, y: -10, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 15, scale: 0.96 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 26,
+                    delay: index * 0.04,
+                  }}
+                >
+                  <SwipeableNotification id={n.id} onRemove={handleRemoveEarlier}>
+                    <NotificationItem {...n} />
+                  </SwipeableNotification>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </main>
+      </LayoutGroup>
     </div>
   );
 };
