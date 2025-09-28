@@ -1,5 +1,5 @@
 import React from "react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 
 interface SwipeableNotificationProps {
   id: number;
@@ -12,10 +12,18 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
   children,
   onRemove,
 }) => {
-  const x = useMotionValue(0);
+  const rawX = useMotionValue(0);
+
+  const x = useTransform(rawX, (latest) => {
+    if (latest > 0) return latest * 0.3; // prevent swiping right too much
+    if (latest < -60) {
+      const beyond = latest + 60; // how far past -60
+      return -60 + beyond * 0.4; // slow down drag effect
+    }
+    return latest;
+  });
 
   const scale = useTransform(x, [-120, 0], [1.02, 1]);
-
   const shadow = useTransform(
     x,
     [-120, 0],
@@ -36,20 +44,27 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     <motion.div
       drag="x"
       dragConstraints={{ left: 0, right: 0 }}
-      dragElastic={0.25} // smooth, natural feel
-      style={{ x, scale, boxShadow: shadow, borderRadius: "1rem" }}
+      dragElastic={0.25}
+      style={{ x: rawX, scale, boxShadow: shadow, borderRadius: "1rem" }}
       whileDrag={{ cursor: "grabbing" }}
       onDragEnd={(event, info) => {
+        const threshold = -120;
 
-        if (info.offset.x < -100) {
+        if (x.get() < threshold) {
           handleRemove();
+        } else {
+          animate(rawX, 0, {
+            type: "spring",
+            stiffness: 300,
+            damping: 30,
+          });
         }
       }}
       initial={{ opacity: 1, x: 0 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{
         opacity: 0,
-        x: -200, // slide left smoothly
+        x: -200,
         scale: 0.95,
         transition: { duration: 0.25, ease: "easeOut" },
       }}
