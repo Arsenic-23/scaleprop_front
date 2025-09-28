@@ -46,7 +46,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 
   return (
     <div
-      className={`flex items-start gap-4 p-4 relative transition-all duration-500 ease-in-out ${opacityClass}`}
+      className={`flex items-start gap-4 p-4 relative ${opacityClass}`}
       style={{
         backgroundColor: COLORS.surfaceDark,
         borderRadius: "1rem",
@@ -54,30 +54,28 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       }}
     >
       <div
-        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-colors duration-500 ease-in-out ${iconWrapperClasses} ${iconColorClass}`}
+        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${iconWrapperClasses} ${iconColorClass}`}
       >
-        <span className="material-symbols-outlined text-2xl transition-colors duration-500 ease-in-out">
-          {icon}
-        </span>
+        <span className="material-symbols-outlined text-2xl">{icon}</span>
       </div>
 
       <div className="flex-1" style={{ fontFamily: "Manrope, sans-serif" }}>
         <div className="flex items-center justify-between">
           <p
-            className="font-semibold text-base transition-colors duration-500 ease-in-out"
+            className="font-semibold text-base"
             style={{ color: COLORS.textDark }}
           >
             {title}
           </p>
           <p
-            className="text-xs whitespace-nowrap transition-colors duration-500 ease-in-out"
+            className="text-xs whitespace-nowrap"
             style={{ color: COLORS.textMutedDark }}
           >
             {timestamp}
           </p>
         </div>
         <p
-          className="mt-1 text-sm leading-snug transition-colors duration-500 ease-in-out"
+          className="mt-1 text-sm leading-snug"
           style={{ color: COLORS.textMutedDark }}
         >
           {message}
@@ -86,7 +84,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 
       {!isRead && (
         <div
-          className="absolute top-4 right-4 h-2 w-2 rounded-full transition-opacity duration-500 ease-in-out"
+          className="absolute top-4 right-4 h-2 w-2 rounded-full"
           style={{ backgroundColor: COLORS.accentBlue }}
         ></div>
       )}
@@ -158,16 +156,12 @@ const Notifications: React.FC = () => {
       colorType: "muted" as const,
     }));
 
-    // animate out first
-    setNewNotifications((prev) =>
-      prev.map((n) => ({ ...n, isRead: true, colorType: "muted" as const }))
-    );
+    setNewNotifications(marked);
 
-    // after animation, move them down
     setTimeout(() => {
       setEarlierNotifications((prev) => [...marked, ...prev]);
       setNewNotifications([]);
-    }, 500); // matches motion animation duration
+    }, 600); // matches transition duration
   };
 
   const handleRemoveNew = (id: number) => {
@@ -184,22 +178,18 @@ const Notifications: React.FC = () => {
         backgroundColor: COLORS.backgroundDark,
         minHeight: "100dvh",
         fontFamily: "Manrope, sans-serif",
-        WebkitOverflowScrolling: "touch",
       }}
       className="relative flex h-screen min-h-screen w-full flex-col text-white overflow-hidden"
     >
       <Header title="Notifications" />
 
-      <main className="flex-1 overflow-y-auto px-4 pt-6 pb-8 will-change-transform">
+      <main className="flex-1 overflow-y-auto px-4 pt-6 pb-8">
         {newNotifications.length > 0 && (
           <>
             <div className="mb-5 flex items-center justify-between">
               <h2
                 className="text-lg font-semibold"
-                style={{
-                  color: COLORS.textDark,
-                  fontFamily: "Manrope, sans-serif",
-                }}
+                style={{ color: COLORS.textDark }}
               >
                 New
               </h2>
@@ -211,49 +201,51 @@ const Notifications: React.FC = () => {
                 Mark all as read
               </button>
             </div>
-            <div className="space-y-3 mb-8">
+            <motion.div layout className="space-y-3 mb-8">
               <AnimatePresence>
                 {newNotifications.map((n) => (
                   <motion.div
                     key={n.id}
-                    initial={{ opacity: 1, y: 0 }}
+                    layout
+                    initial={{ opacity: 0, y: -15 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 30 }}
-                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                    exit={{ opacity: 0, y: 20 }}
+                    transition={{
+                      duration: 0.6,
+                      ease: [0.25, 0.1, 0.25, 1], // iOS spring feel
+                    }}
                   >
-                    <SwipeableNotification
-                      id={n.id}
-                      onRemove={handleRemoveNew}
-                    >
+                    <SwipeableNotification id={n.id} onRemove={handleRemoveNew}>
                       <NotificationItem {...n} />
                     </SwipeableNotification>
                   </motion.div>
                 ))}
               </AnimatePresence>
-            </div>
+            </motion.div>
           </>
         )}
 
         <div className="mb-5">
           <h2
             className="text-lg font-semibold"
-            style={{
-              color: COLORS.textDark,
-              fontFamily: "Manrope, sans-serif",
-            }}
+            style={{ color: COLORS.textDark }}
           >
             Earlier
           </h2>
         </div>
-        <div className="space-y-3">
+        <motion.div layout className="space-y-3">
           <AnimatePresence>
             {earlierNotifications.map((n) => (
               <motion.div
                 key={n.id}
-                initial={{ opacity: 0, y: -20 }}
+                layout
+                initial={{ opacity: 0, y: -15 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 20 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
+                transition={{
+                  duration: 0.6,
+                  ease: [0.25, 0.1, 0.25, 1],
+                }}
               >
                 <SwipeableNotification
                   id={n.id}
@@ -264,7 +256,7 @@ const Notifications: React.FC = () => {
               </motion.div>
             ))}
           </AnimatePresence>
-        </div>
+        </motion.div>
       </main>
     </div>
   );
