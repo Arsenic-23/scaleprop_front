@@ -14,11 +14,12 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
 }) => {
   const rawX = useMotionValue(0);
 
+  // Resistance with better sensitivity
   const x = useTransform(rawX, (latest) => {
-    if (latest > 0) return latest * 0.3; // prevent swiping right too much
+    if (latest > 0) return latest * 0.3; // right swipe feels heavy
     if (latest < -60) {
       const beyond = latest + 60; // how far past -60
-      return -60 + beyond * 0.4; // slow down drag effect
+      return -60 + beyond * 0.65; // smoother resistance, more sensitive
     }
     return latest;
   });
