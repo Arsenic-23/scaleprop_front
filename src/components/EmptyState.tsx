@@ -9,7 +9,7 @@ interface EmptyStateProps {
 
 const EmptyState: React.FC<EmptyStateProps> = ({
   icon = "notifications_off",
-  title = "You’re all caught up 🎉",
+  title = "You’re all caught up",
   subtitle = "Come back later for new updates.",
 }) => {
   return (
