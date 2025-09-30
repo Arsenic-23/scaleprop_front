@@ -70,7 +70,7 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
                 ease: "easeOut",
               }}
               className={`flex-1 rounded-full transition-colors duration-500 ${
-                isFilled ? fillColorClass : "bg-slate-300"
+                isFilled ? fillColorClass : "bg-slate-700"
               }`}
             />
           );
