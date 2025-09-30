@@ -4,10 +4,12 @@ import { BellOff } from "lucide-react";
 
 interface EmptyStateProps {
   title?: string;
+  subtitle?: string;
 }
 
 const EmptyState: React.FC<EmptyStateProps> = ({
   title = "All Clear",
+  subtitle = "No new updates at the moment.",
 }) => {
   return (
     <AnimatePresence>
@@ -32,7 +34,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
             animate={{
               boxShadow: [
                 "0 0 0px rgba(99,102,241,0)",
-                "0 0 18px rgba(99,102,241,0.2)",
+                "0 0 14px rgba(99,102,241,0.18)",
                 "0 0 0px rgba(99,102,241,0)",
               ],
             }}
@@ -40,22 +42,32 @@ const EmptyState: React.FC<EmptyStateProps> = ({
           />
           {/* Lucide Icon */}
           <motion.div
-            animate={{ scale: [1, 1.05, 1] }}
+            animate={{ scale: [1, 1.04, 1] }}
             transition={{ duration: 4, ease: "easeInOut", repeat: Infinity }}
           >
             <BellOff className="w-9 h-9 text-gray-700 dark:text-gray-200" />
           </motion.div>
         </motion.div>
 
-        {/* Title Only */}
+        {/* Title */}
         <motion.h3
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.6 }}
-          className="text-xl font-semibold tracking-tight text-gray-900 dark:text-gray-100"
+          className="text-lg font-semibold tracking-tight text-gray-900 dark:text-gray-100"
         >
           {title}
         </motion.h3>
+
+        {/* Classy Subtitle */}
+        <motion.p
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35, duration: 0.6 }}
+          className="text-sm text-gray-500 dark:text-gray-400 mt-1 leading-relaxed max-w-xs"
+        >
+          {subtitle}
+        </motion.p>
       </motion.div>
     </AnimatePresence>
   );
