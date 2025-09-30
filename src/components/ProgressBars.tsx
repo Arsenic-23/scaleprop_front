@@ -1,5 +1,5 @@
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect } from "react";
+import { motion, useAnimation } from "framer-motion";
 
 type HtmlColorKey = "green" | "amber" | "red";
 
@@ -16,11 +16,11 @@ interface LinearCapsuleBarProps {
 const htmlColorClassFor = (c: HtmlColorKey) => {
   switch (c) {
     case "green":
-      return "bg-green-500";
+      return "bg-green-500"; 
     case "amber":
-      return "bg-yellow-500";
+      return "bg-yellow-500"; 
     case "red":
-      return "bg-red-500";
+      return "bg-red-500"; 
     default:
       return "bg-slate-700";
   }
@@ -40,44 +40,44 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
   color,
   segments = 40,
 }) => {
+  const controls = useAnimation();
   const currentFillPercentage = Math.min(100, (value / max) * 100);
   const filledSegments = Math.round((currentFillPercentage / 100) * segments);
   const fillColorClass = htmlColorClassFor(color);
 
+  useEffect(() => {
+    controls.start((i: number) => ({
+      scaleY: i < filledSegments ? 1 : 0,
+      opacity: i < filledSegments ? 1 : 0.2,
+      transition: {
+        delay: i * 0.02,
+        type: "spring",
+        stiffness: 200,
+        damping: 20,
+      },
+    }));
+  }, [filledSegments, controls]);
+
   return (
     <div className="w-full">
-      {/* Top labels */}
-      <div className="flex justify-between text-sm font-medium text-gray-500">
-        <span className="capitalize">{label}</span>
+      <div className="flex justify-between text-sm font-medium text-text-secondary-dark">
+        <span>{label}</span>
         <span>{totalLabel}</span>
       </div>
 
-      {/* Capsule bar */}
-      <div className="mt-2 flex gap-[3px] h-[14px]">
+      <div className="mt-2 flex gap-[2px] h-[12px]">
         {Array.from({ length: segments }).map((_, i) => (
           <motion.div
             key={i}
-            initial={{ scaleY: 0.6, opacity: 0.4 }}
-            animate={{
-              scaleY: 1,
-              opacity: 1,
-              backgroundColor:
-                i < filledSegments
-                  ? `hsl(var(--${color}))`
-                  : "rgba(148,163,184,0.3)", // slate-400/30 for blanks
-            }}
-            transition={{
-              delay: i * 0.015,
-              duration: 0.4,
-              ease: "easeOut",
-            }}
-            className={`flex-1 rounded-full`}
+            custom={i}
+            initial={{ scaleY: 0, opacity: 0.2 }}
+            animate={controls}
+            className={`flex-1 h-full rounded-[1px] origin-bottom ${fillColorClass}`}
           />
         ))}
       </div>
 
-      {/* Bottom labels */}
-      <div className="mt-2 flex justify-between text-xs text-gray-500">
+      <div className="mt-2 flex justify-between text-xs text-text-secondary-dark">
         <span>{usedLabel}</span>
         <span>{formatPct(value, max)}%</span>
       </div>
