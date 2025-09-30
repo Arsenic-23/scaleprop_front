@@ -16,11 +16,11 @@ interface LinearCapsuleBarProps {
 const htmlColorClassFor = (c: HtmlColorKey) => {
   switch (c) {
     case "green":
-      return "bg-green-500"; 
+      return "bg-green-500";
     case "amber":
-      return "bg-yellow-500"; 
+      return "bg-yellow-500";
     case "red":
-      return "bg-red-500"; 
+      return "bg-red-500";
     default:
       return "bg-slate-700";
   }
@@ -42,21 +42,30 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
 }) => {
   const controls = useAnimation();
   const currentFillPercentage = Math.min(100, (value / max) * 100);
-  const filledSegments = Math.round((currentFillPercentage / 100) * segments);
+  const filledSegments = (currentFillPercentage / 100) * segments; // fractional
   const fillColorClass = htmlColorClassFor(color);
 
   useEffect(() => {
-    controls.start((i: number) => ({
-      scaleY: i < filledSegments ? 1 : 0,
-      opacity: i < filledSegments ? 1 : 0.2,
-      transition: {
-        delay: i * 0.02,
-        type: "spring",
-        stiffness: 200,
-        damping: 20,
-      },
-    }));
-  }, [filledSegments, controls]);
+    controls.start((i: number) => {
+      const isFilled = i < filledSegments;
+      const partialFill = i < filledSegments && i + 1 > filledSegments;
+      return {
+        scaleY: 1,
+        opacity: 1,
+        backgroundColor: partialFill
+          ? `${fillColorClass}` // you can add gradient if needed
+          : isFilled
+          ? fillColorClass
+          : "#374151", // Tailwind slate-700 for unfilled capsules
+        transition: {
+          delay: i * 0.02,
+          type: "spring",
+          stiffness: 200,
+          damping: 25,
+        },
+      };
+    });
+  }, [filledSegments, fillColorClass, controls]);
 
   return (
     <div className="w-full">
@@ -70,9 +79,9 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
           <motion.div
             key={i}
             custom={i}
-            initial={{ scaleY: 0, opacity: 0.2 }}
+            initial={{ scaleY: 0.2, opacity: 0.5, backgroundColor: "#374151" }}
             animate={controls}
-            className={`flex-1 h-full rounded-[1px] origin-bottom ${fillColorClass}`}
+            className="flex-1 h-full rounded-[1px] origin-bottom"
           />
         ))}
       </div>
