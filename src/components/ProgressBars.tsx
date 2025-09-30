@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { motion, useAnimation } from "framer-motion";
+import React from "react";
+import { motion } from "framer-motion";
 
 type HtmlColorKey = "green" | "amber" | "red";
 
@@ -18,11 +18,11 @@ const htmlColorClassFor = (c: HtmlColorKey) => {
     case "green":
       return "bg-green-500";
     case "amber":
-      return "bg-yellow-500";
+      return "bg-amber-500";
     case "red":
       return "bg-red-500";
     default:
-      return "bg-slate-700";
+      return "bg-slate-500";
   }
 };
 
@@ -40,53 +40,45 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
   color,
   segments = 40,
 }) => {
-  const controls = useAnimation();
   const currentFillPercentage = Math.min(100, (value / max) * 100);
-  const filledSegments = (currentFillPercentage / 100) * segments; // fractional
+  const filledSegments = Math.round((currentFillPercentage / 100) * segments);
   const fillColorClass = htmlColorClassFor(color);
-
-  useEffect(() => {
-    controls.start((i: number) => {
-      const isFilled = i < filledSegments;
-      const partialFill = i < filledSegments && i + 1 > filledSegments;
-      return {
-        scaleY: 1,
-        opacity: 1,
-        backgroundColor: partialFill
-          ? `${fillColorClass}` // you can add gradient if needed
-          : isFilled
-          ? fillColorClass
-          : "#374151", // Tailwind slate-700 for unfilled capsules
-        transition: {
-          delay: i * 0.02,
-          type: "spring",
-          stiffness: 200,
-          damping: 25,
-        },
-      };
-    });
-  }, [filledSegments, fillColorClass, controls]);
 
   return (
     <div className="w-full">
-      <div className="flex justify-between text-sm font-medium text-text-secondary-dark">
-        <span>{label}</span>
+      {/* Top labels */}
+      <div className="flex justify-between text-sm font-medium text-gray-500">
+        <span className="capitalize">{label}</span>
         <span>{totalLabel}</span>
       </div>
 
-      <div className="mt-2 flex gap-[2px] h-[12px]">
-        {Array.from({ length: segments }).map((_, i) => (
-          <motion.div
-            key={i}
-            custom={i}
-            initial={{ scaleY: 0.2, opacity: 0.5, backgroundColor: "#374151" }}
-            animate={controls}
-            className="flex-1 h-full rounded-[1px] origin-bottom"
-          />
-        ))}
+      {/* Capsule bar */}
+      <div className="mt-2 flex gap-[3px] h-[14px]">
+        {Array.from({ length: segments }).map((_, i) => {
+          const isFilled = i < filledSegments;
+          return (
+            <motion.div
+              key={i}
+              initial={{ scaleY: 0.6, opacity: 0 }}
+              animate={{
+                scaleY: 1,
+                opacity: 1,
+              }}
+              transition={{
+                delay: i * 0.015,
+                duration: 0.35,
+                ease: "easeOut",
+              }}
+              className={`flex-1 rounded-full transition-colors duration-500 ${
+                isFilled ? fillColorClass : "bg-slate-300"
+              }`}
+            />
+          );
+        })}
       </div>
 
-      <div className="mt-2 flex justify-between text-xs text-text-secondary-dark">
+      {/* Bottom labels */}
+      <div className="mt-2 flex justify-between text-xs text-gray-500">
         <span>{usedLabel}</span>
         <span>{formatPct(value, max)}%</span>
       </div>
