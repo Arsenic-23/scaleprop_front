@@ -16,11 +16,11 @@ interface LinearCapsuleBarProps {
 const htmlColorClassFor = (c: HtmlColorKey) => {
   switch (c) {
     case "green":
-      return "bg-green-500"; // Tailwind default green
+      return "bg-green-500";
     case "amber":
-      return "bg-yellow-500"; // Tailwind amber
+      return "bg-yellow-500";
     case "red":
-      return "bg-red-500"; // Tailwind red
+      return "bg-red-500";
     default:
       return "bg-slate-700";
   }
@@ -46,34 +46,38 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
 
   return (
     <div className="w-full">
-      <div className="flex justify-between text-sm font-medium text-text-secondary-dark">
-        <span>{label}</span>
+      {/* Top labels */}
+      <div className="flex justify-between text-sm font-medium text-gray-500">
+        <span className="capitalize">{label}</span>
         <span>{totalLabel}</span>
       </div>
 
-      <div className="mt-2 flex gap-[2px] h-[12px]">
+      {/* Capsule bar */}
+      <div className="mt-2 flex gap-[3px] h-[14px]">
         {Array.from({ length: segments }).map((_, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, scaleY: 0 }}
+            initial={{ scaleY: 0.6, opacity: 0.4 }}
             animate={{
+              scaleY: 1,
               opacity: 1,
-              scaleY: i < filledSegments ? 1 : 0,
+              backgroundColor:
+                i < filledSegments
+                  ? `hsl(var(--${color}))`
+                  : "rgba(148,163,184,0.3)", // slate-400/30 for blanks
             }}
             transition={{
-              delay: i * 0.02,
-              type: "spring",
-              stiffness: 200,
-              damping: 20,
+              delay: i * 0.015,
+              duration: 0.4,
+              ease: "easeOut",
             }}
-            className={`flex-grow h-full rounded-[1px] origin-bottom ${
-              i < filledSegments ? fillColorClass : "bg-slate-700"
-            }`}
+            className={`flex-1 rounded-full`}
           />
         ))}
       </div>
 
-      <div className="mt-2 flex justify-between text-xs text-text-secondary-dark">
+      {/* Bottom labels */}
+      <div className="mt-2 flex justify-between text-xs text-gray-500">
         <span>{usedLabel}</span>
         <span>{formatPct(value, max)}%</span>
       </div>
