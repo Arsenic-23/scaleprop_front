@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useAnimation, useEffect } from "framer-motion";
 
 type HtmlColorKey = "green" | "amber" | "red";
 
@@ -16,11 +16,11 @@ interface LinearCapsuleBarProps {
 const htmlColorClassFor = (c: HtmlColorKey) => {
   switch (c) {
     case "green":
-      return "bg-green-500"; // Tailwind default green
+      return "bg-green-500";
     case "amber":
-      return "bg-yellow-500"; // Tailwind amber
+      return "bg-yellow-500";
     case "red":
-      return "bg-red-500"; // Tailwind red
+      return "bg-red-500";
     default:
       return "bg-slate-700";
   }
@@ -40,9 +40,14 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
   color,
   segments = 40,
 }) => {
-  const currentFillPercentage = Math.min(100, (value / max) * 100);
-  const filledSegments = Math.round((currentFillPercentage / 100) * segments);
+  const controls = useAnimation();
   const fillColorClass = htmlColorClassFor(color);
+
+  const currentFillPercentage = Math.min(100, (value / max) * 100);
+
+  useEffect(() => {
+    controls.start({ width: `${currentFillPercentage}%` });
+  }, [currentFillPercentage, controls]);
 
   return (
     <div className="w-full">
@@ -51,24 +56,20 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
         <span>{totalLabel}</span>
       </div>
 
-      <div className="mt-2 flex gap-[2px] h-[12px]">
+      {/* Capsule bar */}
+      <div className="mt-2 relative flex gap-[2px] h-[12px] bg-slate-700 rounded-[2px] overflow-hidden">
+        {/* Filled portion */}
+        <motion.div
+          initial={{ width: 0 }}
+          animate={controls}
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className={`absolute top-0 left-0 h-full ${fillColorClass}`}
+        />
+        {/* Capsules overlay */}
         {Array.from({ length: segments }).map((_, i) => (
-          <motion.div
+          <div
             key={i}
-            initial={{ opacity: 0, scaleY: 0 }}
-            animate={{
-              opacity: 1,
-              scaleY: i < filledSegments ? 1 : 0,
-            }}
-            transition={{
-              delay: i * 0.02,
-              type: "spring",
-              stiffness: 200,
-              damping: 20,
-            }}
-            className={`flex-grow h-full rounded-[1px] origin-bottom ${
-              i < filledSegments ? fillColorClass : "bg-slate-700"
-            }`}
+            className="flex-1 h-full rounded-[1px] pointer-events-none"
           />
         ))}
       </div>
