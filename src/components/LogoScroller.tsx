@@ -31,6 +31,15 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
   let lastX = 0;
   let inertiaFrame: number;
 
+  let lastVibrateIndex = -1;
+  let lastVibrateTime = 0;
+
+  const vibrate = (ms: number) => {
+    if (navigator.vibrate) {
+      navigator.vibrate(ms);
+    }
+  };
+
   const lerp = (a: number, b: number, n: number) => a + (b - a) * n;
 
   const wrap = (value: number, min: number, max: number) => {
@@ -45,12 +54,27 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
     if (!isDragging) {
       velocity = lerp(velocity, dir * baseSpeed, 0.04);
       const next = x.get() + (velocity * delta) / 1000;
-
-      // smooth infinite wrap instead of snapping
       x.set(wrap(next, -TOTAL_WIDTH, 0));
+      checkForHaptic(next);
     }
 
     inertiaFrame = requestAnimationFrame(animate);
+  };
+
+  const checkForHaptic = (pos: number) => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const containerCenter = container.offsetWidth / 2;
+    const relativeX = -pos;
+    const index = Math.round((relativeX + containerCenter) / LOGO_WIDTH);
+
+    const now = performance.now();
+    if (index !== lastVibrateIndex && now - lastVibrateTime > 120) {
+      vibrate(8);
+      lastVibrateIndex = index;
+      lastVibrateTime = now;
+    }
   };
 
   useEffect(() => {
@@ -81,8 +105,12 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       const dx = currentX - lastX;
       const dt = (now - lastTime) / 1000;
 
-      x.set(scrollStart + (currentX - startX));
+      const newX = scrollStart + (currentX - startX);
+      x.set(newX);
       velocity = dx / dt;
+
+      checkForHaptic(newX);
+
       lastX = currentX;
       lastTime = now;
     };
@@ -116,11 +144,9 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
       ref={containerRef}
       className="overflow-hidden relative w-full cursor-grab active:cursor-grabbing"
     >
-      {/* Fading Edges */}
       <div className="absolute left-0 top-0 h-full w-16 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
       <div className="absolute right-0 top-0 h-full w-16 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
 
-      {/* Infinite Logos */}
       <motion.div style={{ x }} className="flex w-max select-none">
         {[...logos, ...logos].map((src, i) => (
           <div
