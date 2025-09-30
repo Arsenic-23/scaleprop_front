@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 type HtmlColorKey = "green" | "amber" | "red";
 
@@ -52,9 +53,20 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
 
       <div className="mt-2 flex gap-[2px] h-[12px]">
         {Array.from({ length: segments }).map((_, i) => (
-          <div
+          <motion.div
             key={i}
-            className={`flex-grow h-full rounded-[1px] ${
+            initial={{ opacity: 0, scaleY: 0 }}
+            animate={{
+              opacity: 1,
+              scaleY: i < filledSegments ? 1 : 0,
+            }}
+            transition={{
+              delay: i * 0.02,
+              type: "spring",
+              stiffness: 200,
+              damping: 20,
+            }}
+            className={`flex-grow h-full rounded-[1px] origin-bottom ${
               i < filledSegments ? fillColorClass : "bg-slate-700"
             }`}
           />
