@@ -1,5 +1,5 @@
-import React from "react";
-import { motion, useAnimation, useEffect } from "framer-motion";
+import React, { useEffect } from "react";
+import { motion, useAnimation } from "framer-motion";
 
 type HtmlColorKey = "green" | "amber" | "red";
 
