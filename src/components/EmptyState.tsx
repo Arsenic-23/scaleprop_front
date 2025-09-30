@@ -22,17 +22,27 @@ const EmptyState: React.FC<EmptyStateProps> = ({
         transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
         className="flex flex-col items-center justify-center h-full px-8 py-16 text-center"
       >
+        {/* Pulsing Icon */}
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.1, type: "spring", stiffness: 120, damping: 14 }}
           className="w-16 h-16 mb-6 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center shadow-sm"
         >
-          <span className="material-symbols-outlined text-gray-600 dark:text-gray-300 text-3xl">
+          <motion.span
+            className="material-symbols-outlined text-gray-600 dark:text-gray-300 text-3xl"
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{
+              duration: 2.5,
+              ease: "easeInOut",
+              repeat: Infinity,
+            }}
+          >
             {icon}
-          </span>
+          </motion.span>
         </motion.div>
 
+        {/* Title */}
         <motion.h3
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
@@ -42,6 +52,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
           {title}
         </motion.h3>
 
+        {/* Subtitle */}
         <motion.p
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
