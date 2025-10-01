@@ -1,22 +1,23 @@
+
 import React, { useState } from "react";
-import { Home, BarChart2, Users, User } from "lucide-react";
+import { Home, BarChart2, Trophy, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 const tabs = [
   { icon: Home, label: "Home", path: "/home" },
   { icon: BarChart2, label: "Account", path: "/account" },
-  { icon: Users, label: "Community", path: "/community" },
+  { icon: Trophy, label: "Achievements", path: "/achievements" }, // updated trophy tab
   { icon: User, label: "Profile", path: "/profile" },
 ];
 
 export default function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [popup, setPopup] = useState(null);
-  let pressTimer;
+  const [popup, setPopup] = useState<string | null>(null);
+  let pressTimer: ReturnType<typeof setTimeout>;
 
-  const handleLongPressStart = (label) => {
+  const handleLongPressStart = (label: string) => {
     if (window.navigator.vibrate) {
       window.navigator.vibrate([30, 20, 30]);
     }
@@ -29,12 +30,12 @@ export default function BottomNav() {
   };
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+    <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50">
       <nav
-        className="relative flex justify-between items-center px-5 py-2.5 
-        bg-white/80 dark:bg-neutral-900/80 
-        backdrop-blur-lg shadow-lg rounded-xl border border-white/20 dark:border-neutral-700/50 
-        w-[85vw] max-w-md mx-auto"
+        className="relative flex justify-between items-center px-6 py-3
+        bg-white/70 dark:bg-neutral-900/70 
+        backdrop-blur-xl shadow-lg rounded-2xl border border-white/30 dark:border-neutral-700/50 
+        w-[90vw] max-w-md mx-auto"
       >
         {tabs.map((tab, index) => (
           <NavItem
@@ -55,8 +56,8 @@ export default function BottomNav() {
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 6 }}
-              className="absolute bottom-14 left-1/2 -translate-x-1/2 
-              bg-black/80 text-white px-3 py-1.5 rounded-lg text-xs shadow-md 
+              className="absolute bottom-16 left-1/2 -translate-x-1/2 
+              bg-black/80 text-white px-3 py-1.5 rounded-lg text-xs shadow-lg 
               dark:bg-white/10 backdrop-blur-md"
             >
               {popup}
@@ -88,30 +89,32 @@ function NavItem({
 
   return (
     <motion.button
-      whileTap={{ scale: 0.92 }}
+      whileTap={{ scale: 0.9 }}
       onClick={handleClick}
       onMouseDown={() => onLongPressStart(label)}
       onMouseUp={onLongPressEnd}
       onMouseLeave={onLongPressEnd}
       onTouchStart={() => onLongPressStart(label)}
       onTouchEnd={onLongPressEnd}
-      className="relative flex flex-col items-center justify-center w-12"
+      className="relative flex flex-col items-center justify-center w-14"
     >
       <motion.div
-        animate={isActive ? { scale: 1.15 } : { scale: 1 }}
-        transition={{ type: "spring", stiffness: 300, damping: 18 }}
+        animate={isActive ? { scale: 1.2 } : { scale: 1 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
         className={`${
           isActive
-            ? "text-blue-500 dark:text-blue-400 drop-shadow-[0_0_6px_rgba(59,130,246,0.6)]"
+            ? "text-blue-500 dark:text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.65)]"
             : "text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"
         }`}
       >
-        <Icon size={20} strokeWidth={2} />
+        <Icon size={22} strokeWidth={2} />
       </motion.div>
 
       <span
-        className={`text-[10px] mt-0.5 transition-colors ${
-          isActive ? "text-blue-500 dark:text-blue-400 font-medium" : "text-gray-400"
+        className={`text-[11px] mt-1 transition-colors ${
+          isActive
+            ? "text-blue-500 dark:text-blue-400 font-medium"
+            : "text-gray-400"
         }`}
       >
         {label}
@@ -120,7 +123,8 @@ function NavItem({
       {isActive && (
         <motion.div
           layoutId="activeIndicator"
-          className="absolute -bottom-2 w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400 shadow-md"
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          className="absolute -bottom-2 w-2 h-2 rounded-full bg-blue-500 dark:bg-blue-400 shadow-md"
         />
       )}
     </motion.button>
