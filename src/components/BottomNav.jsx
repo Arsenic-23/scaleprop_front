@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Home, BarChart2, Users, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -15,7 +14,7 @@ export default function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
   const [popup, setPopup] = useState<string | null>(null);
-  let pressTimer: any;
+  let pressTimer: NodeJS.Timeout;
 
   const handleLongPressStart = (label: string) => {
     if (window.navigator.vibrate) {
@@ -69,6 +68,16 @@ export default function BottomNav() {
   );
 }
 
+interface NavItemProps {
+  icon: React.ComponentType<{ size?: number; strokeWidth?: number }>;
+  label: string;
+  path: string;
+  currentPath: string;
+  navigate: (path: string) => void;
+  onLongPressStart: (label: string) => void;
+  onLongPressEnd: () => void;
+}
+
 function NavItem({
   icon: Icon,
   label,
@@ -77,15 +86,7 @@ function NavItem({
   navigate,
   onLongPressStart,
   onLongPressEnd,
-}: {
-  icon: React.ComponentType<any>;
-  label: string;
-  path: string;
-  currentPath: string;
-  navigate: (path: string) => void;
-  onLongPressStart: (label: string) => void;
-  onLongPressEnd: () => void;
-}) {
+}: NavItemProps) {
   const isActive = currentPath === path;
 
   const handleClick = () => {
