@@ -13,10 +13,10 @@ const tabs = [
 export default function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [popup, setPopup] = useState<string | null>(null);
-  let pressTimer: NodeJS.Timeout;
+  const [popup, setPopup] = useState(null);
+  let pressTimer;
 
-  const handleLongPressStart = (label: string) => {
+  const handleLongPressStart = (label) => {
     if (window.navigator.vibrate) {
       window.navigator.vibrate([30, 20, 30]);
     }
@@ -68,16 +68,6 @@ export default function BottomNav() {
   );
 }
 
-interface NavItemProps {
-  icon: React.ComponentType<{ size?: number; strokeWidth?: number }>;
-  label: string;
-  path: string;
-  currentPath: string;
-  navigate: (path: string) => void;
-  onLongPressStart: (label: string) => void;
-  onLongPressEnd: () => void;
-}
-
 function NavItem({
   icon: Icon,
   label,
@@ -86,7 +76,7 @@ function NavItem({
   navigate,
   onLongPressStart,
   onLongPressEnd,
-}: NavItemProps) {
+}) {
   const isActive = currentPath === path;
 
   const handleClick = () => {
