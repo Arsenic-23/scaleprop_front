@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Home, BarChart2, Trophy, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
