@@ -59,19 +59,18 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
           return (
             <motion.div
               key={i}
-              initial={{ scaleY: 0.6, opacity: 0 }}
+              initial={{ scaleY: 0.6, opacity: 0.3 }}
               animate={{
                 scaleY: 1,
                 opacity: 1,
               }}
               transition={{
-                delay: i * 0.015,
-                duration: 0.35,
-                ease: "easeOut",
+                delay: i * 0.012,
+                type: "spring",
+                stiffness: 120,
+                damping: 18,
               }}
-              className={`flex-1 rounded-full transition-colors duration-500 ${
-                isFilled ? fillColorClass : "bg-slate-700"
-              }`}
+              className={`flex-1 rounded-full transition-colors duration-700 ${isFilled ? fillColorClass : "bg-slate-700"}`}
             />
           );
         })}
