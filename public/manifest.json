@@ -1,0 +1,21 @@
+{
+  "name": "Scalefund",
+  "short_name": "Scalefund",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "description": "Enter the premium world of trading with Scale Fund.",
+  "icons": [
+    {
+      "src": "/scale.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/scale.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
