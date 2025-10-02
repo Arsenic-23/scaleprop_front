@@ -5,12 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Scalefund</title>
 
+    <!-- PWA meta -->
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
       content="Enter the premium world of trading with Scale Fund."
     />
 
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- App Icon (for iOS Safari support) -->
+    <link rel="apple-touch-icon" href="/logo.png" />
+
+    <!-- Favicon (browser tab icon) -->
+    <link rel="icon" type="image/png" href="/logo.png" />
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
     <link
@@ -22,26 +33,26 @@
       rel="stylesheet"
     />
 
+    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-
     <script>
       tailwind.config = {
         darkMode: "class",
         theme: {
           extend: {
             colors: {
-              primary: "#3B82F6", // A professional blue
+              primary: "#3B82F6",
               "background-light": "#FFFFFF",
-              "background-dark": "#000000", // Main black background
-              "surface-dark": "#101010", // Dark surface for cards
+              "background-dark": "#000000",
+              "surface-dark": "#101010",
               "text-light": "#000000",
-              "text-dark": "#FFFFFF", // Main white text
-              "text-muted-dark": "#8A8A8A", // Muted gray text
-              "accent-blue": "#3B82F6", // Primary accent color
+              "text-dark": "#FFFFFF",
+              "text-muted-dark": "#8A8A8A",
+              "accent-blue": "#3B82F6",
             },
             fontFamily: {
-              display: ["Manrope", "sans-serif"], // For brand / special text
-              sans: ["system-ui", "sans-serif"], // For clean normal text (like Notifications)
+              display: ["Manrope", "sans-serif"],
+              sans: ["system-ui", "sans-serif"],
             },
             borderRadius: {
               DEFAULT: "1rem",
@@ -55,11 +66,9 @@
     </script>
 
     <style>
-      /* Ensure icons are displayed correctly with variable font settings */
       .material-symbols-outlined {
         font-variation-settings: "FILL" 0, "wght" 300, "GRAD" 0, "opsz" 24;
       }
-      /* Ensure the body takes up the full viewport height */
       body {
         min-height: max(884px, 100dvh);
       }
@@ -68,7 +77,6 @@
 
   <body class="bg-background-dark font-display text-text-dark overflow-x-hidden">
     <div id="root"></div>
-
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
