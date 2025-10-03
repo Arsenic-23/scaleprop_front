@@ -1,19 +1,14 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
-interface CurrencyBurstProps {
-  trigger?: boolean;
-  count?: number;
-}
-
-export default function CurrencyBurst({ trigger = false, count = 24 }: CurrencyBurstProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+export default function CurrencyBurst({ trigger = false, count = 24 }) {
+  const containerRef = useRef(null);
 
   useEffect(() => {
     if (!trigger || !containerRef.current) return;
 
     const container = containerRef.current;
-    const particles: HTMLSpanElement[] = [];
+    const particles = [];
 
     const rect = container.getBoundingClientRect();
     const centerX = rect.width / 2;
@@ -25,14 +20,14 @@ export default function CurrencyBurst({ trigger = false, count = 24 }: CurrencyB
       container.appendChild(span);
       particles.push(span);
 
-      // Random golden sparkle symbols (instead of emojis)
+      // Golden sparkle symbols
       span.innerText = ["•", "◆", "◇", "✦"][Math.floor(Math.random() * 4)];
 
-      // Starting position at center
+      // Center position
       span.style.left = `${centerX}px`;
       span.style.top = `${centerY}px`;
 
-      // Angle + distance
+      // Angle + radius
       const angle = (2 * Math.PI * i) / count;
       const distance = 100 + Math.random() * 80; // softer radius
       const x = Math.cos(angle) * distance;
