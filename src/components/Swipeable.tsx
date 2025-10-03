@@ -16,17 +16,17 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
   const rawX = useMotionValue(0);
   const ref = useRef<HTMLDivElement>(null);
 
-  // iOS-like sensitivity mapping
+  // Ultra-smooth iOS-like sensitivity
   const x = useTransform(rawX, (latest) => {
-    if (latest > 0) return latest * 0.35;
+    if (latest > 0) return latest * 0.35; // very soft right swipe
     if (latest < -120) {
       const beyond = latest + 120;
-      return -120 + beyond * 0.75;
+      return -120 + beyond * 0.75; // strong resistance feel
     }
-    return latest * 2;
+    return latest * 2; // amplify small drags
   });
 
-  // Notification card transforms
+  // Gentle scaling + shadow
   const scale = useTransform(x, [-140, 0], [1.025, 1]);
   const shadow = useTransform(
     x,
@@ -37,7 +37,7 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     ]
   );
 
-  // Bin background styling
+  // Background bin styling
   const bgColor = useTransform(
     x,
     [-140, -25],
@@ -49,11 +49,6 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     clamp: true,
   });
   const binOpacity = useTransform(x, [-140, -25, 0], [1, 0.85, 0], {
-    clamp: true,
-  });
-
-  // 🎉 Lid rotation (hinged on left top)
-  const lidRotate = useTransform(x, [-140, -70, 0], [-35, -15, 0], {
     clamp: true,
   });
 
@@ -70,23 +65,10 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
         style={{ backgroundColor: bgColor as any }}
       >
         <motion.div
-          style={{
-            scale: binScale,
-            opacity: binOpacity,
-          }}
-          className="relative text-red-500/90 flex flex-col items-center justify-center"
+          style={{ scale: binScale, opacity: binOpacity }}
+          className="text-red-500/90"
         >
-          {/* Bin Lid */}
-          <motion.div
-            style={{
-              rotate: lidRotate,
-              transformOrigin: "left bottom", // hinge effect
-            }}
-            className="absolute -top-2 left-[2px] w-7 h-2 bg-red-500/90 rounded-sm"
-          />
-
-          {/* Bin Body */}
-          <Trash2 size={30} className="relative z-10" />
+          <Trash2 size={28} />
         </motion.div>
       </motion.div>
 
@@ -100,10 +82,11 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
         whileDrag={{ cursor: "grabbing" }}
         onDragEnd={(_, info) => {
           const width = ref.current?.offsetWidth || 320;
-          const threshold = -width * 0.15;
+          const threshold = -width * 0.15; // easier to trigger dismiss
           const velocity = info.velocity.x;
 
           if (x.get() <= threshold || velocity < -400) {
+            // swipe to remove
             animate(rawX, -width, {
               type: "tween",
               duration: 0.23,
@@ -111,10 +94,11 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
               onComplete: handleRemove,
             });
           } else {
+            // reset back
             animate(rawX, 0, {
               type: "spring",
-              stiffness: 180,
-              damping: 24,
+              stiffness: 180, // softer spring
+              damping: 24,    // smoother stop
             });
           }
         }}
