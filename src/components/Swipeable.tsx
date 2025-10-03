@@ -41,13 +41,8 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     { clamp: true }
   );
 
-  // Bin scale + opacity directly tied to drag
-  const binScale = useTransform(rawX, [-160, -60, 0], [1.3, 1, 0.7], {
-    clamp: true,
-  });
-  const binOpacity = useTransform(rawX, [-160, -60, 0], [1, 0.9, 0], {
-    clamp: true,
-  });
+  // Bin scale tied to drag (always visible, grows as swipe progresses)
+  const binScale = useTransform(rawX, [-160, 0], [1.3, 0.9], { clamp: true });
 
   const handleRemove = () => {
     if (navigator.vibrate) navigator.vibrate(40);
@@ -64,7 +59,6 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
         <motion.div
           style={{
             scale: binScale,
-            opacity: binOpacity,
           }}
           className="text-red-500"
         >
