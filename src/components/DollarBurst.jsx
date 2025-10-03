@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
-const currencyList = ["₹", "¥", "$", "€"];
+const currencyList = ["C", "B", "A", "€"];
 
 export default function CurrencyBurst({ trigger = false, count = 36 }) {
   const containerRef = useRef(null);
