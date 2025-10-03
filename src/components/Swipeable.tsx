@@ -16,13 +16,13 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
   const rawX = useMotionValue(0);
   const ref = useRef<HTMLDivElement>(null);
 
-  // Perfectly synced drag (1:1 with slight right resistance)
+  // Perfectly synced drag (1:1 with slight resistance on right swipe)
   const x = useTransform(rawX, (latest) => {
-    if (latest > 0) return latest * 0.25; // resistance right
+    if (latest > 0) return latest * 0.25; // soft resistance right
     return latest; // synced left swipe
   });
 
-  // Foreground scale + shadow
+  // Foreground scale + shadow for depth
   const scale = useTransform(x, [-160, 0], [1.02, 1]);
   const shadow = useTransform(
     x,
@@ -33,7 +33,7 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     ]
   );
 
-  // Smooth classy background transition
+  // Smooth background transition (dark red → brighter red)
   const bgColor = useTransform(
     x,
     [-160, 0],
@@ -41,14 +41,11 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     { clamp: true }
   );
 
-  // Bin animations tied directly to rawX
-  const binScale = useTransform(rawX, [-160, -60, 0], [1.2, 1, 0.7], {
+  // Bin scale + opacity directly tied to drag
+  const binScale = useTransform(rawX, [-160, -60, 0], [1.3, 1, 0.7], {
     clamp: true,
   });
   const binOpacity = useTransform(rawX, [-160, -60, 0], [1, 0.9, 0], {
-    clamp: true,
-  });
-  const binRotate = useTransform(rawX, [-160, -60, 0], [-10, 0, 0], {
     clamp: true,
   });
 
@@ -68,7 +65,6 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
           style={{
             scale: binScale,
             opacity: binOpacity,
-            rotate: binRotate,
           }}
           className="text-red-500"
         >
