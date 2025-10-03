@@ -16,15 +16,17 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
   const rawX = useMotionValue(0);
   const ref = useRef<HTMLDivElement>(null);
 
+  // iOS-like sensitivity
   const x = useTransform(rawX, (latest) => {
-    if (latest > 0) return latest * 0.35; // very soft right swipe
+    if (latest > 0) return latest * 0.35;
     if (latest < -120) {
       const beyond = latest + 120;
-      return -120 + beyond * 0.75; // strong resistance feel
+      return -120 + beyond * 0.75;
     }
-    return latest * 2; // amplify small drags
+    return latest * 2;
   });
 
+  // Foreground scaling + shadow
   const scale = useTransform(x, [-140, 0], [1.025, 1]);
   const shadow = useTransform(
     x,
@@ -35,6 +37,7 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     ]
   );
 
+  // Background + bin
   const bgColor = useTransform(
     x,
     [-140, -25],
@@ -49,8 +52,13 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     clamp: true,
   });
 
+  // 🎉 New rotation effect for the bin
+  const binRotate = useTransform(x, [-140, -70, 0], [-20, -8, 0], {
+    clamp: true,
+  });
+
   const handleRemove = () => {
-    if (navigator.vibrate) navigator.vibrate(40);
+    if (navigator.vibrate) navigator.vibrate(35);
     onRemove(id);
   };
 
@@ -62,10 +70,14 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
         style={{ backgroundColor: bgColor as any }}
       >
         <motion.div
-          style={{ scale: binScale, opacity: binOpacity }}
-          className="text-red-500/90"
+          style={{
+            scale: binScale,
+            opacity: binOpacity,
+            rotate: binRotate, // 🔥 rotation linked to swipe
+          }}
+          className="text-red-500/90 origin-center"
         >
-          <Trash2 size={28} />
+          <Trash2 size={30} />
         </motion.div>
       </motion.div>
 
@@ -79,11 +91,10 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
         whileDrag={{ cursor: "grabbing" }}
         onDragEnd={(_, info) => {
           const width = ref.current?.offsetWidth || 320;
-          const threshold = -width * 0.15; // easier to trigger dismiss
+          const threshold = -width * 0.15;
           const velocity = info.velocity.x;
 
           if (x.get() <= threshold || velocity < -400) {
-            // swipe to remove
             animate(rawX, -width, {
               type: "tween",
               duration: 0.23,
@@ -91,11 +102,10 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
               onComplete: handleRemove,
             });
           } else {
-            // reset back
             animate(rawX, 0, {
               type: "spring",
-              stiffness: 180, // softer spring
-              damping: 24,    // smoother stop
+              stiffness: 180,
+              damping: 24,
             });
           }
         }}
