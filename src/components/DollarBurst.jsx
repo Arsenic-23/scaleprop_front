@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
-export default function CurrencyBurst({ trigger = false, count = 24 }) {
+export default function CurrencyBurst({ trigger = false, count = 20 }) {
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -16,20 +16,27 @@ export default function CurrencyBurst({ trigger = false, count = 24 }) {
 
     for (let i = 0; i < count; i++) {
       const span = document.createElement("span");
-      span.className = "particle-burst absolute";
+      span.className = "coin-burst absolute";
+      span.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="45" fill="url(#goldGradient)" stroke="#d4af37" stroke-width="5"/>
+          <defs>
+            <radialGradient id="goldGradient" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fff8dc"/>
+              <stop offset="40%" stop-color="#ffd700"/>
+              <stop offset="100%" stop-color="#b8860b"/>
+            </radialGradient>
+          </defs>
+        </svg>
+      `;
       container.appendChild(span);
       particles.push(span);
 
-      // Golden sparkle symbols
-      span.innerText = ["•", "◆", "◇", "✦"][Math.floor(Math.random() * 4)];
-
-      // Center position
       span.style.left = `${centerX}px`;
       span.style.top = `${centerY}px`;
 
-      // Angle + radius
       const angle = (2 * Math.PI * i) / count;
-      const distance = 100 + Math.random() * 80; // softer radius
+      const distance = 100 + Math.random() * 80;
       const x = Math.cos(angle) * distance;
       const y = Math.sin(angle) * distance;
 
@@ -39,16 +46,16 @@ export default function CurrencyBurst({ trigger = false, count = 24 }) {
           x: 0,
           y: 0,
           opacity: 1,
-          scale: 0.8,
+          scale: gsap.utils.random(0.6, 0.9),
           rotate: 0,
         },
         {
           x,
           y,
           opacity: 0,
-          scale: 1.3,
-          rotate: gsap.utils.random(-45, 45),
-          duration: gsap.utils.random(1.4, 1.9),
+          scale: gsap.utils.random(1.1, 1.4),
+          rotate: gsap.utils.random(-30, 30), 
+          duration: gsap.utils.random(1.6, 2.2),
           ease: "power2.out",
           onComplete: () => span.remove(),
         }
@@ -62,15 +69,11 @@ export default function CurrencyBurst({ trigger = false, count = 24 }) {
       className="pointer-events-none absolute inset-0 z-50 overflow-hidden"
     >
       <style jsx>{`
-        .particle-burst {
-          font-size: clamp(1rem, 1.5vw, 1.6rem);
-          font-weight: 600;
-          background: radial-gradient(circle, #ffffff, #ffe680, #ffcc00);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          text-shadow: 0 0 6px rgba(255, 215, 0, 0.8);
+        .coin-burst {
           transform: translate(-50%, -50%);
+          filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.9));
           user-select: none;
+          pointer-events: none;
         }
       `}</style>
     </div>
