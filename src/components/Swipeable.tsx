@@ -16,7 +16,7 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
   const rawX = useMotionValue(0);
   const ref = useRef<HTMLDivElement>(null);
 
-  // iOS-like sensitivity
+  // iOS-like sensitivity mapping
   const x = useTransform(rawX, (latest) => {
     if (latest > 0) return latest * 0.35;
     if (latest < -120) {
@@ -26,7 +26,7 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     return latest * 2;
   });
 
-  // Foreground scaling + shadow
+  // Notification card transforms
   const scale = useTransform(x, [-140, 0], [1.025, 1]);
   const shadow = useTransform(
     x,
@@ -37,7 +37,7 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     ]
   );
 
-  // Background + bin
+  // Bin background styling
   const bgColor = useTransform(
     x,
     [-140, -25],
@@ -52,8 +52,8 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     clamp: true,
   });
 
-  // 🎉 New rotation effect for the bin
-  const binRotate = useTransform(x, [-140, -70, 0], [-20, -8, 0], {
+  // 🎉 Lid rotation (hinged on left top)
+  const lidRotate = useTransform(x, [-140, -70, 0], [-35, -15, 0], {
     clamp: true,
   });
 
@@ -73,11 +73,20 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
           style={{
             scale: binScale,
             opacity: binOpacity,
-            rotate: binRotate, // 🔥 rotation linked to swipe
           }}
-          className="text-red-500/90 origin-center"
+          className="relative text-red-500/90 flex flex-col items-center justify-center"
         >
-          <Trash2 size={30} />
+          {/* Bin Lid */}
+          <motion.div
+            style={{
+              rotate: lidRotate,
+              transformOrigin: "left bottom", // hinge effect
+            }}
+            className="absolute -top-2 left-[2px] w-7 h-2 bg-red-500/90 rounded-sm"
+          />
+
+          {/* Bin Body */}
+          <Trash2 size={30} className="relative z-10" />
         </motion.div>
       </motion.div>
 
