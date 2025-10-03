@@ -53,7 +53,7 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
   });
 
   const handleRemove = () => {
-    if (navigator.vibrate) navigator.vibrate(35);
+    if (navigator.vibrate) navigator.vibrate(40);
     onRemove(id);
   };
 
