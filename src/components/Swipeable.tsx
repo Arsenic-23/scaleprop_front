@@ -41,8 +41,10 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     { clamp: true }
   );
 
-  // Bin scale tied to drag (always visible, grows as swipe progresses)
-  const binScale = useTransform(rawX, [-160, 0], [1.3, 0.9], { clamp: true });
+  // 🚀 Trash bin scale (neutral at 1, grows on left swipe, shrinks on right swipe)
+  const binScale = useTransform(rawX, [-160, 0, 160], [1.4, 1, 0.7], {
+    clamp: false,
+  });
 
   const handleRemove = () => {
     if (navigator.vibrate) navigator.vibrate(40);
