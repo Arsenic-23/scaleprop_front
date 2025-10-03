@@ -1,20 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
-const currencyList = ["C", "B", "A", "€"];
+interface CurrencyBurstProps {
+  trigger?: boolean;
+  count?: number;
+}
 
-export default function CurrencyBurst({ trigger = false, count = 36 }) {
-  const containerRef = useRef(null);
-  const [index, setIndex] = useState(0);
+export default function CurrencyBurst({ trigger = false, count = 24 }: CurrencyBurstProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!trigger || !containerRef.current) return;
 
-    const emoji = currencyList[index % currencyList.length];
-    setIndex((prev) => (prev + 1) % currencyList.length);
-
     const container = containerRef.current;
-    const emojis = [];
+    const particles: HTMLSpanElement[] = [];
 
     const rect = container.getBoundingClientRect();
     const centerX = rect.width / 2;
@@ -22,18 +21,22 @@ export default function CurrencyBurst({ trigger = false, count = 36 }) {
 
     for (let i = 0; i < count; i++) {
       const span = document.createElement("span");
-      span.innerText = emoji;
-      span.className = "emoji-burst absolute text-2xl md:text-4xl";
+      span.className = "particle-burst absolute";
       container.appendChild(span);
-      emojis.push(span);
+      particles.push(span);
 
-      const angle = (2 * Math.PI * i) / count;
-      const distance = 180 + Math.random() * 70; // Bigger burst radius
-      const x = Math.cos(angle) * distance;
-      const y = Math.sin(angle) * distance;
+      // Random golden sparkle symbols (instead of emojis)
+      span.innerText = ["•", "◆", "◇", "✦"][Math.floor(Math.random() * 4)];
 
+      // Starting position at center
       span.style.left = `${centerX}px`;
       span.style.top = `${centerY}px`;
+
+      // Angle + distance
+      const angle = (2 * Math.PI * i) / count;
+      const distance = 100 + Math.random() * 80; // softer radius
+      const x = Math.cos(angle) * distance;
+      const y = Math.sin(angle) * distance;
 
       gsap.fromTo(
         span,
@@ -41,24 +44,22 @@ export default function CurrencyBurst({ trigger = false, count = 36 }) {
           x: 0,
           y: 0,
           opacity: 1,
-          scale: 0.5,
+          scale: 0.8,
           rotate: 0,
         },
         {
           x,
           y,
           opacity: 0,
-          scale: 2,
-          rotate: 1080,
-          duration: 2.2,
-          ease: "power4.out",
-          onComplete: () => {
-            span.remove();
-          },
+          scale: 1.3,
+          rotate: gsap.utils.random(-45, 45),
+          duration: gsap.utils.random(1.4, 1.9),
+          ease: "power2.out",
+          onComplete: () => span.remove(),
         }
       );
     }
-  }, [trigger]);
+  }, [trigger, count]);
 
   return (
     <div
@@ -66,34 +67,15 @@ export default function CurrencyBurst({ trigger = false, count = 36 }) {
       className="pointer-events-none absolute inset-0 z-50 overflow-hidden"
     >
       <style jsx>{`
-        .emoji-burst {
-          font-weight: 900;
-          background: radial-gradient(
-            circle,
-            #ffffff,
-            #00ffe0,
-            #14e7b8,
-            #00b894
-          );
+        .particle-burst {
+          font-size: clamp(1rem, 1.5vw, 1.6rem);
+          font-weight: 600;
+          background: radial-gradient(circle, #ffffff, #ffe680, #ffcc00);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
-          animation: shimmer 3s infinite ease-in-out;
-          filter: blur(0.3px) brightness(1.2);
+          text-shadow: 0 0 6px rgba(255, 215, 0, 0.8);
           transform: translate(-50%, -50%);
           user-select: none;
-          pointer-events: none;
-        }
-
-        @keyframes shimmer {
-          0% {
-            filter: hue-rotate(0deg) brightness(1.2);
-          }
-          50% {
-            filter: hue-rotate(180deg) brightness(1.3);
-          }
-          100% {
-            filter: hue-rotate(360deg) brightness(1.2);
-          }
         }
       `}</style>
     </div>
