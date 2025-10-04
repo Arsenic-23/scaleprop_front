@@ -29,12 +29,13 @@ export default function BottomNav() {
   };
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+    <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center">
       <nav
-        className="relative flex justify-between items-center px-5 py-2.5
-        bg-white/80 dark:bg-neutral-900/80
-        backdrop-blur-lg shadow-lg rounded-xl border border-white/20 dark:border-neutral-700/50
-        w-[85vw] max-w-md mx-auto"
+        className="relative flex justify-between items-center px-6 py-3 
+        bg-white/10 dark:bg-neutral-900/40 
+        backdrop-blur-2xl border border-white/20 dark:border-neutral-800/50
+        rounded-2xl shadow-[0_8px_25px_rgba(0,0,0,0.25)] 
+        w-[88vw] max-w-md mx-auto"
       >
         {tabs.map((tab, index) => (
           <NavItem
@@ -52,12 +53,12 @@ export default function BottomNav() {
         <AnimatePresence>
           {popup && (
             <motion.div
-              initial={{ opacity: 0, y: 6 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 6 }}
-              className="absolute bottom-14 left-1/2 -translate-x-1/2
-              bg-black/80 text-white px-3 py-1.5 rounded-lg text-xs shadow-md
-              dark:bg-white/10 backdrop-blur-md"
+              exit={{ opacity: 0, y: 8 }}
+              className="absolute bottom-16 left-1/2 -translate-x-1/2
+              bg-black/70 dark:bg-white/10 text-white text-[11px] px-3 py-1.5 
+              rounded-lg shadow-lg backdrop-blur-md border border-white/10"
             >
               {popup}
             </motion.div>
@@ -88,41 +89,52 @@ function NavItem({
 
   return (
     <motion.button
-      whileTap={{ scale: 0.92 }}
+      whileTap={{ scale: 0.9 }}
       onClick={handleClick}
       onMouseDown={() => onLongPressStart(label)}
       onMouseUp={onLongPressEnd}
       onMouseLeave={onLongPressEnd}
       onTouchStart={() => onLongPressStart(label)}
       onTouchEnd={onLongPressEnd}
-      className="relative flex flex-col items-center justify-center w-12"
+      className="relative flex flex-col items-center justify-center w-14"
     >
       <motion.div
-        animate={isActive ? { scale: 1.15 } : { scale: 1 }}
-        transition={{ type: "spring", stiffness: 300, damping: 18 }}
+        animate={
+          isActive
+            ? { scale: 1.2, y: -3 }
+            : { scale: 1, y: 0 }
+        }
+        transition={{ type: "spring", stiffness: 400, damping: 22 }}
         className={
           isActive
-            ? "text-blue-500 dark:text-blue-400 drop-shadow-[0_0_6px_rgba(59,130,246,0.6)]"
-            : "text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"
+            ? "text-blue-500 dark:text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.8)]"
+            : "text-gray-400 dark:text-gray-500 hover:text-gray-200 transition-colors"
         }
       >
-        <Icon size={20} strokeWidth={2} />
+        <Icon size={22} strokeWidth={2.1} />
       </motion.div>
 
-      <span
-        className={`text-[10px] mt-0.5 transition-colors ${
+      <motion.span
+        animate={{
+          opacity: isActive ? 1 : 0.6,
+          y: isActive ? -1 : 1,
+        }}
+        transition={{ duration: 0.25 }}
+        className={`text-[10px] mt-0.5 ${
           isActive
             ? "text-blue-500 dark:text-blue-400 font-medium"
             : "text-gray-400"
         }`}
       >
         {label}
-      </span>
+      </motion.span>
 
       {isActive && (
         <motion.div
           layoutId="activeIndicator"
-          className="absolute -bottom-2 w-1.5 h-1.5 rounded-full bg-blue-500 dark:bg-blue-400 shadow-md"
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          className="absolute -bottom-1.5 w-1.5 h-1.5 rounded-full 
+          bg-blue-500 dark:bg-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.8)]"
         />
       )}
     </motion.button>
