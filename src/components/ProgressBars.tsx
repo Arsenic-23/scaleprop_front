@@ -47,7 +47,7 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
   return (
     <div className="w-full">
       {/* Top labels */}
-      <div className="flex justify-between text-sm font-medium text-gray-500">
+      <div className="flex justify-between text-[0.85rem] font-medium text-gray-400">
         <span className="capitalize">{label}</span>
         <span>{totalLabel}</span>
       </div>
@@ -79,7 +79,7 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
       </div>
 
       {/* Bottom labels */}
-      <div className="mt-2 flex justify-between text-xs text-gray-500">
+      <div className="mt-2 flex justify-between text-[0.75rem] text-gray-500">
         <span>{usedLabel}</span>
         <span>{formatPct(value, max)}%</span>
       </div>
@@ -105,7 +105,7 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
   totalDrawdownMax,
 }) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       <LinearCapsuleBar
         label="profit target"
         value={profitTargetValue}
@@ -132,6 +132,24 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
         totalLabel={`$${totalDrawdownMax.toLocaleString()}`}
         color="red"
       />
+    </div>
+  );
+};
+
+/* ✅ Responsive Wrapper — paste this where you render ProgressBarsGroup */
+export const ResponsiveProgressView = () => {
+  return (
+    <div className="flex justify-center items-center min-h-screen bg-[#0f1116]">
+      <div className="w-full max-w-md px-4 sm:px-6 md:px-8 scale-[0.98] md:scale-100">
+        <ProgressBarsGroup
+          profitTargetValue={8000}
+          profitTargetMax={10000}
+          dailyDrawdownValue={3000}
+          dailyDrawdownMax={5000}
+          totalDrawdownValue={6000}
+          totalDrawdownMax={10000}
+        />
+      </div>
     </div>
   );
 };
