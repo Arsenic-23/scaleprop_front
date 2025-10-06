@@ -52,8 +52,11 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
         <span>{totalLabel}</span>
       </div>
 
-      {/* Capsule bar */}
-      <div className="mt-2 flex gap-[3px] h-[14px]">
+      {/* Capsule bar (rigid + responsive) */}
+      <div
+        className="mt-2 flex flex-wrap justify-between h-[14px]"
+        style={{ gap: "3px" }}
+      >
         {Array.from({ length: segments }).map((_, i) => {
           const isFilled = i < filledSegments;
           return (
@@ -70,7 +73,15 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
                 stiffness: 120,
                 damping: 18,
               }}
-              className={`flex-1 rounded-full transition-colors duration-700 ${isFilled ? fillColorClass : "bg-slate-700"}`}
+              className={`rounded-full transition-colors duration-700 ${
+                isFilled ? fillColorClass : "bg-slate-700"
+              }`}
+              style={{
+                width: `${100 / segments - 0.5}%`, // even spacing
+                minWidth: "6px",
+                maxWidth: "16px",
+                flex: "0 0 auto", // prevent flex resizing
+              }}
             />
           );
         })}
@@ -103,7 +114,12 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
   totalDrawdownMax,
 }) => {
   return (
-    <div className="space-y-6">
+    <div
+      className="
+        mx-auto space-y-6 
+        w-[320px] sm:w-[480px] md:w-[640px]
+      "
+    >
       <LinearCapsuleBar
         label="profit target"
         value={profitTargetValue}
