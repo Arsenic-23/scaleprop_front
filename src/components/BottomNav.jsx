@@ -13,10 +13,10 @@ const tabs = [
 export default function BottomNav() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [popup, setPopup] = useState<string | null>(null);
-  let pressTimer; any;
+  const [popup, setPopup] = useState(null);
+  let pressTimer;
 
-  const handleLongPressStart = (label: string) => {
+  const handleLongPressStart = (label) => {
     if (window.navigator.vibrate) window.navigator.vibrate([30, 20, 30]);
     pressTimer = setTimeout(() => setPopup(label), 500);
   };
@@ -68,7 +68,7 @@ export default function BottomNav() {
           )}
         </AnimatePresence>
 
-        {/* Subtle glassy reflection overlay */}
+        {/* Glassy reflection overlay */}
         <div className="absolute inset-0 rounded-3xl bg-gradient-to-t from-transparent via-white/5 to-white/10 pointer-events-none" />
       </motion.nav>
     </div>
@@ -83,7 +83,7 @@ function NavItem({
   navigate,
   onLongPressStart,
   onLongPressEnd,
-}: any) {
+}) {
   const isActive = currentPath === path;
 
   const handleClick = () => {
