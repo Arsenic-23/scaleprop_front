@@ -22,49 +22,52 @@ export default function BottomNavigation() {
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-      <div className="relative w-[82vw] max-w-sm mx-auto">
-        {/* Frost glass */}
+      <div className="relative w-[80vw] max-w-sm mx-auto">
+
+        {/* Frost dark glass */}
         <motion.div
           className="absolute inset-0 rounded-3xl overflow-hidden"
           style={{
-            background: "rgba(255,255,255,0.09)",
-            backdropFilter: "blur(30px)",
-            WebkitBackdropFilter: "blur(30px)",
-            border: "1.5px solid rgba(255,255,255,0.25)",
+            background:
+              "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.45) 100%)",
+            backdropFilter: "blur(34px)",
+            WebkitBackdropFilter: "blur(34px)",
+            border: "1.2px solid rgba(255,255,255,0.14)",
             boxShadow:
-              "0 10px 40px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.6), inset 0 -1px 0 rgba(255,255,255,0.1)",
+              "0 12px 45px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(255,255,255,0.06)",
           }}
-          initial={{ opacity: 0, y: 26 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.35 }}
         >
-          {/* Frosty top highlight */}
+          {/* Frost highlight */}
           <div
             style={{
               position: "absolute",
               top: 0,
               left: 0,
               right: 0,
-              height: "1.5px",
+              height: "1px",
               background:
-                "linear-gradient(90deg, transparent, rgba(255,255,255,0.85), transparent)",
+                "linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)",
             }}
           />
-          {/* Vertical frost edge */}
+
+          {/* Cool tint glow */}
           <div
             style={{
               position: "absolute",
-              top: 0,
+              bottom: 0,
               left: 0,
-              width: "1px",
-              height: "100%",
+              right: 0,
+              height: "35%",
               background:
-                "linear-gradient(180deg, rgba(255,255,255,0.85), transparent, rgba(255,255,255,0.2))",
+                "radial-gradient(circle at bottom, rgba(0,200,255,0.14), transparent)",
             }}
           />
         </motion.div>
 
-        {/* Nav icons */}
+        {/* Icons */}
         <div className="relative flex justify-around items-center h-14 z-10">
           {tabs.map((tab) => {
             const isActive = active === tab.path;
@@ -79,22 +82,32 @@ export default function BottomNavigation() {
                     {isActive && (
                       <motion.div
                         layoutId="bubble"
-                        className="absolute w-10 h-10 rounded-full bg-white/20 backdrop-blur-2xl"
+                        className="absolute w-10 h-10 rounded-full"
+                        style={{
+                          background:
+                            "rgba(255,255,255,0.14)",
+                          backdropFilter: "blur(38px)",
+                          WebkitBackdropFilter: "blur(38px)",
+                          boxShadow:
+                            "0 0 22px rgba(0,200,255,0.38)",
+                        }}
                         initial={{ scale: 0.4, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.4, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
+                        transition={{ duration: 0.18 }}
                       />
                     )}
                   </AnimatePresence>
 
                   <motion.div
                     animate={{
-                      scale: isActive ? 1.28 : 1,
+                      scale: isActive ? 1.3 : 1,
                       y: isActive ? -2 : 0,
                     }}
-                    transition={{ duration: 0.18 }}
-                    className={`${isActive ? "text-white" : "text-white/60"}`}
+                    transition={{ duration: 0.15 }}
+                    className={`${
+                      isActive ? "text-white" : "text-white/55"
+                    }`}
                   >
                     {tab.icon}
                   </motion.div>
