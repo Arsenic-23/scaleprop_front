@@ -27,7 +27,7 @@ export default function BottomNavContainer({ children }) {
         transition={{ duration: 0.45 }}
         className="pointer-events-auto relative flex justify-between items-center px-6 py-2.5
           w-[78vw] max-w-sm mx-auto rounded-[2rem]
-          bg-black/30 border border-white/20
+          bg-black/40 border border-white/20
           backdrop-blur-[70px] backdrop-saturate-[300%]
           shadow-[0_12px_36px_rgba(0,0,0,0.55)]
           ring-1 ring-black/40 ring-inset overflow-hidden"
