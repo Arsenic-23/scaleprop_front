@@ -29,38 +29,56 @@ export default function BottomNav() {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center pointer-events-none">
       <motion.nav
-        initial={{ opacity: 0, y: 26, scale: 0.9 }}
+        initial={{ opacity: 0, y: 30, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.55, ease: "easeOut" }}
-        className="pointer-events-auto relative flex justify-between items-center px-4 py-2.5
-          w-[78vw] max-w-xs mx-auto rounded-[2rem]
-          border border-white/25 bg-white/10 dark:bg-black/30
-          backdrop-blur-[38px] backdrop-saturate-[230%]
-          shadow-[0_6px_35px_rgba(0,0,0,0.45)]
-          ring-1 ring-white/10 ring-inset overflow-hidden"
+        className="pointer-events-auto relative flex justify-between items-center px-6 py-2.5
+          w-[78vw] max-w-sm mx-auto rounded-[2rem]
+          bg-white/15 border border-white/25
+          backdrop-blur-[45px] backdrop-saturate-[260%]
+          shadow-[0_4px_25px_rgba(0,0,0,0.35)]
+          ring-1 ring-white/15 ring-inset overflow-hidden"
         style={{
-          WebkitBackdropFilter: "blur(38px) saturate(230%)",
-          backdropFilter: "blur(38px) saturate(230%)",
+          WebkitBackdropFilter: "blur(45px) saturate(260%)",
+          backdropFilter: "blur(45px) saturate(260%)",
         }}
       >
+        {/* Animated flowing light wave */}
         <motion.div
           initial={{ x: "-150%" }}
           animate={{ x: "150%" }}
           transition={{
             repeat: Infinity,
-            duration: 4,
+            duration: 6,
             ease: "linear",
             repeatDelay: 3,
           }}
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-50"
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-30"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/10 to-transparent rounded-[2rem] pointer-events-none" />
+        {/* Layered internal gradient for iOS gloss */}
+        <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-white/25 via-white/15 to-transparent pointer-events-none" />
 
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/40 blur-[1px] opacity-70" />
+        {/* Top reflective highlight */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/60 blur-[1px] opacity-80" />
 
-        <div className="absolute inset-0 rounded-[2rem] shadow-[inset_0_1px_8px_rgba(255,255,255,0.25),inset_0_-4px_10px_rgba(0,0,0,0.32)] pointer-events-none" />
+        {/* Inner shadows for curved glass depth */}
+        <div className="absolute inset-0 rounded-[2rem] shadow-[inset_0_2px_10px_rgba(255,255,255,0.25),inset_0_-4px_12px_rgba(0,0,0,0.35)] pointer-events-none" />
 
+        {/* Dynamic light reflection sweep */}
+        <motion.div
+          initial={{ x: "-120%" }}
+          animate={{ x: "120%" }}
+          transition={{
+            repeat: Infinity,
+            duration: 7,
+            ease: "easeInOut",
+            repeatDelay: 5,
+          }}
+          className="absolute top-0 left-0 w-[150%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-30 blur-[12px] rounded-[2rem]"
+        />
+
+        {/* Navigation Items */}
         {tabs.map((tab, i) => (
           <NavItem
             key={i}
@@ -74,6 +92,7 @@ export default function BottomNav() {
           />
         ))}
 
+        {/* Label popup when long-pressing */}
         <AnimatePresence>
           {popup && (
             <motion.div
@@ -82,15 +101,16 @@ export default function BottomNav() {
               exit={{ opacity: 0, y: 8 }}
               transition={{ duration: 0.18 }}
               className="absolute bottom-16 left-1/2 -translate-x-1/2
-              bg-black/70 text-white text-[11px] px-3 py-1.5 
-              rounded-lg shadow-xl backdrop-blur-md border border-white/10"
+                bg-black/70 text-white text-[11px] px-3 py-1.5 
+                rounded-lg shadow-xl backdrop-blur-md border border-white/10"
             >
               {popup}
             </motion.div>
           )}
         </AnimatePresence>
 
-        <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-t from-transparent via-white/10 to-white/40 opacity-35 pointer-events-none" />
+        {/* Subtle glass top sheen */}
+        <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-t from-transparent via-white/25 to-white/70 opacity-25 pointer-events-none" />
       </motion.nav>
     </div>
   );
@@ -114,7 +134,7 @@ function NavItem({
 
   return (
     <motion.button
-      whileTap={{ scale: 0.85 }}
+      whileTap={{ scale: 0.88 }}
       onClick={handleClick}
       onMouseDown={() => onLongPressStart(label)}
       onMouseUp={onLongPressEnd}
@@ -132,9 +152,14 @@ function NavItem({
         transition={{ type: "spring", stiffness: 420, damping: 26 }}
         className={`${
           active
-            ? "text-blue-400 drop-shadow-[0_0_20px_rgba(96,165,250,0.9)]"
-            : "text-white/80"
+            ? "text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.9)]"
+            : "text-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.35),inset_0_-1px_3px_rgba(0,0,0,0.35)]"
         }`}
+        style={{
+          filter: active
+            ? "brightness(1.2)"
+            : "brightness(0.95)",
+        }}
       >
         <Icon size={21} strokeWidth={2.1} />
       </motion.div>
@@ -144,7 +169,7 @@ function NavItem({
           layoutId="activeGlow"
           transition={{ type: "spring", stiffness: 500, damping: 26 }}
           className="absolute bottom-1.5 w-2.5 h-2.5 rounded-full 
-          bg-blue-400 shadow-[0_0_20px_rgba(96,165,250,0.9)]"
+            bg-white shadow-[0_0_20px_rgba(255,255,255,0.9)]"
         />
       )}
     </motion.button>
