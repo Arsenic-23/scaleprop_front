@@ -24,12 +24,46 @@ export default function BottomNavigation() {
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
       <div className="relative w-[82vw] max-w-sm mx-auto">
         <motion.div
-          className="absolute inset-0 backdrop-blur-xl bg-white/10 rounded-3xl border border-white/15 shadow-[0_8px_20px_rgba(255,255,255,0.06)] overflow-hidden"
+          className="absolute inset-0 rounded-2xl overflow-hidden"
+          style={{
+            background: "rgba(255,255,255,0.05)",
+            backdropFilter: "blur(23px)",
+            WebkitBackdropFilter: "blur(23px)",
+            border: "1px solid rgba(255,255,255,0.3)",
+            boxShadow:
+              "0 8px 32px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(255,255,255,0.1)",
+            position: "relative",
+          }}
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.45 }}
         >
-          <div className="absolute inset-0 bg-black/25 pointer-events-none"></div>
+          <div
+            className="pointer-events-none"
+            style={{
+              content: "",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              height: "1px",
+              background:
+                "linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)",
+            }}
+          />
+          <div
+            className="pointer-events-none"
+            style={{
+              content: "",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "1px",
+              height: "100%",
+              background:
+                "linear-gradient(180deg, rgba(255,255,255,0.8), transparent, rgba(255,255,255,0.3))",
+            }}
+          />
         </motion.div>
 
         <div className="relative flex justify-around items-center h-14 z-10">
@@ -39,24 +73,25 @@ export default function BottomNavigation() {
               <button
                 key={tab.path}
                 onClick={() => handleTabClick(tab.path)}
-                className="relative flex items-center justify-center text-white/70 hover:text-white transition-all duration-300 p-2"
+                className="relative flex items-center justify-center p-2 transition-all duration-300"
               >
                 <div className="relative flex items-center justify-center">
                   <AnimatePresence>
                     {isActive && (
                       <motion.div
                         layoutId="bubble"
-                        className="absolute inset-0 bg-white/15 backdrop-blur-md rounded-full shadow-[0_0_12px_rgba(255,255,255,0.15)]"
-                        initial={{ scale: 0.5, opacity: 0 }}
+                        className="absolute w-10 h-10 rounded-full bg-white/10 backdrop-blur-md"
+                        initial={{ scale: 0.4, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.5, opacity: 0 }}
+                        exit={{ scale: 0.4, opacity: 0 }}
                         transition={{ duration: 0.25 }}
                       />
                     )}
                   </AnimatePresence>
+
                   <motion.div
                     animate={{
-                      scale: isActive ? 1.25 : 1,
+                      scale: isActive ? 1.28 : 1,
                       y: isActive ? -2 : 0,
                     }}
                     transition={{ duration: 0.2 }}
