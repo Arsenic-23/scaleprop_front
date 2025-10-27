@@ -19,8 +19,8 @@ export default function BottomNav() {
 
   useEffect(() => {
     const waveInterval = setInterval(() => {
-      setWavePosition((prev) => (prev >= 100 ? 0 : prev + 0.5));
-    }, 80);
+      setWavePosition((prev) => (prev >= 100 ? 0 : prev + 0.6));
+    }, 70);
     return () => clearInterval(waveInterval);
   }, []);
 
@@ -41,10 +41,10 @@ export default function BottomNav() {
       <nav
         className="relative flex justify-between items-center px-7 py-3.5 
         w-[88vw] max-w-md mx-auto rounded-[2rem]
-        border border-white/10 backdrop-blur-2xl 
-        bg-[linear-gradient(135deg,rgba(20,20,20,0.9),rgba(10,10,10,0.75))]
+        border border-white/10 backdrop-blur-2xl
+        bg-[linear-gradient(135deg,rgba(25,25,25,0.95),rgba(10,10,10,0.75))]
         shadow-[inset_0_1px_2px_rgba(255,255,255,0.15),0_8px_25px_rgba(0,0,0,0.6)]
-        overflow-hidden"
+        overflow-hidden animate-background bg-[length:200%_200%]"
       >
         {/* Animated glossy reflection */}
         <motion.div
@@ -76,7 +76,8 @@ export default function BottomNav() {
               exit={{ opacity: 0, y: 8 }}
               className="absolute bottom-16 left-1/2 -translate-x-1/2
               bg-black/80 text-white text-[11px] px-3 py-1.5 
-              rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.4)] backdrop-blur-md border border-white/10"
+              rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.4)] 
+              backdrop-blur-md border border-white/10"
             >
               {popup}
             </motion.div>
@@ -118,8 +119,8 @@ function NavItem({
     >
       {/* Icon */}
       <motion.div
-        animate={isActive ? { scale: 1.25, y: -4 } : { scale: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        animate={isActive ? { scale: 1.3, y: -5 } : { scale: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 400, damping: 22 }}
         className={
           isActive
             ? "text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]"
@@ -143,13 +144,13 @@ function NavItem({
         {label}
       </motion.span>
 
-      {/* Active glowing dot */}
+      {/* Glowing dot indicator */}
       {isActive && (
         <motion.div
           layoutId="activeIndicator"
           transition={{ type: "spring", stiffness: 500, damping: 30 }}
           className="absolute -bottom-1.5 w-1.5 h-1.5 rounded-full 
-          bg-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.9)]"
+          bg-cyan-400 shadow-glow animate-blink"
         />
       )}
     </motion.button>
