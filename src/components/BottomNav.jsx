@@ -24,7 +24,7 @@ export default function BottomNavigation() {
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
       <div className="relative w-[80vw] max-w-sm mx-auto">
 
-        {/* Frost dark glass */}
+        {/* Dark frosted glass */}
         <motion.div
           className="absolute inset-0 rounded-3xl overflow-hidden"
           style={{
@@ -40,7 +40,6 @@ export default function BottomNavigation() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35 }}
         >
-          {/* Frost highlight */}
           <div
             style={{
               position: "absolute",
@@ -50,19 +49,6 @@ export default function BottomNavigation() {
               height: "1px",
               background:
                 "linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)",
-            }}
-          />
-
-          {/* Cool tint glow */}
-          <div
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: "35%",
-              background:
-                "radial-gradient(circle at bottom, rgba(0,200,255,0.14), transparent)",
             }}
           />
         </motion.div>
@@ -84,12 +70,10 @@ export default function BottomNavigation() {
                         layoutId="bubble"
                         className="absolute w-10 h-10 rounded-full"
                         style={{
-                          background:
-                            "rgba(255,255,255,0.14)",
+                          background: "rgba(255,255,255,0.14)",
                           backdropFilter: "blur(38px)",
                           WebkitBackdropFilter: "blur(38px)",
-                          boxShadow:
-                            "0 0 22px rgba(0,200,255,0.38)",
+                          boxShadow: "0 0 18px rgba(255,255,255,0.24)",
                         }}
                         initial={{ scale: 0.4, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
@@ -116,6 +100,7 @@ export default function BottomNavigation() {
             );
           })}
         </div>
+
       </div>
     </div>
   );
