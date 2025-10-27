@@ -7,6 +7,7 @@ const tabs = [
   { icon: Home, label: "Home", path: "/home" },
   { icon: BarChart2, label: "Account", path: "/account" },
   { icon: Users, label: "Community", path: "/community" },
+  { icon: User, label: "Profile", path: "/profile" },
 ];
 
 export default function BottomNav() {
@@ -28,21 +29,37 @@ export default function BottomNav() {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center pointer-events-none">
       <motion.nav
-        initial={{ opacity: 0, y: 20, scale: 0.9 }}
+        initial={{ opacity: 0, y: 26, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.4 }}
-        className="pointer-events-auto relative flex justify-between items-center px-5 py-3
-          w-[86vw] max-w-sm mx-auto rounded-[2rem]
-          border border-white/15 bg-white/10 dark:bg-black/25
-          backdrop-blur-[40px] backdrop-saturate-[230%]
-          shadow-[0_8px_30px_rgba(0,0,0,0.4)]
-          ring-1 ring-white/10 ring-inset"
+        transition={{ duration: 0.55, ease: "easeOut" }}
+        className="pointer-events-auto relative flex justify-between items-center px-4 py-2.5
+          w-[78vw] max-w-xs mx-auto rounded-[2rem]
+          border border-white/25 bg-white/10 dark:bg-black/30
+          backdrop-blur-[38px] backdrop-saturate-[230%]
+          shadow-[0_6px_35px_rgba(0,0,0,0.45)]
+          ring-1 ring-white/10 ring-inset overflow-hidden"
         style={{
-          WebkitBackdropFilter: "blur(40px) saturate(230%)",
-          backdropFilter: "blur(40px) saturate(230%)",
+          WebkitBackdropFilter: "blur(38px) saturate(230%)",
+          backdropFilter: "blur(38px) saturate(230%)",
         }}
       >
-        <div className="absolute inset-0 rounded-[2rem] shadow-[inset_0_1px_10px_rgba(255,255,255,0.22),inset_0_-5px_12px_rgba(0,0,0,0.35)] pointer-events-none" />
+        <motion.div
+          initial={{ x: "-150%" }}
+          animate={{ x: "150%" }}
+          transition={{
+            repeat: Infinity,
+            duration: 4,
+            ease: "linear",
+            repeatDelay: 3,
+          }}
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-50"
+        />
+
+        <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/10 to-transparent rounded-[2rem] pointer-events-none" />
+
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/40 blur-[1px] opacity-70" />
+
+        <div className="absolute inset-0 rounded-[2rem] shadow-[inset_0_1px_8px_rgba(255,255,255,0.25),inset_0_-4px_10px_rgba(0,0,0,0.32)] pointer-events-none" />
 
         {tabs.map((tab, i) => (
           <NavItem
@@ -50,17 +67,12 @@ export default function BottomNav() {
             icon={tab.icon}
             label={tab.label}
             path={tab.path}
-            navigate={navigate}
             currentPath={location.pathname}
+            navigate={navigate}
             onLongPressStart={handleLongPressStart}
             onLongPressEnd={handleLongPressEnd}
           />
         ))}
-
-        <CenterButton
-          navigate={navigate}
-          active={location.pathname === "/profile"}
-        />
 
         <AnimatePresence>
           {popup && (
@@ -70,13 +82,15 @@ export default function BottomNav() {
               exit={{ opacity: 0, y: 8 }}
               transition={{ duration: 0.18 }}
               className="absolute bottom-16 left-1/2 -translate-x-1/2
-              bg-black/75 text-white text-[11px] px-3 py-1.5 
+              bg-black/70 text-white text-[11px] px-3 py-1.5 
               rounded-lg shadow-xl backdrop-blur-md border border-white/10"
             >
               {popup}
             </motion.div>
           )}
         </AnimatePresence>
+
+        <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-t from-transparent via-white/10 to-white/40 opacity-35 pointer-events-none" />
       </motion.nav>
     </div>
   );
@@ -86,17 +100,22 @@ function NavItem({
   icon: Icon,
   label,
   path,
-  navigate,
   currentPath,
+  navigate,
   onLongPressStart,
   onLongPressEnd,
 }) {
   const active = currentPath === path;
 
+  const handleClick = () => {
+    if (window.navigator.vibrate) window.navigator.vibrate([10, 15, 10]);
+    navigate(path);
+  };
+
   return (
     <motion.button
       whileTap={{ scale: 0.85 }}
-      onClick={() => navigate(path)}
+      onClick={handleClick}
       onMouseDown={() => onLongPressStart(label)}
       onMouseUp={onLongPressEnd}
       onMouseLeave={onLongPressEnd}
@@ -105,32 +124,29 @@ function NavItem({
       className="relative flex items-center justify-center w-12 h-12"
     >
       <motion.div
-        animate={active ? { scale: 1.4, y: -2 } : { scale: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 440, damping: 26 }}
-        className={`${active ? "text-blue-400 drop-shadow-[0_0_20px_rgba(96,165,250,0.9)]" : "text-white/70"}`}
+        animate={
+          active
+            ? { scale: 1.45, y: -2 }
+            : { scale: 1, y: 0 }
+        }
+        transition={{ type: "spring", stiffness: 420, damping: 26 }}
+        className={`${
+          active
+            ? "text-blue-400 drop-shadow-[0_0_20px_rgba(96,165,250,0.9)]"
+            : "text-white/80"
+        }`}
       >
         <Icon size={21} strokeWidth={2.1} />
       </motion.div>
-    </motion.button>
-  );
-}
 
-function CenterButton({ navigate, active }) {
-  return (
-    <motion.button
-      whileTap={{ scale: 0.93 }}
-      onClick={() => navigate("/profile")}
-      className="absolute -top-5 left-1/2 -translate-x-1/2 w-14 h-14
-      bg-gradient-to-br from-blue-500 to-blue-700
-      rounded-full flex items-center justify-center shadow-[0_0_25px_rgba(56,132,255,0.8)]"
-    >
-      <motion.div
-        animate={active ? { scale: 1.25 } : { scale: 1 }}
-        transition={{ type: "spring", stiffness: 400, damping: 24 }}
-        className="text-white"
-      >
-        <User size={24} strokeWidth={2.1} />
-      </motion.div>
+      {active && (
+        <motion.div
+          layoutId="activeGlow"
+          transition={{ type: "spring", stiffness: 500, damping: 26 }}
+          className="absolute bottom-1.5 w-2.5 h-2.5 rounded-full 
+          bg-blue-400 shadow-[0_0_20px_rgba(96,165,250,0.9)]"
+        />
+      )}
     </motion.button>
   );
 }
