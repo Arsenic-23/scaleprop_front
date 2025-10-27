@@ -17,12 +17,12 @@ export default function BottomNav() {
   const [wavePosition, setWavePosition] = useState(0);
   let pressTimer;
 
-  // Subtle moving reflection animation
+  // Glossy moving reflection
   useEffect(() => {
-    const waveInterval = setInterval(() => {
-      setWavePosition((prev) => (prev >= 100 ? 0 : prev + 0.6));
-    }, 70);
-    return () => clearInterval(waveInterval);
+    const interval = setInterval(() => {
+      setWavePosition((prev) => (prev >= 100 ? 0 : prev + 0.5));
+    }, 80);
+    return () => clearInterval(interval);
   }, []);
 
   const handleLongPressStart = (label) => {
@@ -37,25 +37,35 @@ export default function BottomNav() {
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center">
-      <nav
+      <motion.nav
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 100, damping: 18 }}
         className="relative flex justify-between items-center px-8 py-3.5 
-        w-[82vw] max-w-md mx-auto rounded-[2rem] overflow-hidden
-        border border-white/15 backdrop-blur-2xl
-        bg-[linear-gradient(145deg,rgba(25,25,25,0.9),rgba(10,10,10,0.65))]
-        shadow-[inset_0_1px_0_rgba(255,255,255,0.15),inset_0_-2px_6px_rgba(0,0,0,0.6),0_6px_25px_rgba(0,0,0,0.6)]"
+        w-[82vw] max-w-md mx-auto rounded-[2.4rem] overflow-hidden
+        backdrop-blur-2xl border border-white/20
+        bg-[linear-gradient(135deg,rgba(255,255,255,0.12)_0%,rgba(255,255,255,0.04)_100%)]
+        shadow-[0_8px_30px_rgba(0,0,0,0.4),inset_0_0.5px_0_rgba(255,255,255,0.2)]
+        before:absolute before:inset-0 before:rounded-[2.4rem]
+        before:bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.2),transparent_60%)]
+        before:pointer-events-none"
       >
-        {/* Moving glossy highlight reflection */}
+        {/* Glossy highlight sweep */}
         <motion.div
           animate={{ backgroundPositionX: `${wavePosition}%` }}
           transition={{ duration: 0.3 }}
           className="absolute inset-0 pointer-events-none 
-          bg-[linear-gradient(110deg,rgba(255,255,255,0.12)_0%,rgba(255,255,255,0.03)_40%,rgba(255,255,255,0)_80%)] 
-          bg-[length:200%_100%] rounded-[2rem]"
+          bg-[linear-gradient(120deg,rgba(255,255,255,0.25)_0%,rgba(255,255,255,0.08)_45%,rgba(255,255,255,0)_100%)]
+          bg-[length:200%_100%] rounded-[2.4rem]"
         />
 
-        {/* Inner light ring edges */}
-        <div className="absolute inset-0 rounded-[2rem] border border-white/10 pointer-events-none" />
-        <div className="absolute inset-0 rounded-[2rem] bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.12),transparent_70%)] pointer-events-none" />
+        {/* Soft inner border for depth */}
+        <div className="absolute inset-0 rounded-[2.4rem] border border-white/10 pointer-events-none" />
+
+        {/* Subtle floating shadow under dock */}
+        <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[70%] h-6 
+          bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.3)_0%,rgba(0,0,0,0)_70%)] 
+          blur-xl rounded-full pointer-events-none" />
 
         {/* Navigation Items */}
         {tabs.map((tab, index) => (
@@ -71,7 +81,7 @@ export default function BottomNav() {
           />
         ))}
 
-        {/* Tooltip on long press */}
+        {/* Tooltip */}
         <AnimatePresence>
           {popup && (
             <motion.div
@@ -79,15 +89,15 @@ export default function BottomNav() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
               className="absolute bottom-16 left-1/2 -translate-x-1/2
-              bg-black/75 text-white text-[11px] px-3 py-1.5 
-              rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.45)] 
+              bg-black/70 text-white text-[11px] px-3 py-1.5 
+              rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.4)] 
               backdrop-blur-md border border-white/10"
             >
               {popup}
             </motion.div>
           )}
         </AnimatePresence>
-      </nav>
+      </motion.nav>
     </div>
   );
 }
@@ -110,37 +120,40 @@ function NavItem({
 
   return (
     <motion.button
-      whileTap={{ scale: 0.9 }}
+      whileTap={{ scale: 0.92 }}
+      whileHover={{ y: -2 }}
+      transition={{ type: "spring", stiffness: 400, damping: 22 }}
       onClick={handleClick}
       onMouseDown={() => onLongPressStart(label)}
       onMouseUp={onLongPressEnd}
       onMouseLeave={onLongPressEnd}
       onTouchStart={() => onLongPressStart(label)}
       onTouchEnd={onLongPressEnd}
-      className="relative flex items-center justify-center w-14 h-14 group"
+      className="relative flex items-center justify-center w-14 h-14"
     >
-      {/* Icon with neon glow and smooth scale */}
+      {/* Icon */}
       <motion.div
-        animate={isActive ? { scale: 1.25, y: -2 } : { scale: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 400, damping: 22 }}
+        animate={isActive ? { scale: 1.25, y: -3 } : { scale: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 500, damping: 24 }}
         className={`transition-all duration-300 ${
           isActive
             ? "text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.9)]"
-            : "text-gray-400 group-hover:text-gray-100"
+            : "text-gray-400 hover:text-gray-100"
         }`}
       >
         <Icon size={26} strokeWidth={2.1} />
       </motion.div>
 
-      {/* Under icon active glow ring */}
+      {/* iOS-style active indicator light */}
       <AnimatePresence>
         {isActive && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 0.8, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            transition={{ duration: 0.3 }}
-            className="absolute bottom-2 w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]"
+            initial={{ opacity: 0, scale: 0.4, y: 6 }}
+            animate={{ opacity: 1, scale: 1, y: 6 }}
+            exit={{ opacity: 0, scale: 0.4, y: 6 }}
+            transition={{ duration: 0.25 }}
+            className="absolute bottom-2 w-[6px] h-[6px] rounded-full 
+            bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]"
           />
         )}
       </AnimatePresence>
