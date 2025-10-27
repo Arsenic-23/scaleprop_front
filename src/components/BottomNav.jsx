@@ -1,13 +1,90 @@
 import React, { useState, useEffect } from "react";
 import { Home, BarChart2, Users, User } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
-const TABS = [
-  { icon: Home, label: "Dashboard", path: "/home" },
-  { icon: BarChart2, label: "Wallet", path: "/wallet" },
-  { icon: Users, label: "Connect", path: "/connect" },
-  { icon: User, label: "Me", path: "/profile" },
+const tabs = [
+  { icon: Home, label: "Home", path: "/home" },
+  { icon: BarChart2, label: "Account", path: "/account" },
+  { icon: Users, label: "Community", path: "/community" },
+  { icon: User, label: "Profile", path: "/profile" },
 ];
+
+export default function BottomNav() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [popup, setPopup] = useState(null);
+  const [wavePosition, setWavePosition] = useState(0);
+  let pressTimer;
+
+  useEffect(() => {
+    const waveInterval = setInterval(() => {
+      setWavePosition((prev) => (prev >= 100 ? 0 : prev + 0.7));
+    }, 60);
+    return () => clearInterval(waveInterval);
+  }, []);
+
+  const handleLongPressStart = (label) => {
+    if (window.navigator.vibrate) {
+      window.navigator.vibrate([30, 20, 30]);
+    }
+    pressTimer = setTimeout(() => setPopup(label), 500);
+  };
+
+  const handleLongPressEnd = () => {
+    clearTimeout(pressTimer);
+    setPopup(null);
+  };
+
+  return (
+    <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center">
+      <nav
+        className="relative flex justify-between items-center px-6 py-3 
+        w-[88vw] max-w-md mx-auto rounded-[2rem] 
+        border border-white/20 dark:border-white/10 
+        backdrop-blur-2xl bg-gradient-to-br from-white/25 via-white/10 to-white/5 
+        dark:from-neutral-900/40 dark:via-neutral-900/20 dark:to-neutral-900/10
+        shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_8px_25px_rgba(0,0,0,0.25)]
+        overflow-hidden"
+      >
+        {/* Animated glossy reflection */}
+        <motion.div
+          animate={{ backgroundPositionX: `${wavePosition}%` }}
+          transition={{ duration: 0.3 }}
+          className="absolute inset-0 pointer-events-none bg-[linear-gradient(110deg,rgba(255,255,255,0.3)_0%,rgba(255,255,255,0.1)_45%,rgba(255,255,255,0)_100%)] bg-[length:200%_100%] rounded-[2rem]"
+        />
+
+        {tabs.map((tab, index) => (
+          <NavItem
+            key={index}
+            icon={tab.icon}
+            label={tab.label}
+            path={tab.path}
+            currentPath={location.pathname}
+            navigate={navigate}
+            onLongPressStart={handleLongPressStart}
+            onLongPressEnd={handleLongPressEnd}
+          />
+        ))}
+
+        <AnimatePresence>
+          {popup && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              className="absolute bottom-16 left-1/2 -translate-x-1/2
+              bg-black/70 dark:bg-white/10 text-white text-[11px] px-3 py-1.5 
+              rounded-lg shadow-lg backdrop-blur-md border border-white/10"
+            >
+              {popup}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </nav>
+    </div>
+  );
+}
 
 function NavItem({
   icon: Icon,
@@ -20,190 +97,59 @@ function NavItem({
 }) {
   const isActive = currentPath === path;
 
-  const triggerHaptic = (style) => {
-    if (window.navigator.vibrate) {
-      if (style === 'tap') window.navigator.vibrate(50);
-      if (style === 'long') window.navigator.vibrate([30, 20, 30]);
-    }
-  };
-
   const handleClick = () => {
-    triggerHaptic('tap');
+    if (window.navigator.vibrate) {
+      window.navigator.vibrate([10, 15, 10]);
+    }
     navigate(path);
-  };
-
-  // Combine long press handlers for a single touch/mouse experience
-  const handleStart = () => {
-    triggerHaptic('long');
-    onLongPressStart(label);
   };
 
   return (
     <motion.button
-      // Subtle tap animation for feedback
       whileTap={{ scale: 0.9 }}
       onClick={handleClick}
-      
-      // Desktop Long Press Handlers
-      onMouseDown={handleStart}
+      onMouseDown={() => onLongPressStart(label)}
       onMouseUp={onLongPressEnd}
       onMouseLeave={onLongPressEnd}
-      
-      // Mobile Touch Handlers
-      onTouchStart={handleStart}
+      onTouchStart={() => onLongPressStart(label)}
       onTouchEnd={onLongPressEnd}
-      
-      className="relative flex flex-col items-center justify-center w-16 h-10 transition-colors duration-200"
+      className="relative flex flex-col items-center justify-center w-14"
     >
-      {/* Icon Container */}
       <motion.div
-        animate={
-          isActive
-            ? { scale: 1.1, y: -2 }
-            : { scale: 1, y: 0 }
-        }
-        transition={{ type: "spring", stiffness: 450, damping: 25 }}
+        animate={isActive ? { scale: 1.25, y: -4 } : { scale: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 400, damping: 22 }}
         className={
           isActive
-            ? "text-blue-400 drop-shadow-[0_0_10px_rgba(96,165,250,0.9)]" // Bright blue glow for active state
-            : "text-white/60 hover:text-white transition-colors" // Subtly transparent white for inactive
+            ? "text-blue-500 dark:text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.9)]"
+            : "text-gray-400 dark:text-gray-500 hover:text-gray-200 transition-colors"
         }
       >
-        <Icon size={24} strokeWidth={2} />
+        <Icon size={23} strokeWidth={2.1} />
       </motion.div>
 
-      {/* Label (Hidden/Subtle in the iOS-like version) */}
       <motion.span
         animate={{
-          opacity: isActive ? 1 : 0, // Hide inactive label, show active one briefly
-          y: isActive ? 4 : 8,
+          opacity: isActive ? 1 : 0.6,
+          y: isActive ? -1 : 1,
         }}
-        transition={{ duration: 0.2 }}
-        className={`absolute text-[10px] font-medium transition-all duration-200 ${
+        transition={{ duration: 0.25 }}
+        className={`text-[10px] mt-0.5 ${
           isActive
-            ? "text-blue-400 drop-shadow-[0_0_2px_rgba(96,165,250,0.6)]"
-            : "text-white/50"
+            ? "text-blue-500 dark:text-blue-400 font-medium"
+            : "text-gray-400"
         }`}
       >
         {label}
       </motion.span>
+
+      {isActive && (
+        <motion.div
+          layoutId="activeIndicator"
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          className="absolute -bottom-1.5 w-1.5 h-1.5 rounded-full 
+          bg-blue-500 dark:bg-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.9)]"
+        />
+      )}
     </motion.button>
-  );
-}
-
-/**
- * BottomNav Container Component: Applies the primary glassmorphism styling.
- */
-function BottomNav({ currentPath, setCurrentPath }) {
-  const [popup, setPopup] = useState(null);
-  const [pressTimer, setPressTimer] = useState(null);
-
-  const handleLongPressStart = (label) => {
-    // Clear any existing timer to prevent double-trigger
-    if (pressTimer) clearTimeout(pressTimer); 
-    
-    // Set new timer
-    const timer = setTimeout(() => {
-      setPopup(label);
-    }, 500);
-    setPressTimer(timer);
-  };
-
-  const handleLongPressEnd = () => {
-    if (pressTimer) {
-      clearTimeout(pressTimer);
-      setPressTimer(null);
-    }
-    setPopup(null);
-  };
-
-  // Dummy navigate function for single-file operation
-  const navigate = (path) => setCurrentPath(path);
-
-  return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center pointer-events-none">
-      <nav
-        className="
-          relative flex justify-around items-center h-[65px] px-2 py-2 
-          bg-black/50 
-          backdrop-blur-3xl 
-          border border-white/10
-          rounded-3xl 
-          shadow-[0_15px_50px_rgba(0,0,0,0.8)]
-          w-[90vw] max-w-sm 
-          pointer-events-auto
-          
-          
-          // Custom Inner Gloss Effect (Black Gradient Simulation)
-          before:content-[''] before:absolute before:inset-0 before:rounded-3xl
-          before:bg-gradient-to-t before:from-black/5 before:to-white/5 before:z-[-1]
-          before:mix-blend-overlay
-        "
-      >
-        {TABS.map((tab, index) => (
-          <NavItem
-            key={index}
-            icon={tab.icon}
-            label={tab.label}
-            path={tab.path}
-            currentPath={currentPath}
-            navigate={navigate}
-            onLongPressStart={handleLongPressStart}
-            onLongPressEnd={handleLongPressEnd}
-          />
-        ))}
-
-        {/* Long Press Popup (Tooltip) */}
-        <AnimatePresence>
-          {popup && (
-            <motion.div
-              initial={{ opacity: 0, y: 15, scale: 0.8 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 15, scale: 0.8 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="absolute bottom-[70px] 
-              bg-white/90 text-neutral-900 text-[12px] px-3 py-1.5 
-              rounded-xl font-semibold shadow-2xl backdrop-blur-sm 
-              whitespace-nowrap"
-            >
-              {popup}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </nav>
-    </div>
-  );
-}
-
-/**
- * Main App Component to hold the state and provide a context for the Nav.
- */
-export default function App() {
-  // Simulate routing by tracking the current active path
-  const [currentPath, setCurrentPath] = useState(TABS[0].path);
-
-  // Set the body background for the dark aesthetic
-  useEffect(() => {
-    document.body.className = "bg-neutral-900 min-h-screen font-sans antialiased text-white flex flex-col items-center justify-center p-8";
-  }, []);
-
-  return (
-    <div className="w-full h-screen">
-      {/* Simulated Content Area */}
-      <div className="flex flex-col items-center justify-center h-full">
-        <h1 className="text-4xl font-bold text-white/90 mb-4 drop-shadow-md">
-          {TABS.find(t => t.path === currentPath)?.label} View
-        </h1>
-        <p className="text-white/60 text-center max-w-xs">
-          This is the content area for the currently selected tab. 
-        </p>
-      </div>
-
-      {/* The beautifully styled navigation bar */}
-      <BottomNav 
-        currentPath={currentPath} 
-        setCurrentPath={setCurrentPath} 
-      />
-    </div>
   );
 }
