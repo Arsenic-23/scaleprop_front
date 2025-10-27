@@ -10,9 +10,9 @@ export default function BottomNavigation() {
   const [active, setActive] = useState(location.pathname);
 
   const tabs = [
-    { path: "/", icon: <Home size={22} />, label: "Home" },
-    { path: "/dashboard", icon: <BarChart2 size={22} />, label: "Dashboard" },
-    { path: "/team", icon: <Users size={22} />, label: "Team" },
+    { path: "/home", icon: <Home size={22} />, label: "Home" },
+    { path: "/account", icon: <BarChart2 size={22} />, label: "Dashboard" },
+    { path: "/plans", icon: <Users size={22} />, label: "Team" },
     { path: "/profile", icon: <User size={22} />, label: "Profile" },
   ];
 
