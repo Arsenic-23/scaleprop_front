@@ -17,11 +17,11 @@ export default function BottomNav() {
   const [wavePosition, setWavePosition] = useState(0);
   let pressTimer;
 
-  // Glossy moving reflection
+  // Subtle animated glossy reflection wave
   useEffect(() => {
     const interval = setInterval(() => {
-      setWavePosition((prev) => (prev >= 100 ? 0 : prev + 0.5));
-    }, 80);
+      setWavePosition((prev) => (prev >= 100 ? 0 : prev + 0.6));
+    }, 70);
     return () => clearInterval(interval);
   }, []);
 
@@ -40,31 +40,28 @@ export default function BottomNav() {
       <motion.nav
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 100, damping: 18 }}
-        className="relative flex justify-between items-center px-8 py-3.5 
-        w-[82vw] max-w-md mx-auto rounded-[2.4rem] overflow-hidden
-        backdrop-blur-2xl border border-white/20
-        bg-[linear-gradient(135deg,rgba(255,255,255,0.12)_0%,rgba(255,255,255,0.04)_100%)]
-        shadow-[0_8px_30px_rgba(0,0,0,0.4),inset_0_0.5px_0_rgba(255,255,255,0.2)]
-        before:absolute before:inset-0 before:rounded-[2.4rem]
-        before:bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.2),transparent_60%)]
+        transition={{ type: "spring", stiffness: 100, damping: 16 }}
+        className="relative flex justify-between items-center px-8 py-2.5 
+        w-[80vw] max-w-md mx-auto rounded-[2.2rem] overflow-hidden
+        backdrop-blur-2xl border border-white/10
+        bg-[linear-gradient(145deg,rgba(10,10,10,0.9)_0%,rgba(25,25,25,0.7)_100%)]
+        shadow-[0_4px_20px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.05)]
+        before:absolute before:inset-0 before:rounded-[2.2rem]
+        before:bg-[radial-gradient(ellipse_at_top_left,rgba(255,255,255,0.06),transparent_60%)]
         before:pointer-events-none"
       >
-        {/* Glossy highlight sweep */}
+        {/* Subtle glossy reflection moving across */}
         <motion.div
           animate={{ backgroundPositionX: `${wavePosition}%` }}
           transition={{ duration: 0.3 }}
           className="absolute inset-0 pointer-events-none 
-          bg-[linear-gradient(120deg,rgba(255,255,255,0.25)_0%,rgba(255,255,255,0.08)_45%,rgba(255,255,255,0)_100%)]
-          bg-[length:200%_100%] rounded-[2.4rem]"
+          bg-[linear-gradient(120deg,rgba(255,255,255,0.15)_0%,rgba(255,255,255,0.05)_45%,rgba(255,255,255,0)_100%)]
+          bg-[length:200%_100%] rounded-[2.2rem]"
         />
 
-        {/* Soft inner border for depth */}
-        <div className="absolute inset-0 rounded-[2.4rem] border border-white/10 pointer-events-none" />
-
-        {/* Subtle floating shadow under dock */}
-        <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[70%] h-6 
-          bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.3)_0%,rgba(0,0,0,0)_70%)] 
+        {/* Faint soft shadow underneath for depth */}
+        <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-[60%] h-5 
+          bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0)_70%)] 
           blur-xl rounded-full pointer-events-none" />
 
         {/* Navigation Items */}
@@ -88,9 +85,9 @@ export default function BottomNav() {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
-              className="absolute bottom-16 left-1/2 -translate-x-1/2
+              className="absolute bottom-14 left-1/2 -translate-x-1/2
               bg-black/70 text-white text-[11px] px-3 py-1.5 
-              rounded-lg shadow-[0_2px_12px_rgba(0,0,0,0.4)] 
+              rounded-lg shadow-[0_2px_10px_rgba(0,0,0,0.4)] 
               backdrop-blur-md border border-white/10"
             >
               {popup}
@@ -121,7 +118,7 @@ function NavItem({
   return (
     <motion.button
       whileTap={{ scale: 0.92 }}
-      whileHover={{ y: -2 }}
+      whileHover={{ y: -1 }}
       transition={{ type: "spring", stiffness: 400, damping: 22 }}
       onClick={handleClick}
       onMouseDown={() => onLongPressStart(label)}
@@ -129,22 +126,22 @@ function NavItem({
       onMouseLeave={onLongPressEnd}
       onTouchStart={() => onLongPressStart(label)}
       onTouchEnd={onLongPressEnd}
-      className="relative flex items-center justify-center w-14 h-14"
+      className="relative flex flex-col items-center justify-center w-14 h-12"
     >
       {/* Icon */}
       <motion.div
-        animate={isActive ? { scale: 1.25, y: -3 } : { scale: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 500, damping: 24 }}
+        animate={isActive ? { scale: 1.2, y: -2 } : { scale: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 450, damping: 25 }}
         className={`transition-all duration-300 ${
           isActive
-            ? "text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.9)]"
-            : "text-gray-400 hover:text-gray-100"
+            ? "text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]"
+            : "text-neutral-400 hover:text-neutral-200"
         }`}
       >
-        <Icon size={26} strokeWidth={2.1} />
+        <Icon size={23} strokeWidth={2.1} />
       </motion.div>
 
-      {/* iOS-style active indicator light */}
+      {/* Active indicator */}
       <AnimatePresence>
         {isActive && (
           <motion.div
@@ -152,8 +149,8 @@ function NavItem({
             animate={{ opacity: 1, scale: 1, y: 6 }}
             exit={{ opacity: 0, scale: 0.4, y: 6 }}
             transition={{ duration: 0.25 }}
-            className="absolute bottom-2 w-[6px] h-[6px] rounded-full 
-            bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.8)]"
+            className="absolute bottom-1 w-[5px] h-[5px] rounded-full 
+            bg-white shadow-[0_0_8px_rgba(255,255,255,0.7)]"
           />
         )}
       </AnimatePresence>
