@@ -23,6 +23,12 @@ export default {
       backgroundSize: {
         '200': '200% 200%',
       },
+      colors: {
+        glass: 'rgba(20,20,20,0.85)',
+      },
+      boxShadow: {
+        glow: '0 0 15px rgba(34,211,238,0.6)',
+      },
     },
   },
   plugins: [],
