@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Home, BarChart2, Users, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import "./GlassNav.css"; // <-- We'll define your morphing styles here
+import "./GlassNav.css"; 
 
 export default function BottomNavigation() {
   const location = useLocation();
