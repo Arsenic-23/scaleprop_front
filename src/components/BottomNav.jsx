@@ -17,6 +17,7 @@ export default function BottomNav() {
   const [wavePosition, setWavePosition] = useState(0);
   let pressTimer;
 
+  // Subtle moving light reflection animation
   useEffect(() => {
     const waveInterval = setInterval(() => {
       setWavePosition((prev) => (prev >= 100 ? 0 : prev + 0.6));
@@ -40,11 +41,11 @@ export default function BottomNav() {
         className="relative flex justify-between items-center px-8 py-3.5 
         w-[82vw] max-w-md mx-auto rounded-[2rem]
         border border-white/10 backdrop-blur-2xl
-        bg-[linear-gradient(135deg,rgba(25,25,25,0.95),rgba(10,10,10,0.75))]
+        bg-[linear-gradient(135deg,rgba(20,20,20,0.95),rgba(5,5,5,0.75))]
         shadow-[inset_0_1px_2px_rgba(255,255,255,0.15),0_8px_25px_rgba(0,0,0,0.6)]
         overflow-hidden animate-background bg-[length:200%_200%]"
       >
-        {/* Glossy wave reflection */}
+        {/* Glossy moving reflection overlay */}
         <motion.div
           animate={{ backgroundPositionX: `${wavePosition}%` }}
           transition={{ duration: 0.3 }}
@@ -66,7 +67,7 @@ export default function BottomNav() {
           />
         ))}
 
-        {/* Popup tooltip on long press */}
+        {/* Tooltip on long press */}
         <AnimatePresence>
           {popup && (
             <motion.div
@@ -114,42 +115,18 @@ function NavItem({
       onTouchEnd={onLongPressEnd}
       className="relative flex items-center justify-center w-14 h-14"
     >
-      {/* Floating glow for active icon */}
-      {isActive && (
-        <motion.div
-          layoutId="activeBackground"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          className="absolute inset-0 rounded-full 
-          bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.25),transparent_70%)]
-          blur-md"
-        />
-      )}
-
-      {/* Icon */}
+      {/* Icon only */}
       <motion.div
-        animate={isActive ? { scale: 1.3, y: -2 } : { scale: 1, y: 0 }}
+        animate={isActive ? { scale: 1.25, y: -2 } : { scale: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 400, damping: 22 }}
         className={
           isActive
-            ? "text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]"
+            ? "text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.8)]"
             : "text-gray-400 hover:text-gray-200 transition-colors"
         }
       >
         <Icon size={26} strokeWidth={2} />
       </motion.div>
-
-      {/* Active glowing dot */}
-      {isActive && (
-        <motion.div
-          layoutId="activeIndicator"
-          transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          className="absolute bottom-1 w-1.5 h-1.5 rounded-full 
-          bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)] animate-blink"
-        />
-      )}
     </motion.button>
   );
 }
