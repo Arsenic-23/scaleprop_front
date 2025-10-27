@@ -21,25 +21,25 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     return latest;
   });
 
-  const scale = useTransform(x, [-160, 0], [1.04, 1]);
+  const scale = useTransform(x, [-160, 0], [1.03, 1]);
   const shadow = useTransform(
     x,
     [-160, 0],
     [
-      "0px 16px 36px rgba(0,0,0,0.35)",
+      "0px 14px 32px rgba(0,0,0,0.32)",
       "0px 8px 16px rgba(0,0,0,0.18)",
     ]
   );
 
   const bgColor = useTransform(
     x,
-    [-200, 0],
-    ["rgba(180,0,0,0.95)", "rgba(200,0,0,0.4)"],
+    [-180, 0],
+    ["rgba(160,0,0,0.9)", "rgba(200,0,0,0.4)"],
     { clamp: true }
   );
 
-  const binScale = useTransform(x, [-200, 0], [1.6, 1], { clamp: true });
-  const binOpacity = useTransform(x, [-80, 0], [1, 0.4], { clamp: true });
+  const binScale = useTransform(x, [-140, 0], [1.25, 1], { clamp: true });
+  const binOpacity = useTransform(x, [-60, 0], [1, 0.5], { clamp: true });
 
   const handleRemove = () => {
     if (navigator.vibrate) navigator.vibrate(40);
@@ -48,7 +48,7 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
 
   return (
     <div className="relative w-full overflow-hidden">
-      {/* Background Bin */}
+      {/* Background */}
       <motion.div
         className="absolute inset-0 flex items-center justify-end pr-6 rounded-2xl"
         style={{ backgroundColor: bgColor as any }}
@@ -60,16 +60,16 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
           }}
           transition={{
             type: "spring",
-            stiffness: 240,
-            damping: 18,
+            stiffness: 300,
+            damping: 24,
           }}
           className="text-red-500 drop-shadow-lg"
         >
-          <Trash2 size={30} strokeWidth={2.2} />
+          <Trash2 size={28} strokeWidth={2.2} />
         </motion.div>
       </motion.div>
 
-      {/* Foreground Notification */}
+      {/* Foreground */}
       <motion.div
         ref={ref}
         drag="x"
@@ -88,10 +88,9 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
           const velocity = info.velocity.x;
 
           if (x.get() <= threshold || velocity < -450) {
-            // Swipe out (delete)
             animate(rawX, -width, {
               type: "tween",
-              duration: 0.28,
+              duration: 0.25,
               ease: [0.4, 0, 0.2, 1],
               onComplete: handleRemove,
             });
