@@ -29,28 +29,44 @@ export default function BottomNav() {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center pointer-events-none">
       <motion.nav
-        initial={{ opacity: 0, y: 20, scale: 0.98 }}
+        initial={{ opacity: 0, y: 20, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="pointer-events-auto relative flex justify-between items-center px-6 py-3
-          w-[90vw] max-w-md mx-auto rounded-[2.2rem]
+          w-[90vw] max-w-md mx-auto rounded-[2.5rem]
           border border-white/30
-          bg-[rgba(255,255,255,0.08)] dark:bg-[rgba(0,0,0,0.3)]
-          backdrop-blur-[30px] backdrop-saturate-[180%]
-          shadow-[0_4px_40px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.15)]
+          bg-[rgba(255,255,255,0.08)] dark:bg-[rgba(20,20,20,0.4)]
+          backdrop-blur-[35px] backdrop-saturate-[200%]
+          shadow-[0_8px_40px_rgba(0,0,0,0.4)]
           ring-1 ring-white/10 ring-inset overflow-hidden"
         style={{
-          WebkitBackdropFilter: "blur(30px) saturate(180%)",
-          backdropFilter: "blur(30px) saturate(180%)",
+          WebkitBackdropFilter: "blur(35px) saturate(200%)",
+          backdropFilter: "blur(35px) saturate(200%)",
         }}
       >
-        {/* Top reflective gradient for glass highlight */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/[0.18] via-white/[0.08] to-transparent pointer-events-none rounded-[2.2rem]" />
+        {/* overlay */}
+        <motion.div
+          initial={{ x: "-150%" }}
+          animate={{ x: "150%" }}
+          transition={{
+            repeat: Infinity,
+            duration: 6,
+            ease: "linear",
+            repeatDelay: 5,
+          }}
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-60"
+        />
 
-        {/* Subtle edge light for realism */}
-        <div className="absolute -top-[1px] left-0 right-0 h-[1px] bg-white/30 blur-[1px]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-white/5 pointer-events-none rounded-[2.2rem]" />
+        {/* base */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-black/30 rounded-[2.5rem] pointer-events-none" />
 
+        {/* line */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/40 blur-[1px] opacity-60" />
+
+        {/* depth */}
+        <div className="absolute inset-0 rounded-[2.5rem] shadow-[inset_0_1px_8px_rgba(255,255,255,0.15),inset_0_-4px_10px_rgba(0,0,0,0.3)] pointer-events-none" />
+
+        {/* buttons */}
         {tabs.map((tab, index) => (
           <NavItem
             key={index}
@@ -64,7 +80,7 @@ export default function BottomNav() {
           />
         ))}
 
-        {/* Floating popup label */}
+        {/* label */}
         <AnimatePresence>
           {popup && (
             <motion.div
@@ -73,13 +89,16 @@ export default function BottomNav() {
               exit={{ opacity: 0, y: 8 }}
               transition={{ duration: 0.2 }}
               className="absolute bottom-16 left-1/2 -translate-x-1/2
-              bg-[rgba(0,0,0,0.7)] text-white text-[11px] px-3 py-1.5 
+              bg-black/70 text-white text-[11px] px-3 py-1.5 
               rounded-lg shadow-lg backdrop-blur-md border border-white/10"
             >
               {popup}
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* realism */}
+        <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-t from-transparent via-white/10 to-white/25 opacity-40 pointer-events-none" />
       </motion.nav>
     </div>
   );
@@ -115,7 +134,7 @@ function NavItem({
       <motion.div
         animate={
           isActive
-            ? { scale: 1.3, y: -3 }
+            ? { scale: 1.3, y: -4 }
             : { scale: 1, y: 0 }
         }
         transition={{ type: "spring", stiffness: 420, damping: 25 }}
