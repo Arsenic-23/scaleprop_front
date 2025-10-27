@@ -1,4 +1,4 @@
-\import React, { useState } from "react";
+import React, { useState } from "react";
 import { Home, BarChart2, Users, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
