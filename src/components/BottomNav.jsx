@@ -29,47 +29,41 @@ export default function BottomNav() {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center pointer-events-none">
       <motion.nav
-        initial={{ opacity: 0, y: 20, scale: 0.96 }}
+        initial={{ opacity: 0, y: 26, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="pointer-events-auto relative flex justify-between items-center px-6 py-3
-          w-[90vw] max-w-md mx-auto rounded-[2.5rem]
-          border border-white/30
-          bg-[rgba(255,255,255,0.08)] dark:bg-[rgba(20,20,20,0.4)]
-          backdrop-blur-[35px] backdrop-saturate-[200%]
-          shadow-[0_8px_40px_rgba(0,0,0,0.4)]
+        transition={{ duration: 0.55, ease: "easeOut" }}
+        className="pointer-events-auto relative flex justify-between items-center px-4 py-2.5
+          w-[78vw] max-w-xs mx-auto rounded-[2rem]
+          border border-white/25 bg-white/10 dark:bg-black/30
+          backdrop-blur-[38px] backdrop-saturate-[230%]
+          shadow-[0_6px_35px_rgba(0,0,0,0.45)]
           ring-1 ring-white/10 ring-inset overflow-hidden"
         style={{
-          WebkitBackdropFilter: "blur(35px) saturate(200%)",
-          backdropFilter: "blur(35px) saturate(200%)",
+          WebkitBackdropFilter: "blur(38px) saturate(230%)",
+          backdropFilter: "blur(38px) saturate(230%)",
         }}
       >
-        {/* overlay */}
         <motion.div
           initial={{ x: "-150%" }}
           animate={{ x: "150%" }}
           transition={{
             repeat: Infinity,
-            duration: 6,
+            duration: 4,
             ease: "linear",
-            repeatDelay: 5,
+            repeatDelay: 3,
           }}
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-60"
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent opacity-50"
         />
 
-        {/* base */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-black/30 rounded-[2.5rem] pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/10 to-transparent rounded-[2rem] pointer-events-none" />
 
-        {/* line */}
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/40 blur-[1px] opacity-60" />
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/40 blur-[1px] opacity-70" />
 
-        {/* depth */}
-        <div className="absolute inset-0 rounded-[2.5rem] shadow-[inset_0_1px_8px_rgba(255,255,255,0.15),inset_0_-4px_10px_rgba(0,0,0,0.3)] pointer-events-none" />
+        <div className="absolute inset-0 rounded-[2rem] shadow-[inset_0_1px_8px_rgba(255,255,255,0.25),inset_0_-4px_10px_rgba(0,0,0,0.32)] pointer-events-none" />
 
-        {/* buttons */}
-        {tabs.map((tab, index) => (
+        {tabs.map((tab, i) => (
           <NavItem
-            key={index}
+            key={i}
             icon={tab.icon}
             label={tab.label}
             path={tab.path}
@@ -80,25 +74,23 @@ export default function BottomNav() {
           />
         ))}
 
-        {/* label */}
         <AnimatePresence>
           {popup && (
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.18 }}
               className="absolute bottom-16 left-1/2 -translate-x-1/2
               bg-black/70 text-white text-[11px] px-3 py-1.5 
-              rounded-lg shadow-lg backdrop-blur-md border border-white/10"
+              rounded-lg shadow-xl backdrop-blur-md border border-white/10"
             >
               {popup}
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* realism */}
-        <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-t from-transparent via-white/10 to-white/25 opacity-40 pointer-events-none" />
+        <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-t from-transparent via-white/10 to-white/40 opacity-35 pointer-events-none" />
       </motion.nav>
     </div>
   );
@@ -113,7 +105,7 @@ function NavItem({
   onLongPressStart,
   onLongPressEnd,
 }) {
-  const isActive = currentPath === path;
+  const active = currentPath === path;
 
   const handleClick = () => {
     if (window.navigator.vibrate) window.navigator.vibrate([10, 15, 10]);
@@ -122,50 +114,37 @@ function NavItem({
 
   return (
     <motion.button
-      whileTap={{ scale: 0.9 }}
+      whileTap={{ scale: 0.85 }}
       onClick={handleClick}
       onMouseDown={() => onLongPressStart(label)}
       onMouseUp={onLongPressEnd}
       onMouseLeave={onLongPressEnd}
       onTouchStart={() => onLongPressStart(label)}
       onTouchEnd={onLongPressEnd}
-      className="relative flex flex-col items-center justify-center w-14"
+      className="relative flex items-center justify-center w-12 h-12"
     >
       <motion.div
         animate={
-          isActive
-            ? { scale: 1.3, y: -4 }
+          active
+            ? { scale: 1.45, y: -2 }
             : { scale: 1, y: 0 }
         }
-        transition={{ type: "spring", stiffness: 420, damping: 25 }}
+        transition={{ type: "spring", stiffness: 420, damping: 26 }}
         className={`${
-          isActive
-            ? "text-blue-400 drop-shadow-[0_0_15px_rgba(96,165,250,0.9)]"
-            : "text-gray-300 hover:text-gray-100 transition-colors"
+          active
+            ? "text-blue-400 drop-shadow-[0_0_20px_rgba(96,165,250,0.9)]"
+            : "text-white/80"
         }`}
       >
-        <Icon size={22} strokeWidth={2.1} />
+        <Icon size={21} strokeWidth={2.1} />
       </motion.div>
 
-      <motion.span
-        animate={{
-          opacity: isActive ? 1 : 0.6,
-          y: isActive ? -1 : 1,
-        }}
-        transition={{ duration: 0.25 }}
-        className={`text-[10px] mt-0.5 ${
-          isActive ? "text-blue-400 font-medium" : "text-gray-400"
-        }`}
-      >
-        {label}
-      </motion.span>
-
-      {isActive && (
+      {active && (
         <motion.div
-          layoutId="activeIndicator"
-          transition={{ type: "spring", stiffness: 500, damping: 28 }}
-          className="absolute -bottom-1.5 w-1.5 h-1.5 rounded-full 
-          bg-blue-400 shadow-[0_0_15px_rgba(96,165,250,0.9)]"
+          layoutId="activeGlow"
+          transition={{ type: "spring", stiffness: 500, damping: 26 }}
+          className="absolute bottom-1.5 w-2.5 h-2.5 rounded-full 
+          bg-blue-400 shadow-[0_0_20px_rgba(96,165,250,0.9)]"
         />
       )}
     </motion.button>
