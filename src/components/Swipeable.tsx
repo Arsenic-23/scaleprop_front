@@ -38,9 +38,8 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
     { clamp: true }
   );
 
-  const binScale = useTransform(x, [-160, 0], [1.5, 1]);
-  const binRotate = useTransform(x, [-160, 0], [10, 0]);
-  const binOpacity = useTransform(x, [-40, 0], [1, 0.4]);
+  const binScale = useTransform(x, [-200, 0], [1.6, 1], { clamp: true });
+  const binOpacity = useTransform(x, [-80, 0], [1, 0.4], { clamp: true });
 
   const handleRemove = () => {
     if (navigator.vibrate) navigator.vibrate(40);
@@ -57,12 +56,11 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
         <motion.div
           style={{
             scale: binScale,
-            rotate: binRotate,
             opacity: binOpacity,
           }}
           transition={{
             type: "spring",
-            stiffness: 250,
+            stiffness: 240,
             damping: 18,
           }}
           className="text-red-500 drop-shadow-lg"
@@ -90,6 +88,7 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
           const velocity = info.velocity.x;
 
           if (x.get() <= threshold || velocity < -450) {
+            // Swipe out (delete)
             animate(rawX, -width, {
               type: "tween",
               duration: 0.28,
