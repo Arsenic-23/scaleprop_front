@@ -17,19 +17,17 @@ export default function NavItem({
       onMouseLeave={onLongPressEnd}
       onTouchStart={() => onLongPressStart(label)}
       onTouchEnd={onLongPressEnd}
-      className="relative flex items-center justify-center w-12 h-12"
+      className="relative flex items-center justify-center w-12 h-12 bg-transparent"
     >
-      {/* behind icon glow */}
       {active && (
         <motion.div
           layoutId="active-glow"
           transition={{ type: "spring", stiffness: 380, damping: 36 }}
           className="absolute w-10 h-10 rounded-full
-          bg-white/20 blur-[18px] pointer-events-none"
+          bg-white/18 blur-[24px] pointer-events-none"
         />
       )}
 
-      {/* main icon */}
       <motion.div
         animate={
           active
@@ -37,25 +35,19 @@ export default function NavItem({
             : { scale: 1, y: 0 }
         }
         transition={{ type: "spring", stiffness: 420, damping: 28 }}
-        className={
-          active
-            ? "text-white drop-shadow-[0_0_28px_rgba(255,255,255,1)]"
-            : "text-white/65"
-        }
+        className={active ? "text-white" : "text-white/60"}
         style={{
-          filter: active ? "brightness(1.32)" : "brightness(0.9)",
+          filter: active ? "brightness(1.32)" : "brightness(0.85)",
         }}
       >
         <Icon size={24} strokeWidth={2.3} />
       </motion.div>
 
-      {/* dot indicator */}
       {active && (
         <motion.div
           layoutId="active-indicator"
           transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          className="absolute bottom-0.5 w-2.5 h-2.5 rounded-full
-          bg-white shadow-[0_0_20px_rgba(255,255,255,1)]"
+          className="absolute bottom-0.5 w-2 h-2 rounded-full bg-white"
         />
       )}
     </motion.button>
