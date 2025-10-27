@@ -16,35 +16,31 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
   const rawX = useMotionValue(0);
   const ref = useRef<HTMLDivElement>(null);
 
-  // Perfectly synced drag (1:1 with slight resistance on right swipe)
   const x = useTransform(rawX, (latest) => {
-    if (latest > 0) return latest * 0.25; // soft resistance right
-    return latest; // synced left swipe
+    if (latest > 0) return Math.pow(latest, 0.8) * 0.25;
+    return latest;
   });
 
-  // Foreground scale + shadow for depth
-  const scale = useTransform(x, [-160, 0], [1.02, 1]);
+  const scale = useTransform(x, [-160, 0], [1.04, 1]);
   const shadow = useTransform(
     x,
     [-160, 0],
     [
-      "0px 14px 28px rgba(0,0,0,0.32)",
-      "0px 6px 12px rgba(0,0,0,0.18)",
+      "0px 16px 36px rgba(0,0,0,0.35)",
+      "0px 8px 16px rgba(0,0,0,0.18)",
     ]
   );
 
-  // Smooth background transition (dark red → brighter red)
   const bgColor = useTransform(
     x,
-    [-160, 0],
-    ["rgba(100,0,0,0.95)", "rgba(200,0,0,0.55)"],
+    [-200, 0],
+    ["rgba(180,0,0,0.95)", "rgba(200,0,0,0.4)"],
     { clamp: true }
   );
 
-  // 🚀 Trash bin scale (neutral at 1, grows on left swipe, shrinks on right swipe)
-  const binScale = useTransform(rawX, [-160, 0, 160], [1.4, 1, 0.7], {
-    clamp: false,
-  });
+  const binScale = useTransform(x, [-160, 0], [1.5, 1]);
+  const binRotate = useTransform(x, [-160, 0], [10, 0]);
+  const binOpacity = useTransform(x, [-40, 0], [1, 0.4]);
 
   const handleRemove = () => {
     if (navigator.vibrate) navigator.vibrate(40);
@@ -52,7 +48,7 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
   };
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full overflow-hidden">
       {/* Background Bin */}
       <motion.div
         className="absolute inset-0 flex items-center justify-end pr-6 rounded-2xl"
@@ -61,10 +57,17 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
         <motion.div
           style={{
             scale: binScale,
+            rotate: binRotate,
+            opacity: binOpacity,
           }}
-          className="text-red-500"
+          transition={{
+            type: "spring",
+            stiffness: 250,
+            damping: 18,
+          }}
+          className="text-red-500 drop-shadow-lg"
         >
-          <Trash2 size={28} />
+          <Trash2 size={30} strokeWidth={2.2} />
         </motion.div>
       </motion.div>
 
@@ -73,28 +76,31 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
         ref={ref}
         drag="x"
         dragConstraints={{ left: 0, right: 0 }}
-        dragElastic={0.25}
-        style={{ x, scale, boxShadow: shadow, borderRadius: "1rem" }}
+        dragElastic={0.22}
+        style={{
+          x,
+          scale,
+          boxShadow: shadow,
+          borderRadius: "1rem",
+        }}
         whileDrag={{ cursor: "grabbing" }}
         onDragEnd={(_, info) => {
           const width = ref.current?.offsetWidth || 320;
-          const threshold = -width * 0.15;
+          const threshold = -width * 0.18; 
           const velocity = info.velocity.x;
 
-          if (x.get() <= threshold || velocity < -400) {
-            // swipe out
+          if (x.get() <= threshold || velocity < -450) {
             animate(rawX, -width, {
               type: "tween",
-              duration: 0.25,
-              ease: "easeOut",
+              duration: 0.28,
+              ease: [0.4, 0, 0.2, 1],
               onComplete: handleRemove,
             });
           } else {
-            // reset
             animate(rawX, 0, {
               type: "spring",
-              stiffness: 200,
-              damping: 28,
+              stiffness: 260,
+              damping: 30,
             });
           }
         }}
@@ -104,14 +110,14 @@ const SwipeableNotification: React.FC<SwipeableNotificationProps> = ({
           opacity: 0,
           x: -240,
           scale: 0.96,
-          transition: { duration: 0.22, ease: "easeOut" },
+          transition: { duration: 0.22, ease: [0.4, 0, 0.2, 1] },
         }}
         transition={{
           type: "spring",
-          stiffness: 220,
-          damping: 26,
+          stiffness: 240,
+          damping: 28,
         }}
-        className="relative z-10 cursor-pointer select-none bg-[#1a1a1a] text-white"
+        className="relative z-10 cursor-pointer select-none bg-[#1a1a1a] text-white rounded-2xl"
       >
         {children}
       </motion.div>
