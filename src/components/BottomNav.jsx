@@ -24,7 +24,6 @@ export default function BottomNavigation() {
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
       <div className="relative w-[80vw] max-w-sm mx-auto">
 
-        {/* Dark frosted glass */}
         <motion.div
           className="absolute inset-0 rounded-3xl overflow-hidden"
           style={{
@@ -53,7 +52,6 @@ export default function BottomNavigation() {
           />
         </motion.div>
 
-        {/* Icons */}
         <div className="relative flex justify-around items-center h-14 z-10">
           {tabs.map((tab) => {
             const isActive = active === tab.path;
@@ -70,10 +68,11 @@ export default function BottomNavigation() {
                         layoutId="bubble"
                         className="absolute w-10 h-10 rounded-full"
                         style={{
-                          background: "rgba(255,255,255,0.14)",
-                          backdropFilter: "blur(38px)",
-                          WebkitBackdropFilter: "blur(38px)",
-                          boxShadow: "0 0 18px rgba(255,255,255,0.24)",
+                          background: "rgba(255,255,255,0.12)",
+                          backdropFilter: "blur(34px)",
+                          WebkitBackdropFilter: "blur(34px)",
+                          boxShadow:
+                            "0 0 10px rgba(255,255,255,0.18)",
                         }}
                         initial={{ scale: 0.4, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
@@ -85,7 +84,7 @@ export default function BottomNavigation() {
 
                   <motion.div
                     animate={{
-                      scale: isActive ? 1.3 : 1,
+                      scale: isActive ? 1.25 : 1,
                       y: isActive ? -2 : 0,
                     }}
                     transition={{ duration: 0.15 }}
