@@ -25,9 +25,7 @@ export default function BottomNav() {
   }, []);
 
   const handleLongPressStart = (label) => {
-    if (window.navigator.vibrate) {
-      window.navigator.vibrate([30, 20, 30]);
-    }
+    if (window.navigator.vibrate) window.navigator.vibrate([30, 20, 30]);
     pressTimer = setTimeout(() => setPopup(label), 500);
   };
 
@@ -39,14 +37,14 @@ export default function BottomNav() {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center">
       <nav
-        className="relative flex justify-between items-center px-7 py-3.5 
-        w-[88vw] max-w-md mx-auto rounded-[2rem]
+        className="relative flex justify-between items-center px-8 py-3.5 
+        w-[82vw] max-w-md mx-auto rounded-[2rem]
         border border-white/10 backdrop-blur-2xl
         bg-[linear-gradient(135deg,rgba(25,25,25,0.95),rgba(10,10,10,0.75))]
         shadow-[inset_0_1px_2px_rgba(255,255,255,0.15),0_8px_25px_rgba(0,0,0,0.6)]
         overflow-hidden animate-background bg-[length:200%_200%]"
       >
-        {/* Animated glossy reflection */}
+        {/* Glossy wave reflection */}
         <motion.div
           animate={{ backgroundPositionX: `${wavePosition}%` }}
           transition={{ duration: 0.3 }}
@@ -68,6 +66,7 @@ export default function BottomNav() {
           />
         ))}
 
+        {/* Popup tooltip on long press */}
         <AnimatePresence>
           {popup && (
             <motion.div
@@ -100,26 +99,38 @@ function NavItem({
   const isActive = currentPath === path;
 
   const handleClick = () => {
-    if (window.navigator.vibrate) {
-      window.navigator.vibrate([10, 15, 10]);
-    }
+    if (window.navigator.vibrate) window.navigator.vibrate([10, 15, 10]);
     navigate(path);
   };
 
   return (
     <motion.button
-      whileTap={{ scale: 0.92 }}
+      whileTap={{ scale: 0.9 }}
       onClick={handleClick}
       onMouseDown={() => onLongPressStart(label)}
       onMouseUp={onLongPressEnd}
       onMouseLeave={onLongPressEnd}
       onTouchStart={() => onLongPressStart(label)}
       onTouchEnd={onLongPressEnd}
-      className="relative flex flex-col items-center justify-center w-14"
+      className="relative flex items-center justify-center w-14 h-14"
     >
+      {/* Floating glow for active icon */}
+      {isActive && (
+        <motion.div
+          layoutId="activeBackground"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          className="absolute inset-0 rounded-full 
+          bg-[radial-gradient(circle_at_center,rgba(34,211,238,0.25),transparent_70%)]
+          blur-md"
+        />
+      )}
+
       {/* Icon */}
       <motion.div
-        animate={isActive ? { scale: 1.3, y: -5 } : { scale: 1, y: 0 }}
+        animate={isActive ? { scale: 1.3, y: -2 } : { scale: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 400, damping: 22 }}
         className={
           isActive
@@ -127,30 +138,16 @@ function NavItem({
             : "text-gray-400 hover:text-gray-200 transition-colors"
         }
       >
-        <Icon size={24} strokeWidth={2} />
+        <Icon size={26} strokeWidth={2} />
       </motion.div>
 
-      {/* Label */}
-      <motion.span
-        animate={{
-          opacity: isActive ? 1 : 0.6,
-          y: isActive ? -1 : 1,
-        }}
-        transition={{ duration: 0.25 }}
-        className={`text-[10px] mt-0.5 ${
-          isActive ? "text-cyan-400 font-medium" : "text-gray-400"
-        }`}
-      >
-        {label}
-      </motion.span>
-
-      {/* Glowing dot indicator */}
+      {/* Active glowing dot */}
       {isActive && (
         <motion.div
           layoutId="activeIndicator"
           transition={{ type: "spring", stiffness: 500, damping: 30 }}
-          className="absolute -bottom-1.5 w-1.5 h-1.5 rounded-full 
-          bg-cyan-400 shadow-glow animate-blink"
+          className="absolute bottom-1 w-1.5 h-1.5 rounded-full 
+          bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)] animate-blink"
         />
       )}
     </motion.button>
