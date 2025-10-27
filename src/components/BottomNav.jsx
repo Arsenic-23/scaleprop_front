@@ -1,144 +1,82 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Home, BarChart2, Users, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import "./GlassNav.css"; // <-- We'll define your morphing styles here
 
-const tabs = [
-  { icon: Home, label: "Home", path: "/home" },
-  { icon: BarChart2, label: "Account", path: "/account" },
-  { icon: Users, label: "Community", path: "/community" },
-  { icon: User, label: "Profile", path: "/profile" },
-];
-
-export default function BottomNav() {
+export default function BottomNavigation() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [popup, setPopup] = useState(null);
-  const [wavePosition, setWavePosition] = useState(0);
-  let pressTimer;
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setWavePosition((prev) => (prev >= 100 ? 0 : prev + 0.4));
-    }, 80);
-    return () => clearInterval(interval);
-  }, []);
+  const [active, setActive] = useState(location.pathname);
 
-  const handleLongPressStart = (label) => {
-    if (window.navigator.vibrate) window.navigator.vibrate(15);
-    pressTimer = setTimeout(() => setPopup(label), 450);
-  };
+  const tabs = [
+    { path: "/", icon: <Home size={22} />, label: "Home" },
+    { path: "/dashboard", icon: <BarChart2 size={22} />, label: "Dashboard" },
+    { path: "/team", icon: <Users size={22} />, label: "Team" },
+    { path: "/profile", icon: <User size={22} />, label: "Profile" },
+  ];
 
-  const handleLongPressEnd = () => {
-    clearTimeout(pressTimer);
-    setPopup(null);
-  };
-
-  return (
-    <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 w-full flex justify-center select-none">
-      <motion.nav
-        initial={{ y: 18, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 110, damping: 14 }}
-        className="relative flex justify-between items-center px-7 py-2.5
-        w-[78vw] max-w-md rounded-3xl overflow-hidden
-        backdrop-blur-[22px]
-        bg-[rgba(15,15,15,0.56)]
-        border border-white/5
-        shadow-[0_6px_32px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.04)]"
-      >
-
-        <motion.div
-          animate={{ backgroundPositionX: `${wavePosition}%` }}
-          transition={{ duration: 0.3 }}
-          className="absolute inset-0 pointer-events-none
-          bg-[linear-gradient(110deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0)_35%)]
-          bg-[length:200%_100%]"
-        />
-
-        {tabs.map((tab, index) => (
-          <NavItem
-            key={index}
-            icon={tab.icon}
-            label={tab.label}
-            path={tab.path}
-            currentPath={location.pathname}
-            navigate={navigate}
-            onLongPressStart={handleLongPressStart}
-            onLongPressEnd={handleLongPressEnd}
-          />
-        ))}
-
-        <AnimatePresence>
-          {popup && (
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              className="absolute bottom-14 left-1/2 -translate-x-1/2
-              bg-black/70 text-white text-[11px] px-3 py-1.5
-              rounded-lg border border-white/10 backdrop-blur-md"
-            >
-              {popup}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.nav>
-    </div>
-  );
-}
-
-function NavItem({
-  icon: Icon,
-  label,
-  path,
-  currentPath,
-  navigate,
-  onLongPressStart,
-  onLongPressEnd,
-}) {
-  const isActive = currentPath === path;
-
-  const handleClick = () => {
-    if (window.navigator.vibrate) window.navigator.vibrate(10);
+  const handleTabClick = (path) => {
+    setActive(path);
     navigate(path);
   };
 
   return (
-    <motion.button
-      whileTap={{ scale: 0.9 }}
-      whileHover={{ y: -1 }}
-      transition={{ type: "spring", stiffness: 420, damping: 24 }}
-      onClick={handleClick}
-      onMouseDown={() => onLongPressStart(label)}
-      onMouseUp={onLongPressEnd}
-      onMouseLeave={onLongPressEnd}
-      onTouchStart={() => onLongPressStart(label)}
-      onTouchEnd={onLongPressEnd}
-      className="relative flex flex-col items-center justify-center w-14 h-12"
-    >
-      <motion.div
-        animate={isActive ? { scale: 1.2, y: -2 } : { scale: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 480, damping: 26 }}
-        className={`${isActive
-          ? "text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.45)]"
-          : "text-neutral-400 hover:text-neutral-200"
-        }`}
-      >
-        <Icon size={23} strokeWidth={2.1} />
-      </motion.div>
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+      <div className="relative w-[90vw] max-w-md mx-auto">
+        {/* Glass-morphed container */}
+        <motion.div
+          className="glass-nav relative rounded-3xl overflow-hidden"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        />
 
-      <AnimatePresence>
-        {isActive && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.4, y: 6 }}
-            animate={{ opacity: 1, scale: 1, y: 6 }}
-            exit={{ opacity: 0, scale: 0.4, y: 6 }}
-            transition={{ duration: 0.22 }}
-            className="absolute bottom-1 w-[5px] h-[5px] rounded-full bg-white"
-          />
-        )}
-      </AnimatePresence>
-    </motion.button>
+        <div className="relative flex justify-around items-center h-16 z-10">
+          {tabs.map((tab) => {
+            const isActive = active === tab.path;
+            return (
+              <button
+                key={tab.path}
+                onClick={() => handleTabClick(tab.path)}
+                className="relative flex flex-col items-center justify-center text-white/80 hover:text-white transition-all duration-300"
+              >
+                <div className="relative flex items-center justify-center">
+                  <AnimatePresence>
+                    {isActive && (
+                      <motion.div
+                        layoutId="bubble"
+                        className="absolute -inset-3 bg-white/15 backdrop-blur-md rounded-full shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                      />
+                    )}
+                  </AnimatePresence>
+                  <motion.div
+                    animate={{
+                      y: isActive ? -6 : 0,
+                      scale: isActive ? 1.1 : 1,
+                    }}
+                    transition={{ duration: 0.25 }}
+                  >
+                    {tab.icon}
+                  </motion.div>
+                </div>
+                <span
+                  className={`text-[10px] font-medium mt-1 ${
+                    isActive ? "text-white" : "text-white/60"
+                  }`}
+                >
+                  {tab.label}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 }
