@@ -1,14 +1,8 @@
-
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BellOff } from "lucide-react";
 
-interface EmptyStateProps {
-  title?: string;
-  subtitle?: string;
-}
-
-const EmptyState: React.FC<EmptyStateProps> = ({
+const EmptyState = ({
   title = "All Clear",
   subtitle = "You're up to date. No new notifications.",
 }) => {
@@ -20,52 +14,96 @@ const EmptyState: React.FC<EmptyStateProps> = ({
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         exit={{ opacity: 0, y: 24, filter: "blur(10px)" }}
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-        className="flex flex-col items-center justify-center h-full px-6 py-20 text-center bg-gradient-to-br from-purple-50 via-blue-50 to-pink-50 dark:from-gray-900/20 dark:via-gray-900/10 dark:to-gray-900/20"
+        className="flex flex-col items-center justify-center h-full px-6 py-20 text-center"
+        style={{
+          background:
+            "radial-gradient(ellipse at bottom, rgba(20,20,20,0.6), rgba(10,10,10,1))",
+        }}
       >
-        {/* Floating Card Container */}
+        {/* Glassmorphic Bell Card */}
         <motion.div
-          initial={{ scale: 0.96, opacity: 0 }}
+          initial={{ scale: 0.94, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.15, type: "spring", stiffness: 80, damping: 18 }}
-          className="relative w-28 h-28 mb-8 rounded-3xl bg-white/80 dark:bg-gray-900/70 backdrop-blur-3xl shadow-2xl flex items-center justify-center overflow-hidden"
+          transition={{
+            delay: 0.15,
+            type: "spring",
+            stiffness: 80,
+            damping: 18,
+          }}
+          className="relative w-28 h-28 mb-8 flex items-center justify-center rounded-3xl overflow-hidden"
+          style={{
+            background: "rgba(15, 15, 15, 0.45)",
+            border: "1px solid rgba(255,255,255,0.08)",
+            boxShadow:
+              "0 4px 24px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 -1px 0 rgba(255,255,255,0.03)",
+            backdropFilter: "blur(30px) saturate(160%)",
+            WebkitBackdropFilter: "blur(30px) saturate(160%)",
+          }}
         >
-          {/* Floating Shadow/Glow */}
+          {/* Gloss reflection */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 40%, rgba(0,0,0,0.25) 100%)",
+              mixBlendMode: "overlay",
+            }}
+          />
+
+          {/* Grain layer */}
+          <div
+            className="absolute inset-0 opacity-[0.18] pointer-events-none"
+            style={{
+              backgroundImage:
+                "url('https://grainy-gradients.vercel.app/noise.png')",
+              backgroundSize: "cover",
+              mixBlendMode: "overlay",
+            }}
+          />
+
+          {/* Gentle pulse glow */}
           <motion.div
             className="absolute inset-0 rounded-3xl"
             animate={{
               boxShadow: [
-                "0 0 0px rgba(99,102,241,0)",
-                "0 0 24px rgba(99,102,241,0.18)",
-                "0 0 0px rgba(99,102,241,0)",
+                "0 0 0px rgba(59,130,246,0)",
+                "0 0 24px rgba(59,130,246,0.25)",
+                "0 0 0px rgba(59,130,246,0)",
               ],
             }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
           />
+
           {/* Bell Icon */}
           <motion.div
-            animate={{ scale: [1, 1.06, 1] }}
+            animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="relative z-10"
           >
-            <BellOff className="w-11 h-11 text-gray-700 dark:text-gray-200" />
+            <BellOff className="w-11 h-11 text-white/90" />
           </motion.div>
         </motion.div>
 
-        {/* Elegant Title */}
+        {/* Title */}
         <motion.h3
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.7 }}
-          className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100"
+          className="text-2xl font-semibold tracking-tight text-white"
         >
           {title}
         </motion.h3>
 
-        {/* Refined Subtitle */}
+        {/* Subtitle */}
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35, duration: 0.7 }}
-          className="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-[18rem] leading-relaxed"
+          className="text-sm text-white/60 mt-2 max-w-[18rem] leading-relaxed"
         >
           {subtitle}
         </motion.p>
