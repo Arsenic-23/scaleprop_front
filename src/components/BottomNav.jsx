@@ -24,37 +24,35 @@ export default function BottomNavigation() {
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
       <div className="relative w-[80vw] max-w-sm mx-auto">
 
-        {/* Glass container */}
+        {/* Frosted dark glass */}
         <motion.div
           className="absolute inset-0 rounded-3xl overflow-hidden"
           style={{
-            background:
-              "linear-gradient(145deg, rgba(20,20,20,0.45), rgba(50,50,50,0.25))",
-            backdropFilter: "blur(32px)",
-            WebkitBackdropFilter: "blur(32px)",
-            border: "1px solid rgba(255,255,255,0.13)",
+            background: "rgba(30,30,30,0.55)",
+            backdropFilter: "blur(40px)",
+            WebkitBackdropFilter: "blur(40px)",
+            border: "1px solid rgba(255,255,255,0.16)",
             boxShadow:
-              "0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.26), inset 0 -1px 0 rgba(255,255,255,0.04)",
+              "0 14px 48px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.33), inset 0 -1px 0 rgba(255,255,255,0.07)",
           }}
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
+          transition={{ duration: 0.32 }}
         />
 
-        {/* Soft grain */}
+        {/* Fine grain for depth */}
         <div
           style={{
             position: "absolute",
             inset: 0,
             pointerEvents: "none",
-            background:
-              "url('https://grainy-gradients.vercel.app/noise.png') repeat",
-            opacity: 0.18,
+            background: "url('https://grainy-gradients.vercel.app/noise.png')",
+            opacity: 0.22,
             mixBlendMode: "overlay",
           }}
         />
 
-        {/* Content */}
+        {/* Navigation */}
         <div className="relative flex justify-around items-center h-14 z-10">
           {tabs.map((tab) => {
             const isActive = active === tab.path;
@@ -69,30 +67,30 @@ export default function BottomNavigation() {
                     {isActive && (
                       <motion.div
                         layoutId="bubble"
-                        className="absolute w-9 h-9 rounded-full"
+                        className="absolute w-10 h-10 rounded-full"
                         style={{
-                          background: "rgba(255,255,255,0.1)",
-                          backdropFilter: "blur(20px)",
-                          WebkitBackdropFilter: "blur(20px)",
-                          boxShadow: "0 0 8px rgba(255,255,255,0.22)",
+                          background: "rgba(255,255,255,0.14)",
+                          backdropFilter: "blur(38px)",
+                          WebkitBackdropFilter: "blur(38px)",
+                          border: "1px solid rgba(255,255,255,0.14)",
+                          boxShadow:
+                            "0 4px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.24)",
                         }}
                         initial={{ scale: 0.5, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.5, opacity: 0 }}
-                        transition={{ duration: 0.18 }}
+                        transition={{ duration: 0.16 }}
                       />
                     )}
                   </AnimatePresence>
 
                   <motion.div
                     animate={{
-                      scale: isActive ? 1.18 : 1,
+                      scale: isActive ? 1.22 : 1,
                       y: isActive ? -1 : 0,
                     }}
-                    transition={{ duration: 0.2 }}
-                    className={
-                      isActive ? "text-white" : "text-white/50"
-                    }
+                    transition={{ duration: 0.18 }}
+                    className={isActive ? "text-white" : "text-white/55"}
                   >
                     {tab.icon}
                   </motion.div>
