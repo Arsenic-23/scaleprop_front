@@ -3,31 +3,32 @@ import React from "react";
 const GlassCard = ({ children, className = "", style = {} }) => {
   return (
     <div
-      className={`relative overflow-hidden rounded-3xl p-[1px] ${className}`}
+      className={`relative overflow-hidden rounded-3xl ${className}`}
       style={{
-        background: "rgba(30,30,30,0.78)", // Same dark tone as navigation
-        border: "1px solid rgba(255,255,255,0.22)",
+        display: "inline-block",
+        background: "rgba(20, 20, 20, 0.65)",
+        border: "1px solid rgba(255,255,255,0.15)",
         boxShadow:
-          "0 18px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 0 rgba(255,255,255,0.12)",
-        backdropFilter: "blur(48px)",
-        WebkitBackdropFilter: "blur(48px)",
+          "0 10px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(255,255,255,0.1)",
+        backdropFilter: "blur(42px)",
+        WebkitBackdropFilter: "blur(42px)",
         transition: "all 0.3s ease",
         ...style,
       }}
     >
-      {/* Gloss shimmer overlay for realistic reflection */}
+      {/* Gloss */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 60%)",
+            "linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 60%)",
           mixBlendMode: "overlay",
         }}
       />
 
-      {/* Fine grain texture overlay for realism */}
+      {/* Grain */}
       <div
-        className="absolute inset-0 opacity-30 pointer-events-none"
+        className="absolute inset-0 opacity-25 pointer-events-none"
         style={{
           backgroundImage:
             "url('https://grainy-gradients.vercel.app/noise.png')",
@@ -35,8 +36,8 @@ const GlassCard = ({ children, className = "", style = {} }) => {
         }}
       />
 
-      {/* Card content */}
-      <div className="relative z-10 p-4">{children}</div>
+      {/* Main content */}
+      <div className="relative z-10 p-3">{children}</div>
     </div>
   );
 };
