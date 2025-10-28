@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Header from "../components/Header";
 import SwipeableNotification from "../components/Swipeable";
 import EmptyState from "../components/EmptyState";
+import GlassCard from "../components/GlassCard"; 
 
 const COLORS = {
   primary: "#3B82F6",
@@ -13,16 +14,7 @@ const COLORS = {
   accentBlue: "#3B82F6",
 };
 
-interface NotificationItemProps {
-  title: string;
-  message: string;
-  timestamp: string;
-  icon: string;
-  colorType: "blue" | "green" | "muted";
-  isRead: boolean;
-}
-
-const NotificationItem: React.FC<NotificationItemProps> = ({
+const NotificationItem = ({
   title,
   message,
   timestamp,
@@ -46,54 +38,55 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   }
 
   return (
-    <div
-      className={`flex items-start gap-4 p-4 relative ${opacityClass}`}
-      style={{
-        backgroundColor: COLORS.surfaceDark,
-        borderRadius: "1rem",
-        fontFamily: "Manrope, sans-serif",
-      }}
-    >
+    <GlassCard>
       <div
-        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${iconWrapperClasses} ${iconColorClass}`}
+        className={`flex items-start gap-4 p-4 relative ${opacityClass}`}
+        style={{
+          borderRadius: "1rem",
+          fontFamily: "Manrope, sans-serif",
+        }}
       >
-        <span className="material-symbols-outlined text-2xl">{icon}</span>
-      </div>
+        <div
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${iconWrapperClasses} ${iconColorClass}`}
+        >
+          <span className="material-symbols-outlined text-2xl">{icon}</span>
+        </div>
 
-      <div className="flex-1">
-        <div className="flex items-center justify-between">
+        <div className="flex-1">
+          <div className="flex items-center justify-between">
+            <p
+              className="font-semibold text-base"
+              style={{ color: COLORS.textDark }}
+            >
+              {title}
+            </p>
+            <p
+              className="text-xs whitespace-nowrap"
+              style={{ color: COLORS.textMutedDark }}
+            >
+              {timestamp}
+            </p>
+          </div>
           <p
-            className="font-semibold text-base"
-            style={{ color: COLORS.textDark }}
-          >
-            {title}
-          </p>
-          <p
-            className="text-xs whitespace-nowrap"
+            className="mt-1 text-sm leading-snug"
             style={{ color: COLORS.textMutedDark }}
           >
-            {timestamp}
+            {message}
           </p>
         </div>
-        <p
-          className="mt-1 text-sm leading-snug"
-          style={{ color: COLORS.textMutedDark }}
-        >
-          {message}
-        </p>
-      </div>
 
-      {!isRead && (
-        <div
-          className="absolute top-4 right-4 h-2 w-2 rounded-full"
-          style={{ backgroundColor: COLORS.accentBlue }}
-        ></div>
-      )}
-    </div>
+        {!isRead && (
+          <div
+            className="absolute top-4 right-4 h-2 w-2 rounded-full"
+            style={{ backgroundColor: COLORS.accentBlue }}
+          ></div>
+        )}
+      </div>
+    </GlassCard>
   );
 };
 
-const Notifications: React.FC = () => {
+const Notifications = () => {
   const [newNotifications, setNewNotifications] = useState([
     {
       id: 1,
@@ -102,7 +95,7 @@ const Notifications: React.FC = () => {
         "Your payout of $5,231.00 has been processed and is on its way to you.",
       timestamp: "9:41 AM",
       icon: "account_balance_wallet",
-      colorType: "blue" as const,
+      colorType: "blue",
       isRead: false,
     },
     {
@@ -112,7 +105,7 @@ const Notifications: React.FC = () => {
         "Congratulations! You've successfully passed the 100k Challenge.",
       timestamp: "8:15 AM",
       icon: "stacked_line_chart",
-      colorType: "green" as const,
+      colorType: "green",
       isRead: false,
     },
   ]);
@@ -125,7 +118,7 @@ const Notifications: React.FC = () => {
         "Your account #123456 is approaching the margin limit. Please take action.",
       timestamp: "Yesterday, 3:30 PM",
       icon: "warning",
-      colorType: "muted" as const,
+      colorType: "muted",
       isRead: true,
     },
     {
@@ -135,7 +128,7 @@ const Notifications: React.FC = () => {
         "A new platform update will be deployed on Sunday. Expect brief downtime.",
       timestamp: "Yesterday, 11:00 AM",
       icon: "new_releases",
-      colorType: "muted" as const,
+      colorType: "muted",
       isRead: true,
     },
     {
@@ -145,7 +138,7 @@ const Notifications: React.FC = () => {
         "Your challenge account #987654 has been successfully funded.",
       timestamp: "Yesterday, 9:02 AM",
       icon: "paid",
-      colorType: "muted" as const,
+      colorType: "muted",
       isRead: true,
     },
   ]);
@@ -154,7 +147,7 @@ const Notifications: React.FC = () => {
     const marked = newNotifications.map((n) => ({
       ...n,
       isRead: true,
-      colorType: "muted" as const,
+      colorType: "muted",
     }));
 
     setNewNotifications(marked);
@@ -165,11 +158,11 @@ const Notifications: React.FC = () => {
     }, 500);
   };
 
-  const handleRemoveNew = (id: number) => {
+  const handleRemoveNew = (id) => {
     setNewNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
-  const handleRemoveEarlier = (id: number) => {
+  const handleRemoveEarlier = (id) => {
     setEarlierNotifications((prev) => prev.filter((n) => n.id !== id));
   };
 
@@ -185,7 +178,6 @@ const Notifications: React.FC = () => {
       <Header title="Notifications" />
 
       <main className="flex-1 overflow-y-auto px-4 pt-6 pb-8">
-        {/* Show EmptyState when no notifications left */}
         {newNotifications.length === 0 && earlierNotifications.length === 0 ? (
           <EmptyState />
         ) : (
