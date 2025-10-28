@@ -1,16 +1,6 @@
 import React from "react";
 
-interface GlassCardProps {
-  children: React.ReactNode;
-  className?: string;
-  style?: React.CSSProperties;
-}
-
-const GlassCard: React.FC<GlassCardProps> = ({
-  children,
-  className = "",
-  style = {},
-}) => {
+const GlassCard = ({ children, className = "", style = {} }) => {
   return (
     <div
       className={`relative overflow-hidden rounded-2xl transition-all duration-300 ${className}`}
