@@ -8,13 +8,26 @@ import GlassCard from "../components/GlassCard";
 const COLORS = {
   primary: "#3B82F6",
   backgroundDark: "#000000",
-  surfaceDark: "#101010",
   textDark: "#FFFFFF",
   textMutedDark: "#8A8A8A",
   accentBlue: "#3B82F6",
 };
 
-const NotificationItem = ({
+type NotificationColor = "blue" | "green" | "muted";
+
+interface Notification {
+  id: number;
+  title: string;
+  message: string;
+  timestamp: string;
+  icon: string;
+  colorType: NotificationColor;
+  isRead: boolean;
+}
+
+interface NotificationItemProps extends Notification {}
+
+const NotificationItem: React.FC<NotificationItemProps> = ({
   title,
   message,
   timestamp,
@@ -24,7 +37,7 @@ const NotificationItem = ({
 }) => {
   let iconWrapperClasses = "";
   let iconColorClass = "";
-  let opacityClass = isRead ? "opacity-60" : "";
+  const opacityClass = isRead ? "opacity-60" : "";
 
   if (colorType === "blue") {
     iconWrapperClasses = "bg-blue-500/10";
@@ -34,77 +47,61 @@ const NotificationItem = ({
     iconColorClass = "text-green-500";
   } else {
     iconWrapperClasses = "bg-white/5";
-    iconColorClass = `text-[${COLORS.textMutedDark}]`;
+    iconColorClass = "text-white/50";
   }
 
   return (
     <GlassCard
       className={`transition-all duration-300 ${opacityClass}`}
       style={{
-        padding: "0.85rem 1rem",
-        borderRadius: "1rem",
-        background:
-          "rgba(18,18,18,0.5)", // matches your nav glass tone
-        border: "1px solid rgba(255,255,255,0.08)",
-        boxShadow:
-          "0 4px 24px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05)",
+        padding: "0.9rem 1rem",
+        borderRadius: "1.1rem",
       }}
     >
-      <div
-        className="flex items-start gap-4 relative"
-        style={{
-          fontFamily: "Manrope, sans-serif",
-        }}
-      >
-        {/* Icon */}
+      <div className="flex items-start gap-4 relative font-[Manrope]">
         <div
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${iconWrapperClasses} ${iconColorClass}`}
         >
           <span className="material-symbols-outlined text-2xl">{icon}</span>
         </div>
 
-        {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between flex-wrap gap-x-3">
             <p
-              className="font-semibold text-base leading-tight"
-              style={{ color: COLORS.textDark }}
+              className="font-semibold text-base leading-tight text-white"
+              style={{ fontFamily: "Manrope, sans-serif" }}
             >
               {title}
             </p>
-            <p
-              className="text-xs whitespace-nowrap"
-              style={{ color: COLORS.textMutedDark }}
-            >
+            <p className="text-xs whitespace-nowrap text-white/60">
               {timestamp}
             </p>
           </div>
-          <p
-            className="mt-1 text-sm leading-snug break-words"
-            style={{
-              color: COLORS.textMutedDark,
-              lineHeight: "1.4rem",
-              wordBreak: "break-word",
-            }}
-          >
+
+          <p className="mt-1 text-sm leading-snug text-white/60 break-words">
             {message}
           </p>
         </div>
 
-        {/* Unread dot */}
         {!isRead && (
-          <div
-            className="absolute top-3 right-3 h-2 w-2 rounded-full"
-            style={{ backgroundColor: COLORS.accentBlue }}
-          ></div>
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.25 }}
+            className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full"
+            style={{
+              backgroundColor: COLORS.accentBlue,
+              boxShadow: "0 0 6px rgba(59,130,246,0.8)",
+            }}
+          />
         )}
       </div>
     </GlassCard>
   );
 };
 
-const Notifications = () => {
-  const [newNotifications, setNewNotifications] = useState([
+const Notifications: React.FC = () => {
+  const [newNotifications, setNewNotifications] = useState<Notification[]>([
     {
       id: 1,
       title: "Payout Confirmed",
@@ -127,7 +124,7 @@ const Notifications = () => {
     },
   ]);
 
-  const [earlierNotifications, setEarlierNotifications] = useState([
+  const [earlierNotifications, setEarlierNotifications] = useState<Notification[]>([
     {
       id: 3,
       title: "Margin Call",
@@ -154,7 +151,7 @@ const Notifications = () => {
     const marked = newNotifications.map((n) => ({
       ...n,
       isRead: true,
-      colorType: "muted",
+      colorType: "muted" as NotificationColor,
     }));
 
     setNewNotifications([]);
@@ -164,13 +161,11 @@ const Notifications = () => {
     }, 300);
   };
 
-  const handleRemoveNew = (id) => {
+  const handleRemoveNew = (id: number) =>
     setNewNotifications((prev) => prev.filter((n) => n.id !== id));
-  };
 
-  const handleRemoveEarlier = (id) => {
+  const handleRemoveEarlier = (id: number) =>
     setEarlierNotifications((prev) => prev.filter((n) => n.id !== id));
-  };
 
   return (
     <div
@@ -179,7 +174,7 @@ const Notifications = () => {
         minHeight: "100dvh",
         fontFamily: "Manrope, sans-serif",
       }}
-      className="relative flex h-screen min-h-screen w-full flex-col text-white overflow-hidden"
+      className="relative flex h-screen w-full flex-col text-white overflow-hidden"
     >
       <Header title="Notifications" />
 
@@ -191,20 +186,15 @@ const Notifications = () => {
             {newNotifications.length > 0 && (
               <>
                 <div className="mb-5 flex items-center justify-between">
-                  <h2
-                    className="text-lg font-semibold"
-                    style={{ color: COLORS.textDark }}
-                  >
-                    New
-                  </h2>
+                  <h2 className="text-lg font-semibold text-white">New</h2>
                   <button
                     onClick={handleMarkAllAsRead}
-                    className="text-sm hover:opacity-80 transition-colors"
-                    style={{ color: COLORS.accentBlue }}
+                    className="text-sm hover:opacity-80 transition-colors text-blue-400"
                   >
                     Mark all as read
                   </button>
                 </div>
+
                 <motion.div layout className="space-y-3 mb-8">
                   <AnimatePresence>
                     {newNotifications.map((n, index) => (
@@ -237,12 +227,7 @@ const Notifications = () => {
             {earlierNotifications.length > 0 && (
               <>
                 <div className="mb-5">
-                  <h2
-                    className="text-lg font-semibold"
-                    style={{ color: COLORS.textDark }}
-                  >
-                    Earlier
-                  </h2>
+                  <h2 className="text-lg font-semibold text-white">Earlier</h2>
                 </div>
                 <motion.div layout className="space-y-3">
                   <AnimatePresence>
