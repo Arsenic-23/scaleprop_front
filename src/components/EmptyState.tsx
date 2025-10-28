@@ -19,12 +19,8 @@ const EmptyState: FC<EmptyStateProps> = ({
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         exit={{ opacity: 0, y: 24, filter: "blur(10px)" }}
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-        className="flex flex-col items-center justify-center h-full px-6 py-20 text-center"
-        style={{
-          background: "radial-gradient(circle at 20% 10%, #111 0%, #000 100%)",
-        }}
+        className="flex flex-col items-center justify-center h-full px-6 py-20 text-center bg-black"
       >
-        {/* Glassy Floating Card */}
         <motion.div
           initial={{ scale: 0.96, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -39,7 +35,6 @@ const EmptyState: FC<EmptyStateProps> = ({
             WebkitBackdropFilter: "blur(22px) saturate(155%)",
           }}
         >
-          {/* Subtle Noise */}
           <div
             className="absolute inset-0 opacity-[0.06]"
             style={{
@@ -48,7 +43,6 @@ const EmptyState: FC<EmptyStateProps> = ({
             }}
           />
 
-          {/* Floating Glow */}
           <motion.div
             className="absolute inset-0 rounded-3xl pointer-events-none"
             animate={{
@@ -61,7 +55,6 @@ const EmptyState: FC<EmptyStateProps> = ({
             transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
           />
 
-          {/* Icon */}
           <motion.div
             animate={{ scale: [1, 1.06, 1] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -71,7 +64,6 @@ const EmptyState: FC<EmptyStateProps> = ({
           </motion.div>
         </motion.div>
 
-        {/* Title */}
         <motion.h3
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -81,7 +73,6 @@ const EmptyState: FC<EmptyStateProps> = ({
           {title}
         </motion.h3>
 
-        {/* Subtitle */}
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
