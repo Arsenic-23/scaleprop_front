@@ -59,14 +59,33 @@ const Home: React.FC = () => {
               isVibrating ? "scale-110" : "scale-100"
             }`}
             style={{
-              background: "rgba(255, 255, 255, 0.12)",
-              backdropFilter: "blur(28px)",
-              WebkitBackdropFilter: "blur(28px)",
-              border: "1px solid rgba(255, 255, 255, 0.2)",
+              background:
+                "linear-gradient(145deg, rgba(25,25,25,0.85), rgba(60,60,60,0.55))",
+              backdropFilter: "blur(32px)",
+              WebkitBackdropFilter: "blur(32px)",
+              border: "1px solid rgba(255,255,255,0.22)",
               boxShadow:
-                "0 4px 18px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.1)",
+                "0 6px 22px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 2px rgba(255,255,255,0.1)",
             }}
           >
+            {/* Subtle Glossy Reflection Layer */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: "55%",
+                borderTopLeftRadius: "9999px",
+                borderTopRightRadius: "9999px",
+                background:
+                  "linear-gradient(to bottom, rgba(255,255,255,0.25), transparent)",
+                opacity: 0.6,
+                pointerEvents: "none",
+              }}
+            />
+
+            {/* Noise Texture Overlay */}
             <div
               style={{
                 position: "absolute",
@@ -79,6 +98,7 @@ const Home: React.FC = () => {
                 pointerEvents: "none",
               }}
             />
+
             <Bell
               className="text-white/90 z-10"
               style={{ width: "20px", height: "20px" }}
