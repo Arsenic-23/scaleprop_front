@@ -19,10 +19,8 @@ const Home: React.FC = () => {
 
   const handleNotificationClick = () => {
     if (navigator.vibrate) navigator.vibrate(150);
-
     setIsVibrating(true);
     setTimeout(() => setIsVibrating(false), 200);
-
     navigate("/notifications");
   };
 
@@ -53,17 +51,37 @@ const Home: React.FC = () => {
             </h1>
           </div>
 
-          {/* Notification Icon */}
+          {/* Glassmorphic Notification Icon */}
           <button
             aria-label="Notifications"
             onClick={handleNotificationClick}
-            className={`p-2 rounded-full transition transform duration-150 ${
+            className={`relative flex items-center justify-center w-10 h-10 rounded-full transition-transform duration-150 ${
               isVibrating ? "scale-110" : "scale-100"
             }`}
+            style={{
+              background: "rgba(255, 255, 255, 0.12)",
+              backdropFilter: "blur(28px)",
+              WebkitBackdropFilter: "blur(28px)",
+              border: "1px solid rgba(255, 255, 255, 0.2)",
+              boxShadow:
+                "0 4px 18px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.1)",
+            }}
           >
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "url('https://grainy-gradients.vercel.app/noise.png')",
+                opacity: 0.25,
+                mixBlendMode: "overlay",
+                borderRadius: "9999px",
+                pointerEvents: "none",
+              }}
+            />
             <Bell
-              className="text-gray-300"
-              style={{ width: "22px", height: "22px" }}
+              className="text-white/90 z-10"
+              style={{ width: "20px", height: "20px" }}
             />
           </button>
         </div>
