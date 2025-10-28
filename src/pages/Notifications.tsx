@@ -104,7 +104,7 @@ const Notifications: React.FC = () => {
       id: 2,
       title: "Challenge Passed",
       message:
-        "Congratulations! You've successfully passed the 100k Challenge. Keep up the great work!",
+        "Congratulations! You have successfully passed the 100k Challenge.",
       timestamp: "8:15 AM",
       icon: "stacked_line_chart",
       colorType: "green",
@@ -117,7 +117,7 @@ const Notifications: React.FC = () => {
       id: 3,
       title: "Margin Call",
       message:
-        "Your account #123456 is approaching the margin limit. Please take action.",
+        "Your account #123456 is approaching the margin limit.",
       timestamp: "Yesterday, 3:30 PM",
       icon: "warning",
       colorType: "muted",
@@ -127,7 +127,7 @@ const Notifications: React.FC = () => {
       id: 4,
       title: "System Update",
       message:
-        "A new platform update will be deployed on Sunday. Expect brief downtime during rollout.",
+        "A new platform update will be deployed on Sunday.",
       timestamp: "Yesterday, 11:00 AM",
       icon: "new_releases",
       colorType: "muted",
@@ -156,9 +156,8 @@ const Notifications: React.FC = () => {
 
   return (
     <div
-      className="relative flex h-screen w-full flex-col text-white overflow-hidden"
+      className="relative flex h-screen w-full flex-col text-white overflow-hidden bg-black"
       style={{
-        background: "radial-gradient(circle at 25% 10%, #0a0a0a, #000)",
         minHeight: "100dvh",
         fontFamily: "Manrope, sans-serif",
       }}
@@ -251,4 +250,4 @@ const Notifications: React.FC = () => {
   );
 };
 
-export default Notifications; 
+export default Notifications;
