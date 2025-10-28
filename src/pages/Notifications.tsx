@@ -6,6 +6,10 @@ import EmptyState from "../components/EmptyState";
 import GlassCard from "../components/GlassCard";
 
 const COLORS = {
+  primary: "#3B82F6",
+  backgroundDark: "#000000",
+  textDark: "#FFFFFF",
+  textMutedDark: "#8A8A8A",
   accentBlue: "#3B82F6",
 };
 
@@ -29,12 +33,11 @@ const NotificationItem: React.FC<Notification> = ({
   colorType,
   isRead,
 }) => {
-  const opacityClass = isRead ? "opacity-70" : "";
-
-  const colorMap: Record<NotificationColor, { glow: string }> = {
-    blue: { glow: "rgba(59,130,246,0.5)" },
-    green: { glow: "rgba(34,197,94,0.5)" },
-    muted: { glow: "rgba(255,255,255,0.12)" },
+  const opacityClass = isRead ? "opacity-60" : "";
+  const colorMap: Record<NotificationColor, { bg: string; text: string }> = {
+    blue: { bg: "bg-blue-500/15", text: "text-blue-400" },
+    green: { bg: "bg-green-500/15", text: "text-green-400" },
+    muted: { bg: "bg-white/5", text: "text-white/50" },
   };
 
   return (
@@ -45,33 +48,25 @@ const NotificationItem: React.FC<Notification> = ({
         borderRadius: "1.1rem",
       }}
     >
-      <div className="flex items-start gap-4 relative">
+      <div className="flex items-start gap-4 relative font-[Manrope]">
         <div
-          className="relative h-10 w-10 shrink-0 rounded-full flex items-center justify-center"
-          style={{
-            background: "rgba(255,255,255,0.06)",
-            backdropFilter: "blur(20px) saturate(200%)",
-            WebkitBackdropFilter: "blur(20px) saturate(200%)",
-            border: "1px solid rgba(255,255,255,0.12)",
-            boxShadow: `0 0 12px ${colorMap[colorType].glow}, inset 0 1px 1px rgba(255,255,255,0.15)`,
-          }}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${colorMap[colorType].bg}`}
         >
-          <span className="material-symbols-outlined text-[22px] text-white">
+          <span className={`material-symbols-outlined text-2xl ${colorMap[colorType].text}`}>
             {icon}
           </span>
         </div>
 
-        <div className="flex-1 min-w-0 font-[Manrope]">
-          <div className="flex items-center justify-between gap-x-3">
-            <p className="font-semibold text-[15px] text-white leading-tight">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between flex-wrap gap-x-3">
+            <p className="font-semibold text-base leading-tight text-white">
               {title}
             </p>
-            <p className="text-xs text-white/55 whitespace-nowrap">
+            <p className="text-xs whitespace-nowrap text-white/50">
               {timestamp}
             </p>
           </div>
-
-          <p className="mt-1 text-[13px] text-white/80 leading-snug break-words">
+          <p className="mt-1 text-sm leading-snug text-white/70 break-words">
             {message}
           </p>
         </div>
@@ -109,7 +104,7 @@ const Notifications: React.FC = () => {
       id: 2,
       title: "Challenge Passed",
       message:
-        "You have passed the 100k Challenge. Keep up the progress.",
+        "Congratulations! You've successfully passed the 100k Challenge. Keep up the great work!",
       timestamp: "8:15 AM",
       icon: "stacked_line_chart",
       colorType: "green",
@@ -122,8 +117,8 @@ const Notifications: React.FC = () => {
       id: 3,
       title: "Margin Call",
       message:
-        "Account #123456 is approaching the margin limit.",
-      timestamp: "Yesterday",
+        "Your account #123456 is approaching the margin limit. Please take action.",
+      timestamp: "Yesterday, 3:30 PM",
       icon: "warning",
       colorType: "muted",
       isRead: true,
@@ -132,8 +127,8 @@ const Notifications: React.FC = () => {
       id: 4,
       title: "System Update",
       message:
-        "A new platform update coming Sunday. Brief downtime expected.",
-      timestamp: "Yesterday",
+        "A new platform update will be deployed on Sunday. Expect brief downtime during rollout.",
+      timestamp: "Yesterday, 11:00 AM",
       icon: "new_releases",
       colorType: "muted",
       isRead: true,
@@ -146,20 +141,25 @@ const Notifications: React.FC = () => {
       isRead: true,
       colorType: "muted" as NotificationColor,
     }));
+
     setNewNotifications([]);
-    setTimeout(() => setEarlierNotifications((prev) => [...marked, ...prev]), 200);
+    setTimeout(() => setEarlierNotifications((prev) => [...marked, ...prev]), 300);
   };
 
   const handleRemove = (id: number, isNew: boolean) => {
-    if (isNew) setNewNotifications((prev) => prev.filter((n) => n.id !== id));
-    else setEarlierNotifications((prev) => prev.filter((n) => n.id !== id));
+    if (isNew) {
+      setNewNotifications((prev) => prev.filter((n) => n.id !== id));
+    } else {
+      setEarlierNotifications((prev) => prev.filter((n) => n.id !== id));
+    }
   };
 
   return (
     <div
       className="relative flex h-screen w-full flex-col text-white overflow-hidden"
       style={{
-        background: "radial-gradient(circle at 30% 10%, #111, #000)",
+        background: "radial-gradient(circle at 25% 10%, #0a0a0a, #000)",
+        minHeight: "100dvh",
         fontFamily: "Manrope, sans-serif",
       }}
     >
@@ -173,10 +173,10 @@ const Notifications: React.FC = () => {
             {newNotifications.length > 0 && (
               <>
                 <div className="mb-5 flex items-center justify-between">
-                  <h2 className="text-[17px] font-semibold">New</h2>
+                  <h2 className="text-lg font-semibold text-white">New</h2>
                   <button
                     onClick={handleMarkAllAsRead}
-                    className="text-sm text-blue-400 hover:opacity-80"
+                    className="text-sm hover:opacity-80 transition-colors text-blue-400"
                   >
                     Mark all as read
                   </button>
@@ -188,10 +188,15 @@ const Notifications: React.FC = () => {
                       <motion.div
                         key={n.id}
                         layout
-                        initial={{ opacity: 0, y: -10 }}
+                        initial={{ opacity: 0, y: -12 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{ type: "spring", stiffness: 220, damping: 28, delay: index * 0.04 }}
+                        exit={{ opacity: 0, y: 12 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 220,
+                          damping: 28,
+                          delay: index * 0.04,
+                        }}
                       >
                         <SwipeableNotification
                           id={n.id}
@@ -208,10 +213,9 @@ const Notifications: React.FC = () => {
 
             {earlierNotifications.length > 0 && (
               <>
-                <div className="mb-4">
-                  <h2 className="text-[17px] font-semibold">Earlier</h2>
+                <div className="mb-5">
+                  <h2 className="text-lg font-semibold text-white">Earlier</h2>
                 </div>
-
                 <motion.div layout className="space-y-3">
                   <AnimatePresence>
                     {earlierNotifications.map((n, index) => (
@@ -221,7 +225,12 @@ const Notifications: React.FC = () => {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 10 }}
-                        transition={{ type: "spring", stiffness: 220, damping: 28, delay: index * 0.03 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 220,
+                          damping: 28,
+                          delay: index * 0.03,
+                        }}
                       >
                         <SwipeableNotification
                           id={n.id}
@@ -242,4 +251,4 @@ const Notifications: React.FC = () => {
   );
 };
 
-export default Notifications;
+export default Notifications; 
