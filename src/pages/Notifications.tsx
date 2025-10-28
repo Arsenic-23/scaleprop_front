@@ -38,50 +38,63 @@ const NotificationItem = ({
   }
 
   return (
-    <GlassCard className="w-full">
+    <GlassCard
+      className={`transition-all duration-300 ${opacityClass}`}
+      style={{
+        padding: "0.85rem 1rem",
+        borderRadius: "1rem",
+        background:
+          "rgba(18,18,18,0.5)", // matches your nav glass tone
+        border: "1px solid rgba(255,255,255,0.08)",
+        boxShadow:
+          "0 4px 24px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05)",
+      }}
+    >
       <div
-        className={`flex items-start gap-4 p-4 relative ${opacityClass}`}
+        className="flex items-start gap-4 relative"
         style={{
-          borderRadius: "1rem",
           fontFamily: "Manrope, sans-serif",
-          minHeight: "auto",
         }}
       >
         {/* Icon */}
         <div
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${iconWrapperClasses} ${iconColorClass}`}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${iconWrapperClasses} ${iconColorClass}`}
         >
           <span className="material-symbols-outlined text-2xl">{icon}</span>
         </div>
 
         {/* Content */}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-between flex-wrap gap-x-3">
             <p
-              className="font-semibold text-base truncate"
+              className="font-semibold text-base leading-tight"
               style={{ color: COLORS.textDark }}
             >
               {title}
             </p>
             <p
-              className="text-xs flex-shrink-0"
+              className="text-xs whitespace-nowrap"
               style={{ color: COLORS.textMutedDark }}
             >
               {timestamp}
             </p>
           </div>
           <p
-            className="mt-1 text-sm leading-snug text-left break-words"
-            style={{ color: COLORS.textMutedDark }}
+            className="mt-1 text-sm leading-snug break-words"
+            style={{
+              color: COLORS.textMutedDark,
+              lineHeight: "1.4rem",
+              wordBreak: "break-word",
+            }}
           >
             {message}
           </p>
         </div>
 
-        {/* New dot */}
+        {/* Unread dot */}
         {!isRead && (
           <div
-            className="absolute top-4 right-4 h-2 w-2 rounded-full"
+            className="absolute top-3 right-3 h-2 w-2 rounded-full"
             style={{ backgroundColor: COLORS.accentBlue }}
           ></div>
         )}
@@ -106,7 +119,7 @@ const Notifications = () => {
       id: 2,
       title: "Challenge Passed",
       message:
-        "Congratulations! You've successfully passed the 100k Challenge.",
+        "Congratulations! You've successfully passed the 100k Challenge. Keep up the great work!",
       timestamp: "8:15 AM",
       icon: "stacked_line_chart",
       colorType: "green",
@@ -129,19 +142,9 @@ const Notifications = () => {
       id: 4,
       title: "System Update",
       message:
-        "A new platform update will be deployed on Sunday. Expect brief downtime.",
+        "A new platform update will be deployed on Sunday. Expect brief downtime during rollout.",
       timestamp: "Yesterday, 11:00 AM",
       icon: "new_releases",
-      colorType: "muted",
-      isRead: true,
-    },
-    {
-      id: 5,
-      title: "Account Funded",
-      message:
-        "Your challenge account #987654 has been successfully funded.",
-      timestamp: "Yesterday, 9:02 AM",
-      icon: "paid",
       colorType: "muted",
       isRead: true,
     },
@@ -154,12 +157,11 @@ const Notifications = () => {
       colorType: "muted",
     }));
 
-    setNewNotifications(marked);
+    setNewNotifications([]);
 
     setTimeout(() => {
       setEarlierNotifications((prev) => [...marked, ...prev]);
-      setNewNotifications([]);
-    }, 500);
+    }, 300);
   };
 
   const handleRemoveNew = (id) => {
@@ -209,14 +211,14 @@ const Notifications = () => {
                       <motion.div
                         key={n.id}
                         layout
-                        initial={{ opacity: 0.6, y: -12 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 18, scale: 0.97 }}
+                        initial={{ opacity: 0, y: -12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 12 }}
                         transition={{
                           type: "spring",
-                          stiffness: 240,
-                          damping: 32,
-                          delay: index * 0.05,
+                          stiffness: 220,
+                          damping: 28,
+                          delay: index * 0.04,
                         }}
                       >
                         <SwipeableNotification
@@ -248,14 +250,14 @@ const Notifications = () => {
                       <motion.div
                         key={n.id}
                         layout
-                        initial={{ opacity: 0, y: -12, scale: 0.97 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 15, scale: 0.96 }}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
                         transition={{
                           type: "spring",
-                          stiffness: 230,
-                          damping: 30,
-                          delay: index * 0.04,
+                          stiffness: 220,
+                          damping: 28,
+                          delay: index * 0.03,
                         }}
                       >
                         <SwipeableNotification
