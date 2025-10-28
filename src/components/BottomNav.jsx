@@ -15,129 +15,92 @@ export default function BottomNavigation() {
     { path: "/profile", icon: <User size={20} /> },
   ];
 
-  // iOS-like haptic feedback (works on mobile browsers)
-  const triggerHaptic = (type = "light") => {
-    if ("vibrate" in navigator) {
-      if (type === "heavy") navigator.vibrate([10, 40, 10]);
-      else if (type === "medium") navigator.vibrate(30);
-      else navigator.vibrate(15);
-    }
-    // For iOS-like feel in desktop browsers:
-    if (window && "navigator" in window && window.navigator.userActivation) {
-      // no-op fallback (desktop haptic simulation)
-    }
-  };
-
   const handleTabClick = (path) => {
-    if (active !== path) {
-      triggerHaptic("light");
-      setActive(path);
-      navigate(path);
-    } else {
-      triggerHaptic("medium"); // subtle feedback on re-tap
+    if (window.navigator.vibrate) {
+      window.navigator.vibrate([30, 50, 30]);
     }
+
+    setActive(path);
+    navigate(path);
   };
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 select-none">
-      <motion.div
-        initial={{ opacity: 0, y: 25 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: "easeOut" }}
-        className="relative w-[80vw] max-w-sm mx-auto"
-      >
-        {/* Glass Background */}
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+      <div className="relative w-[80vw] max-w-sm mx-auto">
+
         <motion.div
           className="absolute inset-0 rounded-3xl overflow-hidden"
           style={{
-            background: "rgba(35, 35, 35, 0.78)",
-            backdropFilter: "blur(48px) saturate(180%)",
-            WebkitBackdropFilter: "blur(48px) saturate(180%)",
+            background: "rgba(30,30,30,0.78)",
+            backdropFilter: "blur(48px)",
+            WebkitBackdropFilter: "blur(48px)",
             border: "1px solid rgba(255,255,255,0.22)",
             boxShadow:
-              "0 18px 45px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.3), inset 0 -1px 0 rgba(255,255,255,0.12)",
+              "0 18px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 0 rgba(255,255,255,0.12)",
           }}
+          initial={{ opacity: 0, y: 22 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.32 }}
         />
 
-        {/* Grain Texture Overlay */}
         <div
           style={{
             position: "absolute",
             inset: 0,
             pointerEvents: "none",
             background: "url('https://grainy-gradients.vercel.app/noise.png')",
-            opacity: 0.25,
+            opacity: 0.32,
             mixBlendMode: "overlay",
           }}
         />
 
-        {/* Tabs */}
         <div className="relative flex justify-around items-center h-14 z-10">
           {tabs.map((tab) => {
             const isActive = active === tab.path;
             return (
-              <motion.button
+              <button
                 key={tab.path}
                 onClick={() => handleTabClick(tab.path)}
-                whileTap={{
-                  scale: 0.88,
-                  transition: { type: "spring", stiffness: 500, damping: 20 },
-                }}
-                transition={{ type: "spring", stiffness: 380, damping: 20 }}
-                className="relative flex items-center justify-center p-3 focus:outline-none"
+                className="relative flex items-center justify-center p-2"
               >
                 <div className="relative flex items-center justify-center">
                   <AnimatePresence>
                     {isActive && (
                       <motion.div
                         layoutId="bubble"
-                        className="absolute w-11 h-11 rounded-full"
+                        className="absolute w-10 h-10 rounded-full"
                         style={{
-                          background:
-                            "linear-gradient(145deg, rgba(255,255,255,0.22), rgba(255,255,255,0.06))",
+                          background: "rgba(255,255,255,0.22)",
                           backdropFilter: "blur(40px)",
                           WebkitBackdropFilter: "blur(40px)",
-                          border: "1px solid rgba(255,255,255,0.28)",
+                          border: "1px solid rgba(255,255,255,0.22)",
                           boxShadow:
-                            "0 4px 16px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.35)",
+                            "0 4px 18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.32)",
                         }}
-                        initial={{ scale: 0.6, opacity: 0 }}
+                        initial={{ scale: 0.5, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.6, opacity: 0 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 350,
-                          damping: 22,
-                        }}
+                        exit={{ scale: 0.5, opacity: 0 }}
+                        transition={{ duration: 0.16 }}
                       />
                     )}
                   </AnimatePresence>
 
                   <motion.div
                     animate={{
-                      scale: isActive ? 1.25 : 1,
-                      y: isActive ? -2 : 0,
-                      rotate: isActive ? [0, -5, 0, 5, 0] : 0,
+                      scale: isActive ? 1.22 : 1,
+                      y: isActive ? -1 : 0,
                     }}
-                    transition={{
-                      duration: 0.35,
-                      ease: "easeOut",
-                      bounce: 0.35,
-                    }}
-                    className={
-                      isActive
-                        ? "text-white drop-shadow-[0_2px_6px_rgba(255,255,255,0.25)]"
-                        : "text-white/70"
-                    }
+                    transition={{ duration: 0.18 }}
+                    className={isActive ? "text-white" : "text-white/65"}
                   >
                     {tab.icon}
                   </motion.div>
                 </div>
-              </motion.button>
+              </button>
             );
           })}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }
