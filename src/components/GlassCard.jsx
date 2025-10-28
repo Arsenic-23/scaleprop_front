@@ -3,41 +3,51 @@ import React from "react";
 const GlassCard = ({ children, className = "", style = {} }) => {
   return (
     <div
-      className={`relative overflow-hidden rounded-3xl ${className}`}
+      className={`relative overflow-hidden rounded-2xl transition-all duration-300 ${className}`}
       style={{
-        display: "inline-block",
-        background: "rgba(20, 20, 20, 0.65)",
-        border: "1px solid rgba(255,255,255,0.15)",
+        background: "rgba(15, 15, 15, 0.45)", // deep glass tone for dark UI
+        border: "1px solid rgba(255, 255, 255, 0.08)",
         boxShadow:
-          "0 10px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(255,255,255,0.1)",
-        backdropFilter: "blur(42px)",
-        WebkitBackdropFilter: "blur(42px)",
-        transition: "all 0.3s ease",
+          "0 4px 24px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 -1px 0 rgba(255,255,255,0.03)",
+        backdropFilter: "blur(30px) saturate(160%)",
+        WebkitBackdropFilter: "blur(30px) saturate(160%)",
+        willChange: "transform, opacity",
         ...style,
       }}
     >
-      {/* Gloss */}
+      {/* Gloss reflection */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.01) 60%)",
+            "linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 40%, rgba(0,0,0,0.2) 100%)",
           mixBlendMode: "overlay",
         }}
       />
 
-      {/* Grain */}
+      {/* Subtle edge glow for depth */}
       <div
-        className="absolute inset-0 opacity-25 pointer-events-none"
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          boxShadow:
+            "inset 0 0 20px rgba(255,255,255,0.05), inset 0 0 40px rgba(255,255,255,0.02)",
+          borderRadius: "inherit",
+        }}
+      />
+
+      {/* Fine grain texture */}
+      <div
+        className="absolute inset-0 opacity-[0.15] pointer-events-none"
         style={{
           backgroundImage:
             "url('https://grainy-gradients.vercel.app/noise.png')",
+          backgroundSize: "cover",
           mixBlendMode: "overlay",
         }}
       />
 
-      {/* Main content */}
-      <div className="relative z-10 p-3">{children}</div>
+      {/* Content */}
+      <div className="relative z-10">{children}</div>
     </div>
   );
 };
