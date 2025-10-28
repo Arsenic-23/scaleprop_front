@@ -24,34 +24,37 @@ export default function BottomNavigation() {
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
       <div className="relative w-[80vw] max-w-sm mx-auto">
 
+        {/* Glass container */}
         <motion.div
           className="absolute inset-0 rounded-3xl overflow-hidden"
           style={{
             background:
-              "linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(0,0,0,0.45) 100%)",
-            backdropFilter: "blur(34px)",
-            WebkitBackdropFilter: "blur(34px)",
-            border: "1.2px solid rgba(255,255,255,0.14)",
+              "linear-gradient(145deg, rgba(20,20,20,0.45), rgba(50,50,50,0.25))",
+            backdropFilter: "blur(32px)",
+            WebkitBackdropFilter: "blur(32px)",
+            border: "1px solid rgba(255,255,255,0.13)",
             boxShadow:
-              "0 12px 45px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(255,255,255,0.06)",
+              "0 10px 40px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.26), inset 0 -1px 0 rgba(255,255,255,0.04)",
           }}
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35 }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              height: "1px",
-              background:
-                "linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent)",
-            }}
-          />
-        </motion.div>
+        />
 
+        {/* Soft grain */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            background:
+              "url('https://grainy-gradients.vercel.app/noise.png') repeat",
+            opacity: 0.18,
+            mixBlendMode: "overlay",
+          }}
+        />
+
+        {/* Content */}
         <div className="relative flex justify-around items-center h-14 z-10">
           {tabs.map((tab) => {
             const isActive = active === tab.path;
@@ -66,17 +69,16 @@ export default function BottomNavigation() {
                     {isActive && (
                       <motion.div
                         layoutId="bubble"
-                        className="absolute w-10 h-10 rounded-full"
+                        className="absolute w-9 h-9 rounded-full"
                         style={{
-                          background: "rgba(255,255,255,0.12)",
-                          backdropFilter: "blur(34px)",
-                          WebkitBackdropFilter: "blur(34px)",
-                          boxShadow:
-                            "0 0 10px rgba(255,255,255,0.18)",
+                          background: "rgba(255,255,255,0.1)",
+                          backdropFilter: "blur(20px)",
+                          WebkitBackdropFilter: "blur(20px)",
+                          boxShadow: "0 0 8px rgba(255,255,255,0.22)",
                         }}
-                        initial={{ scale: 0.4, opacity: 0 }}
+                        initial={{ scale: 0.5, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.4, opacity: 0 }}
+                        exit={{ scale: 0.5, opacity: 0 }}
                         transition={{ duration: 0.18 }}
                       />
                     )}
@@ -84,13 +86,13 @@ export default function BottomNavigation() {
 
                   <motion.div
                     animate={{
-                      scale: isActive ? 1.25 : 1,
-                      y: isActive ? -2 : 0,
+                      scale: isActive ? 1.18 : 1,
+                      y: isActive ? -1 : 0,
                     }}
-                    transition={{ duration: 0.15 }}
-                    className={`${
-                      isActive ? "text-white" : "text-white/55"
-                    }`}
+                    transition={{ duration: 0.2 }}
+                    className={
+                      isActive ? "text-white" : "text-white/50"
+                    }
                   >
                     {tab.icon}
                   </motion.div>
