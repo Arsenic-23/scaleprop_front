@@ -27,27 +27,16 @@ export default function BottomNavigation() {
         <motion.div
           className="absolute inset-0 rounded-3xl overflow-hidden"
           style={{
-            background:
-              "linear-gradient(140deg, rgba(255,255,255,0.30) 0%, rgba(20,20,20,0.80) 100%)",
-            backdropFilter: "blur(56px)",
-            WebkitBackdropFilter: "blur(56px)",
-            border: "1.8px solid rgba(255,255,255,0.22)",
+            background: "rgba(30,30,30,0.78)", // higher opacity
+            backdropFilter: "blur(48px)",
+            WebkitBackdropFilter: "blur(48px)",
+            border: "1px solid rgba(255,255,255,0.22)",
             boxShadow:
-              "0 18px 60px rgba(0,0,0,0.55), inset 0 1px 1.2px rgba(255,255,255,0.55), inset 0 -1px 1px rgba(255,255,255,0.1)",
+              "0 18px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 0 rgba(255,255,255,0.12)",
           }}
           initial={{ opacity: 0, y: 22 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        />
-
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "radial-gradient(circle at 30% 10%, rgba(255,255,255,0.35) 0%, transparent 55%)",
-            pointerEvents: "none",
-          }}
+          transition={{ duration: 0.32 }}
         />
 
         <div
@@ -56,7 +45,7 @@ export default function BottomNavigation() {
             inset: 0,
             pointerEvents: "none",
             background: "url('https://grainy-gradients.vercel.app/noise.png')",
-            opacity: 0.28,
+            opacity: 0.32, // stronger grain
             mixBlendMode: "overlay",
           }}
         />
@@ -75,14 +64,14 @@ export default function BottomNavigation() {
                     {isActive && (
                       <motion.div
                         layoutId="bubble"
-                        className="absolute w-11 h-11 rounded-full"
+                        className="absolute w-10 h-10 rounded-full"
                         style={{
-                          background: "rgba(255,255,255,0.22)",
-                          backdropFilter: "blur(60px)",
-                          WebkitBackdropFilter: "blur(60px)",
-                          border: "1px solid rgba(255,255,255,0.28)",
+                          background: "rgba(255,255,255,0.22)", // stronger
+                          backdropFilter: "blur(40px)",
+                          WebkitBackdropFilter: "blur(40px)",
+                          border: "1px solid rgba(255,255,255,0.22)",
                           boxShadow:
-                            "0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.35)",
+                            "0 4px 18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.32)",
                         }}
                         initial={{ scale: 0.5, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
@@ -94,11 +83,11 @@ export default function BottomNavigation() {
 
                   <motion.div
                     animate={{
-                      scale: isActive ? 1.24 : 1,
-                      y: isActive ? -2 : 0,
+                      scale: isActive ? 1.22 : 1,
+                      y: isActive ? -1 : 0,
                     }}
-                    transition={{ duration: 0.16 }}
-                    className={isActive ? "text-white" : "text-white/50"}
+                    transition={{ duration: 0.18 }}
+                    className={isActive ? "text-white" : "text-white/65"}
                   >
                     {tab.icon}
                   </motion.div>
