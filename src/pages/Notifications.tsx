@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Header from "../components/Header";
 import SwipeableNotification from "../components/Swipeable";
 import EmptyState from "../components/EmptyState";
-import GlassCard from "../components/GlassCard"; 
+import GlassCard from "../components/GlassCard";
 
 const COLORS = {
   primary: "#3B82F6",
@@ -38,43 +38,47 @@ const NotificationItem = ({
   }
 
   return (
-    <GlassCard>
+    <GlassCard className="w-full">
       <div
         className={`flex items-start gap-4 p-4 relative ${opacityClass}`}
         style={{
           borderRadius: "1rem",
           fontFamily: "Manrope, sans-serif",
+          minHeight: "auto",
         }}
       >
+        {/* Icon */}
         <div
           className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${iconWrapperClasses} ${iconColorClass}`}
         >
           <span className="material-symbols-outlined text-2xl">{icon}</span>
         </div>
 
-        <div className="flex-1">
-          <div className="flex items-center justify-between">
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2">
             <p
-              className="font-semibold text-base"
+              className="font-semibold text-base truncate"
               style={{ color: COLORS.textDark }}
             >
               {title}
             </p>
             <p
-              className="text-xs whitespace-nowrap"
+              className="text-xs flex-shrink-0"
               style={{ color: COLORS.textMutedDark }}
             >
               {timestamp}
             </p>
           </div>
           <p
-            className="mt-1 text-sm leading-snug"
+            className="mt-1 text-sm leading-snug text-left break-words"
             style={{ color: COLORS.textMutedDark }}
           >
             {message}
           </p>
         </div>
 
+        {/* New dot */}
         {!isRead && (
           <div
             className="absolute top-4 right-4 h-2 w-2 rounded-full"
