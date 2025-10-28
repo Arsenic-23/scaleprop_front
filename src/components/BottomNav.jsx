@@ -17,7 +17,7 @@ export default function BottomNavigation() {
 
   const handleTabClick = (path) => {
     if (window.navigator.vibrate) {
-      window.navigator.vibrate([30, 50, 30]);
+      window.navigator.vibrate([50, 70, 50]);
     }
 
     setActive(path);
