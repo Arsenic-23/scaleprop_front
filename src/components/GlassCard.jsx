@@ -3,53 +3,31 @@ import React from "react";
 const GlassCard = ({ children, className = "", style = {} }) => {
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl p-[1px] ${className}`}
+      className={`relative overflow-hidden rounded-3xl p-[1px] ${className}`}
       style={{
-        background: "rgba(18, 18, 18, 0.35)", // deep transparent black glass
-        border: "1px solid rgba(255, 255, 255, 0.1)",
+        background: "rgba(30,30,30,0.78)", // Same dark tone as navigation
+        border: "1px solid rgba(255,255,255,0.22)",
         boxShadow:
-          "0 10px 40px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05)",
-        backdropFilter: "blur(30px) saturate(160%)",
-        WebkitBackdropFilter: "blur(30px) saturate(160%)",
+          "0 18px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 0 rgba(255,255,255,0.12)",
+        backdropFilter: "blur(48px)",
+        WebkitBackdropFilter: "blur(48px)",
         transition: "all 0.3s ease",
         ...style,
       }}
     >
-      {/* Subtle gloss reflection (top edge shimmer) */}
+      {/* Gloss shimmer overlay for realistic reflection */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 25%, rgba(0,0,0,0.3) 100%)",
-          mixBlendMode: "soft-light",
+            "linear-gradient(145deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 60%)",
+          mixBlendMode: "overlay",
         }}
       />
 
-      {/* Inner dark gradient for depth */}
+      {/* Fine grain texture overlay for realism */}
       <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle at top left, rgba(255,255,255,0.04), rgba(0,0,0,0.4))",
-          opacity: 0.8,
-        }}
-      />
-
-      {/* Gentle reflective wave shimmer (tiny moving gloss) */}
-      <div
-        className="absolute inset-0 animate-gloss pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(120deg, transparent, rgba(255,255,255,0.08), transparent)",
-          backgroundSize: "200% 200%",
-          mixBlendMode: "screen",
-          opacity: 0.25,
-        }}
-      />
-
-      {/* Subtle texture for realism */}
-      <div
-        className="absolute inset-0 opacity-[0.15] pointer-events-none"
+        className="absolute inset-0 opacity-30 pointer-events-none"
         style={{
           backgroundImage:
             "url('https://grainy-gradients.vercel.app/noise.png')",
@@ -57,23 +35,8 @@ const GlassCard = ({ children, className = "", style = {} }) => {
         }}
       />
 
-      {/* Main content */}
-      <div className="relative z-10">{children}</div>
-
-      {/* Shimmer animation keyframes */}
-      <style jsx>{`
-        @keyframes gloss {
-          0% {
-            background-position: -200% 0;
-          }
-          100% {
-            background-position: 200% 0;
-          }
-        }
-        .animate-gloss {
-          animation: gloss 6s linear infinite;
-        }
-      `}</style>
+      {/* Card content */}
+      <div className="relative z-10 p-4">{children}</div>
     </div>
   );
 };
