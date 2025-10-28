@@ -25,9 +25,7 @@ interface Notification {
   isRead: boolean;
 }
 
-interface NotificationItemProps extends Notification {}
-
-const NotificationItem: React.FC<NotificationItemProps> = ({
+const NotificationItem: React.FC<Notification> = ({
   title,
   message,
   timestamp,
@@ -35,20 +33,12 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   colorType,
   isRead,
 }) => {
-  let iconWrapperClasses = "";
-  let iconColorClass = "";
   const opacityClass = isRead ? "opacity-60" : "";
-
-  if (colorType === "blue") {
-    iconWrapperClasses = "bg-blue-500/10";
-    iconColorClass = "text-blue-500";
-  } else if (colorType === "green") {
-    iconWrapperClasses = "bg-green-500/10";
-    iconColorClass = "text-green-500";
-  } else {
-    iconWrapperClasses = "bg-white/5";
-    iconColorClass = "text-white/50";
-  }
+  const colorMap: Record<NotificationColor, { bg: string; text: string }> = {
+    blue: { bg: "bg-blue-500/15", text: "text-blue-400" },
+    green: { bg: "bg-green-500/15", text: "text-green-400" },
+    muted: { bg: "bg-white/5", text: "text-white/50" },
+  };
 
   return (
     <GlassCard
@@ -60,25 +50,23 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     >
       <div className="flex items-start gap-4 relative font-[Manrope]">
         <div
-          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${iconWrapperClasses} ${iconColorClass}`}
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${colorMap[colorType].bg}`}
         >
-          <span className="material-symbols-outlined text-2xl">{icon}</span>
+          <span className={`material-symbols-outlined text-2xl ${colorMap[colorType].text}`}>
+            {icon}
+          </span>
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between flex-wrap gap-x-3">
-            <p
-              className="font-semibold text-base leading-tight text-white"
-              style={{ fontFamily: "Manrope, sans-serif" }}
-            >
+            <p className="font-semibold text-base leading-tight text-white">
               {title}
             </p>
-            <p className="text-xs whitespace-nowrap text-white/60">
+            <p className="text-xs whitespace-nowrap text-white/50">
               {timestamp}
             </p>
           </div>
-
-          <p className="mt-1 text-sm leading-snug text-white/60 break-words">
+          <p className="mt-1 text-sm leading-snug text-white/70 break-words">
             {message}
           </p>
         </div>
@@ -91,7 +79,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
             className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full"
             style={{
               backgroundColor: COLORS.accentBlue,
-              boxShadow: "0 0 6px rgba(59,130,246,0.8)",
+              boxShadow: "0 0 6px rgba(59,130,246,0.9)",
             }}
           />
         )}
@@ -155,26 +143,25 @@ const Notifications: React.FC = () => {
     }));
 
     setNewNotifications([]);
-
-    setTimeout(() => {
-      setEarlierNotifications((prev) => [...marked, ...prev]);
-    }, 300);
+    setTimeout(() => setEarlierNotifications((prev) => [...marked, ...prev]), 300);
   };
 
-  const handleRemoveNew = (id: number) =>
-    setNewNotifications((prev) => prev.filter((n) => n.id !== id));
-
-  const handleRemoveEarlier = (id: number) =>
-    setEarlierNotifications((prev) => prev.filter((n) => n.id !== id));
+  const handleRemove = (id: number, isNew: boolean) => {
+    if (isNew) {
+      setNewNotifications((prev) => prev.filter((n) => n.id !== id));
+    } else {
+      setEarlierNotifications((prev) => prev.filter((n) => n.id !== id));
+    }
+  };
 
   return (
     <div
+      className="relative flex h-screen w-full flex-col text-white overflow-hidden"
       style={{
-        backgroundColor: COLORS.backgroundDark,
+        background: "radial-gradient(circle at 25% 10%, #0a0a0a, #000)",
         minHeight: "100dvh",
         fontFamily: "Manrope, sans-serif",
       }}
-      className="relative flex h-screen w-full flex-col text-white overflow-hidden"
     >
       <Header title="Notifications" />
 
@@ -213,7 +200,7 @@ const Notifications: React.FC = () => {
                       >
                         <SwipeableNotification
                           id={n.id}
-                          onRemove={handleRemoveNew}
+                          onRemove={(id) => handleRemove(id, true)}
                         >
                           <NotificationItem {...n} />
                         </SwipeableNotification>
@@ -247,7 +234,7 @@ const Notifications: React.FC = () => {
                       >
                         <SwipeableNotification
                           id={n.id}
-                          onRemove={handleRemoveEarlier}
+                          onRemove={(id) => handleRemove(id, false)}
                         >
                           <NotificationItem {...n} />
                         </SwipeableNotification>
