@@ -19,20 +19,17 @@ const Login: React.FC = () => {
       const userCred = await signInWithEmailAndPassword(auth, email, password);
       const user = userCred.user;
 
-      // Email verification check
       if (!user.emailVerified) {
         await signOut(auth);
-        setError("Email not verified. Please check your inbox and verify your account.");
+        setError("Email not verified. Please check your inbox to verify your account.");
         return;
       }
 
-      // Save user session
       localStorage.setItem("user_id", user.uid);
       navigate("/landing");
     } catch (err: any) {
       console.error("Login error:", err);
       let msg = "Login failed. Please try again.";
-
       switch (err.code) {
         case "auth/user-not-found":
           msg = "No account found with that email.";
@@ -44,13 +41,12 @@ const Login: React.FC = () => {
           msg = "Invalid email address.";
           break;
         case "auth/too-many-requests":
-          msg = "Too many failed attempts. Please try again later.";
+          msg = "Too many failed attempts. Try again later.";
           break;
         case "auth/network-request-failed":
           msg = "Network error. Check your connection.";
           break;
       }
-
       setError(msg);
     } finally {
       setLoading(false);
@@ -83,9 +79,7 @@ const Login: React.FC = () => {
           required
         />
 
-        {error && (
-          <div className="text-red-400 mb-4 text-sm text-center whitespace-pre-wrap">{error}</div>
-        )}
+        {error && <div className="text-red-400 mb-4 text-sm text-center">{error}</div>}
 
         <button
           type="submit"
