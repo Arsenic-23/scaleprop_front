@@ -3,10 +3,23 @@ import { useNavigate } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
+  User,
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../firebase.config";
+
+async function waitForAuthUser(timeout = 5000): Promise<User | null> {
+  return new Promise((resolve) => {
+    const t = setTimeout(() => resolve(auth.currentUser), timeout);
+    const unsub = onAuthStateChanged(auth, (user) => {
+      clearTimeout(t);
+      unsub();
+      resolve(user ?? auth.currentUser);
+    });
+  });
+}
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -37,28 +50,45 @@ const Register: React.FC = () => {
       return;
     }
 
+    setLoading(true);
     try {
-      setLoading(true);
+      // create user (this signs-in the user automatically)
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       const user = cred.user;
+      await updateProfile(user, { displayName: `${firstName} ${lastName}` });
 
-      await updateProfile(user, {
-        displayName: `${firstName} ${lastName}`,
+      // wait for auth state to settle so Firestore rules see authenticated user
+      const settledUser = await waitForAuthUser(5000);
+      if (!settledUser) {
+        throw { code: "auth/no-current-user", message: "Auth state not available after signup." };
+      }
+
+      // write user doc. This will fail if Firestore rules block it.
+      try {
+        await setDoc(
+          doc(db, "users", settledUser.uid),
+          {
+            firstName,
+            lastName,
+            email,
+            createdAt: serverTimestamp(),
+            uid: settledUser.uid,
+          },
+          { merge: true }
+        );
+      } catch (writeErr: any) {
+        console.error("Firestore write error:", writeErr);
+        throw writeErr;
+      }
+      await signInWithEmailAndPassword(auth, email, password).catch(() => {
       });
 
-      await setDoc(doc(db, "users", user.uid), {
-        firstName,
-        lastName,
-        email,
-        createdAt: serverTimestamp(),
-      });
-
-      await signInWithEmailAndPassword(auth, email, password);
-
-      localStorage.setItem("user_id", user.uid);
+      localStorage.setItem("user_id", settledUser.uid);
       navigate("/LandingPage");
     } catch (err: any) {
-      setError(err.message || "Registration failed.");
+      console.error("Registration error:", err);
+      const display = err?.code ? `${err.code}: ${err.message || ""}` : err?.message || String(err);
+      setError(display);
     } finally {
       setLoading(false);
     }
@@ -116,24 +146,16 @@ const Register: React.FC = () => {
           required
         />
 
-        {error && <div className="text-red-400 mb-4">{error}</div>}
+        {error && <div className="text-red-400 mb-4 whitespace-pre-wrap">{error}</div>}
         {info && <div className="text-green-400 mb-4">{info}</div>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full p-3 rounded-xl font-medium glass-cta mb-3"
-        >
+        <button type="submit" disabled={loading} className="w-full p-3 rounded-xl font-medium glass-cta mb-3">
           {loading ? "Creating account..." : "Create account"}
         </button>
 
         <div className="text-sm text-gray-400">
           Already have an account?{" "}
-          <button
-            type="button"
-            onClick={() => navigate("/login")}
-            className="underline"
-          >
+          <button type="button" onClick={() => navigate("/login")} className="underline">
             Log in
           </button>
         </div>
