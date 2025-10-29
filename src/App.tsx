@@ -20,6 +20,11 @@ import Notifications from "./pages/Notifications";
 
 import BottomNav from "./components/BottomNav";
 
+function PrivateRoute({ children }: { children: JSX.Element }) {
+  const userId = localStorage.getItem("user_id");
+  return userId ? children : <Navigate to="/login" replace />;
+}
+
 function AppWrapper() {
   const location = useLocation();
   const { user, setUser } = useUser();
@@ -37,25 +42,118 @@ function AppWrapper() {
   return (
     <>
       <Routes>
-        {/* Authentication */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        {/* Default route redirects to login */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Main */}
-        <Route path="/landing" element={<LandingPage />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/plans" element={<Plans />} />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/account" element={<Account />} />
-        <Route path="/rules" element={<Rules />} />
-        <Route path="/passed" element={<Passed />} />
-        <Route path="/payout" element={<Payout />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/admin" element={<AdminPanel />} />
-        <Route path="/announcements" element={<Announcements />} />
-        <Route path="/support" element={<Support />} />
-        <Route path="/notifications" element={<Notifications />} />
+        {/* Protected routes */}
+        <Route
+          path="/landing"
+          element={
+            <PrivateRoute>
+              <LandingPage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/home"
+          element={
+            <PrivateRoute>
+              <Home />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/plans"
+          element={
+            <PrivateRoute>
+              <Plans />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/payment"
+          element={
+            <PrivateRoute>
+              <Payment />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/account"
+          element={
+            <PrivateRoute>
+              <Account />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/rules"
+          element={
+            <PrivateRoute>
+              <Rules />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/passed"
+          element={
+            <PrivateRoute>
+              <Passed />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/payout"
+          element={
+            <PrivateRoute>
+              <Payout />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute>
+              <AdminPanel />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/announcements"
+          element={
+            <PrivateRoute>
+              <Announcements />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/support"
+          element={
+            <PrivateRoute>
+              <Support />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/notifications"
+          element={
+            <PrivateRoute>
+              <Notifications />
+            </PrivateRoute>
+          }
+        />
       </Routes>
 
       {showBottomNav && <BottomNav />}
