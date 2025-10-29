@@ -70,19 +70,6 @@ const NotificationItem: React.FC<Notification> = ({
             {message}
           </p>
         </div>
-
-        {!isRead && (
-          <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.25 }}
-            className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full"
-            style={{
-              backgroundColor: COLORS.accentBlue,
-              boxShadow: "0 0 6px rgba(59,130,246,0.9)",
-            }}
-          />
-        )}
       </div>
     </GlassCard>
   );
@@ -116,8 +103,7 @@ const Notifications: React.FC = () => {
     {
       id: 3,
       title: "Margin Call",
-      message:
-        "Your account #123456 is approaching the margin limit.",
+      message: "Your account #123456 is approaching the margin limit.",
       timestamp: "Yesterday, 3:30 PM",
       icon: "warning",
       colorType: "muted",
@@ -126,8 +112,7 @@ const Notifications: React.FC = () => {
     {
       id: 4,
       title: "System Update",
-      message:
-        "A new platform update will be deployed on Sunday.",
+      message: "A new platform update will be deployed on Sunday.",
       timestamp: "Yesterday, 11:00 AM",
       icon: "new_releases",
       colorType: "muted",
