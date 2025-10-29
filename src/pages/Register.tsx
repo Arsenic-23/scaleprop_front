@@ -4,13 +4,13 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   onAuthStateChanged,
-  signInWithEmailAndPassword,
+  signOut,
   User,
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../firebase.config";
 
-async function waitForAuthUser(timeout = 5000): Promise<User | null> {
+async function waitForAuthReady(timeout = 5000): Promise<User | null> {
   return new Promise((resolve) => {
     const t = setTimeout(() => resolve(auth.currentUser), timeout);
     const unsub = onAuthStateChanged(auth, (user) => {
@@ -37,58 +37,45 @@ const Register: React.FC = () => {
     setError(null);
     setInfo(null);
 
-    if (!firstName || !lastName) {
-      setError("First name and last name are required.");
-      return;
-    }
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
-      return;
-    }
-    if (password !== confirm) {
-      setError("Passwords do not match.");
-      return;
-    }
+    if (!firstName || !lastName) return setError("Enter first and last name.");
+    if (password.length < 8) return setError("Password must be at least 8 characters.");
+    if (password !== confirm) return setError("Passwords do not match.");
 
     setLoading(true);
     try {
-      // create user (this signs-in the user automatically)
+      // Create Firebase user
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       const user = cred.user;
       await updateProfile(user, { displayName: `${firstName} ${lastName}` });
 
-      // wait for auth state to settle so Firestore rules see authenticated user
-      const settledUser = await waitForAuthUser(5000);
-      if (!settledUser) {
-        throw { code: "auth/no-current-user", message: "Auth state not available after signup." };
-      }
+      // Ensure auth token ready before Firestore write
+      const settledUser = await waitForAuthReady();
+      if (!settledUser) throw new Error("Auth state not ready after signup.");
 
-      // write user doc. This will fail if Firestore rules block it.
-      try {
-        await setDoc(
-          doc(db, "users", settledUser.uid),
-          {
-            firstName,
-            lastName,
-            email,
-            createdAt: serverTimestamp(),
-            uid: settledUser.uid,
-          },
-          { merge: true }
-        );
-      } catch (writeErr: any) {
-        console.error("Firestore write error:", writeErr);
-        throw writeErr;
-      }
-      await signInWithEmailAndPassword(auth, email, password).catch(() => {
-      });
+      // Save user record in Firestore
+      await setDoc(
+        doc(db, "users", settledUser.uid),
+        {
+          firstName,
+          lastName,
+          email,
+          createdAt: serverTimestamp(),
+          uid: settledUser.uid,
+        },
+        { merge: true }
+      );
 
       localStorage.setItem("user_id", settledUser.uid);
-      navigate("/LandingPage");
+      setInfo("Account created successfully. Redirecting...");
+      await signOut(auth);
+      setTimeout(() => navigate("/login"), 1000);
     } catch (err: any) {
       console.error("Registration error:", err);
-      const display = err?.code ? `${err.code}: ${err.message || ""}` : err?.message || String(err);
-      setError(display);
+      const msg =
+        err?.code === "permission-denied"
+          ? "Insufficient Firestore permissions. Check your Firestore rules."
+          : err?.message || "Failed to create account.";
+      setError(msg);
     } finally {
       setLoading(false);
     }
