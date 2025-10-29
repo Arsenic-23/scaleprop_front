@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
   onAuthStateChanged,
+  sendEmailVerification,
   signOut,
   User,
 } from "firebase/auth";
@@ -32,6 +33,13 @@ const Register: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
 
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (user && user.emailVerified) navigate("/LandingPage");
+    });
+    return () => unsub();
+  }, [navigate]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -43,16 +51,13 @@ const Register: React.FC = () => {
 
     setLoading(true);
     try {
-      // Create Firebase user
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       const user = cred.user;
       await updateProfile(user, { displayName: `${firstName} ${lastName}` });
 
-      // Ensure auth token ready before Firestore write
       const settledUser = await waitForAuthReady();
       if (!settledUser) throw new Error("Auth state not ready after signup.");
 
-      // Save user record in Firestore
       await setDoc(
         doc(db, "users", settledUser.uid),
         {
@@ -61,14 +66,22 @@ const Register: React.FC = () => {
           email,
           createdAt: serverTimestamp(),
           uid: settledUser.uid,
+          verified: false,
         },
         { merge: true }
       );
 
-      localStorage.setItem("user_id", settledUser.uid);
-      setInfo("Account created successfully. Redirecting...");
-      await signOut(auth);
-      setTimeout(() => navigate("/login"), 1000);
+      await sendEmailVerification(settledUser);
+      setInfo("Verification email sent. Please check your inbox and verify your email.");
+      const checkVerified = setInterval(async () => {
+        await settledUser.reload();
+        if (settledUser.emailVerified) {
+          clearInterval(checkVerified);
+          await setDoc(doc(db, "users", settledUser.uid), { verified: true }, { merge: true });
+          localStorage.setItem("user_id", settledUser.uid);
+          navigate("/LandingPage");
+        }
+      }, 3000);
     } catch (err: any) {
       console.error("Registration error:", err);
       const msg =
