@@ -1,49 +1,49 @@
-// src/App.tsx
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { useUser, UserProvider } from './context/UserContext';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useUser, UserProvider } from "./context/UserContext";
 
-import LandingPage from './pages/LandingPage';
-import Home from './pages/Home';
-import Plans from './pages/Plans';
-import Payment from './pages/Payment';
-import Account from './pages/Account';
-import Rules from './pages/Rules';
-import Passed from './pages/Passed';
-import Payout from './pages/Payout';
-import Profile from './pages/Profile';
-import AdminPanel from './pages/AdminPanel';
-import Announcements from './pages/Announcements';
-import Support from './pages/Support';
-import Notifications from './pages/Notifications';
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import LandingPage from "./pages/LandingPage";
+import Home from "./pages/Home";
+import Plans from "./pages/Plans";
+import Payment from "./pages/Payment";
+import Account from "./pages/Account";
+import Rules from "./pages/Rules";
+import Passed from "./pages/Passed";
+import Payout from "./pages/Payout";
+import Profile from "./pages/Profile";
+import AdminPanel from "./pages/AdminPanel";
+import Announcements from "./pages/Announcements";
+import Support from "./pages/Support";
+import Notifications from "./pages/Notifications";
 
-import BottomNav from './components/BottomNav';
+import BottomNav from "./components/BottomNav";
 
 function AppWrapper() {
   const location = useLocation();
-  const { setUser } = useUser();
+  const { user, setUser } = useUser();
 
-  const showBottomNavRoutes = [
-    '/home',
-    '/account',
-    '/profile',
-    '/plans',
-    '/support',
-  ];
-
+  const showBottomNavRoutes = ["/home", "/account", "/profile", "/plans", "/support"];
   const showBottomNav = showBottomNavRoutes.includes(location.pathname);
 
-  // Simple fallback: use cached user if available
-  if (!localStorage.getItem("user_id")) {
+  useEffect(() => {
     const cachedUser = localStorage.getItem("tg_user");
-    if (cachedUser) {
+    if (cachedUser && !user) {
       setUser(JSON.parse(cachedUser));
     }
-  }
+  }, [user, setUser]);
 
   return (
     <>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        {/* Authentication */}
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+        {/* Main */}
+        <Route path="/landing" element={<LandingPage />} />
         <Route path="/home" element={<Home />} />
         <Route path="/plans" element={<Plans />} />
         <Route path="/payment" element={<Payment />} />
