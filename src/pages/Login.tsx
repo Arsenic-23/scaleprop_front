@@ -21,7 +21,7 @@ const Login: React.FC = () => {
       const cred = await signInWithEmailAndPassword(auth, email, password);
       if (cred.user) {
         if (cred.user.emailVerified) {
-          navigate('/home');
+          navigate('/LandingPage');
         } else {
           setInfo('Email not verified. Check your inbox.');
         }
