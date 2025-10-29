@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
-  sendEmailVerification,
   updateProfile,
-} from 'firebase/auth';
-import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { auth, db } from '../firebase.config';
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { auth, db } from "../firebase.config";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
@@ -25,35 +25,40 @@ const Register: React.FC = () => {
     setInfo(null);
 
     if (!firstName || !lastName) {
-      setError('First name and last name are required.');
+      setError("First name and last name are required.");
       return;
     }
     if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
+      setError("Password must be at least 8 characters.");
       return;
     }
     if (password !== confirm) {
-      setError('Passwords do not match.');
+      setError("Passwords do not match.");
       return;
     }
 
     try {
       setLoading(true);
       const cred = await createUserWithEmailAndPassword(auth, email, password);
-      if (cred.user) {
-        await updateProfile(cred.user, { displayName: `${firstName} ${lastName}` });
-        await sendEmailVerification(cred.user);
-        await setDoc(doc(db, 'users', cred.user.uid), {
-          firstName,
-          lastName,
-          email,
-          createdAt: serverTimestamp(),
-          emailVerified: cred.user.emailVerified,
-        });
-        setInfo('Verification email sent. Check your inbox.');
-      }
+      const user = cred.user;
+
+      await updateProfile(user, {
+        displayName: `${firstName} ${lastName}`,
+      });
+
+      await setDoc(doc(db, "users", user.uid), {
+        firstName,
+        lastName,
+        email,
+        createdAt: serverTimestamp(),
+      });
+
+      await signInWithEmailAndPassword(auth, email, password);
+
+      localStorage.setItem("user_id", user.uid);
+      navigate("/LandingPage");
     } catch (err: any) {
-      setError(err.message || 'Registration failed.');
+      setError(err.message || "Registration failed.");
     } finally {
       setLoading(false);
     }
@@ -119,12 +124,16 @@ const Register: React.FC = () => {
           disabled={loading}
           className="w-full p-3 rounded-xl font-medium glass-cta mb-3"
         >
-          {loading ? 'Creating account...' : 'Create account'}
+          {loading ? "Creating account..." : "Create account"}
         </button>
 
         <div className="text-sm text-gray-400">
-          Already have an account?{' '}
-          <button type="button" onClick={() => navigate('/login')} className="underline">
+          Already have an account?{" "}
+          <button
+            type="button"
+            onClick={() => navigate("/login")}
+            className="underline"
+          >
             Log in
           </button>
         </div>
