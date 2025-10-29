@@ -17,14 +17,14 @@ const Login: React.FC = () => {
 
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
-      if (cred.user) {
-        localStorage.setItem("user_id", cred.user.uid);
-        navigate("/LandingPage");
-      }
+      localStorage.setItem("user_id", cred.user.uid);
+      navigate("/");
     } catch (err: any) {
       console.error("Login error:", err);
-      const display = err?.code ? `${err.code}: ${err.message || ""}` : err?.message || String(err);
-      setError(display);
+      let msg = err?.message || "Login failed.";
+      if (err?.code === "auth/user-not-found") msg = "No account found with that email.";
+      if (err?.code === "auth/wrong-password") msg = "Incorrect password.";
+      setError(msg);
     } finally {
       setLoading(false);
     }
