@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../firebase.config";
 
 const Login: React.FC = () => {
@@ -17,8 +17,15 @@ const Login: React.FC = () => {
 
     try {
       const cred = await signInWithEmailAndPassword(auth, email, password);
-      localStorage.setItem("user_id", cred.user.uid);
-      navigate("/");
+      const user = cred.user;
+
+      if (!user.emailVerified) {
+        await signOut(auth);
+        setError("Email not verified. Please check your inbox and verify before login.");
+      } else {
+        localStorage.setItem("user_id", user.uid);
+        navigate("/LandingPage");
+      }
     } catch (err: any) {
       console.error("Login error:", err);
       let msg = err?.message || "Login failed.";
