@@ -11,7 +11,7 @@ import {
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../firebase.config";
 
-async function waitForAuthReady(timeout = 5000): Promise<User | null> {
+async function waitForAuthReady(timeout = 4000): Promise<User | null> {
   return new Promise((resolve) => {
     const t = setTimeout(() => resolve(auth.currentUser), timeout);
     const unsub = onAuthStateChanged(auth, (user) => {
@@ -34,8 +34,8 @@ const Register: React.FC = () => {
   const [info, setInfo] = useState<string | null>(null);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (user && user.emailVerified) navigate("/LandingPage");
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user?.emailVerified) navigate("/landing");
     });
     return () => unsub();
   }, [navigate]);
@@ -55,40 +55,44 @@ const Register: React.FC = () => {
       const user = cred.user;
       await updateProfile(user, { displayName: `${firstName} ${lastName}` });
 
-      const settledUser = await waitForAuthReady();
-      if (!settledUser) throw new Error("Auth state not ready after signup.");
+      const readyUser = await waitForAuthReady();
+      if (!readyUser) throw new Error("Authentication not ready.");
 
       await setDoc(
-        doc(db, "users", settledUser.uid),
+        doc(db, "users", readyUser.uid),
         {
           firstName,
           lastName,
           email,
-          createdAt: serverTimestamp(),
-          uid: settledUser.uid,
+          uid: readyUser.uid,
           verified: false,
+          createdAt: serverTimestamp(),
         },
         { merge: true }
       );
 
-      await sendEmailVerification(settledUser);
+      await sendEmailVerification(readyUser);
       setInfo("Verification email sent. Please check your inbox and verify your email.");
-      const checkVerified = setInterval(async () => {
-        await settledUser.reload();
-        if (settledUser.emailVerified) {
-          clearInterval(checkVerified);
-          await setDoc(doc(db, "users", settledUser.uid), { verified: true }, { merge: true });
-          localStorage.setItem("user_id", settledUser.uid);
-          navigate("/LandingPage");
+
+      const verifyCheck = setInterval(async () => {
+        await readyUser.reload();
+        if (readyUser.emailVerified) {
+          clearInterval(verifyCheck);
+          await setDoc(doc(db, "users", readyUser.uid), { verified: true }, { merge: true });
+          localStorage.setItem("user_id", readyUser.uid);
+          navigate("/landing");
         }
       }, 3000);
     } catch (err: any) {
-      console.error("Registration error:", err);
-      const msg =
-        err?.code === "permission-denied"
-          ? "Insufficient Firestore permissions. Check your Firestore rules."
-          : err?.message || "Failed to create account.";
+      console.error("Register error:", err);
+      let msg = "Registration failed.";
+      if (err.code === "auth/email-already-in-use") msg = "Email already registered.";
+      else if (err.code === "auth/invalid-email") msg = "Invalid email address.";
+      else if (err.code === "auth/weak-password") msg = "Password too weak.";
+      else if (err.code === "permission-denied")
+        msg = "Insufficient Firestore permissions. Check your Firestore rules.";
       setError(msg);
+      await signOut(auth);
     } finally {
       setLoading(false);
     }
@@ -100,21 +104,21 @@ const Register: React.FC = () => {
         onSubmit={handleSubmit}
         className="w-full max-w-md p-8 rounded-2xl bg-[rgba(255,255,255,0.03)] backdrop-blur-md border border-[rgba(255,255,255,0.04)]"
       >
-        <h1 className="text-2xl font-semibold mb-6">ScaleFund — Register</h1>
+        <h1 className="text-2xl font-semibold mb-6 text-center">ScaleFund — Register</h1>
 
         <div className="grid grid-cols-2 gap-4 mb-4">
           <input
             placeholder="First name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="p-3 rounded bg-[rgba(255,255,255,0.02)]"
+            className="p-3 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
             required
           />
           <input
             placeholder="Last name"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            className="p-3 rounded bg-[rgba(255,255,255,0.02)]"
+            className="p-3 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
             required
           />
         </div>
@@ -124,7 +128,7 @@ const Register: React.FC = () => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.02)]"
+          className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
           required
         />
 
@@ -133,7 +137,7 @@ const Register: React.FC = () => {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.02)]"
+          className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
           required
         />
 
@@ -142,20 +146,32 @@ const Register: React.FC = () => {
           placeholder="Confirm password"
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
-          className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.02)]"
+          className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
           required
         />
 
-        {error && <div className="text-red-400 mb-4 whitespace-pre-wrap">{error}</div>}
-        {info && <div className="text-green-400 mb-4">{info}</div>}
+        {error && <div className="text-red-400 mb-4 text-sm text-center">{error}</div>}
+        {info && <div className="text-green-400 mb-4 text-sm text-center">{info}</div>}
 
-        <button type="submit" disabled={loading} className="w-full p-3 rounded-xl font-medium glass-cta mb-3">
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full p-3 rounded-xl font-medium transition-all ${
+            loading
+              ? "bg-[rgba(0,255,0,0.2)] text-gray-400 cursor-not-allowed"
+              : "bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200"
+          }`}
+        >
           {loading ? "Creating account..." : "Create account"}
         </button>
 
-        <div className="text-sm text-gray-400">
-          Already have an account?{" "}
-          <button type="button" onClick={() => navigate("/login")} className="underline">
+        <div className="flex justify-center mt-4 text-sm text-gray-400">
+          <span>Already have an account?&nbsp;</span>
+          <button
+            type="button"
+            onClick={() => navigate("/login")}
+            className="underline text-green-400 hover:text-green-300"
+          >
             Log in
           </button>
         </div>
