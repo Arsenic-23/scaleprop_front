@@ -1,52 +1,28 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { auth } from '../firebase.config';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase.config";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [info, setInfo] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setInfo(null);
+    setLoading(true);
 
     try {
-      setLoading(true);
       const cred = await signInWithEmailAndPassword(auth, email, password);
       if (cred.user) {
-        if (cred.user.emailVerified) {
-          navigate('/LandingPage');
-        } else {
-          setInfo('Email not verified. Check your inbox.');
-        }
+        localStorage.setItem("user_id", cred.user.uid);
+        navigate("/landing");
       }
     } catch (err: any) {
-      setError(err.message || 'Login failed.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const resendVerification = async () => {
-    setError(null);
-    setInfo(null);
-    try {
-      setLoading(true);
-      const user = auth.currentUser;
-      if (user && !user.emailVerified) {
-        await sendEmailVerification(user);
-        setInfo('Verification email resent.');
-      } else {
-        setError('No unverified user in session. Login first or check inbox.');
-      }
-    } catch (err: any) {
-      setError(err.message || 'Could not resend verification.');
+      setError(err.message || "Login failed.");
     } finally {
       setLoading(false);
     }
@@ -79,18 +55,22 @@ const Login: React.FC = () => {
         />
 
         {error && <div className="text-red-400 mb-4">{error}</div>}
-        {info && <div className="text-yellow-300 mb-4">{info}</div>}
 
-        <button type="submit" disabled={loading} className="w-full p-3 rounded-xl font-medium glass-cta mb-3">
-          {loading ? 'Signing in...' : 'Sign in'}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full p-3 rounded-xl font-medium glass-cta mb-3"
+        >
+          {loading ? "Signing in..." : "Sign in"}
         </button>
 
         <div className="flex justify-between text-sm text-gray-400">
-          <button type="button" onClick={() => navigate('/register')} className="underline">
+          <button
+            type="button"
+            onClick={() => navigate("/register")}
+            className="underline"
+          >
             Register
-          </button>
-          <button type="button" onClick={resendVerification} className="underline">
-            Resend verification
           </button>
         </div>
       </form>
