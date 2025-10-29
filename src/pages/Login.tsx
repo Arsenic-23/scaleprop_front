@@ -19,10 +19,12 @@ const Login: React.FC = () => {
       const cred = await signInWithEmailAndPassword(auth, email, password);
       if (cred.user) {
         localStorage.setItem("user_id", cred.user.uid);
-        navigate("/landing");
+        navigate("/LandingPage");
       }
     } catch (err: any) {
-      setError(err.message || "Login failed.");
+      console.error("Login error:", err);
+      const display = err?.code ? `${err.code}: ${err.message || ""}` : err?.message || String(err);
+      setError(display);
     } finally {
       setLoading(false);
     }
@@ -54,22 +56,14 @@ const Login: React.FC = () => {
           required
         />
 
-        {error && <div className="text-red-400 mb-4">{error}</div>}
+        {error && <div className="text-red-400 mb-4 whitespace-pre-wrap">{error}</div>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full p-3 rounded-xl font-medium glass-cta mb-3"
-        >
+        <button type="submit" disabled={loading} className="w-full p-3 rounded-xl font-medium glass-cta mb-3">
           {loading ? "Signing in..." : "Sign in"}
         </button>
 
         <div className="flex justify-between text-sm text-gray-400">
-          <button
-            type="button"
-            onClick={() => navigate("/register")}
-            className="underline"
-          >
+          <button type="button" onClick={() => navigate("/register")} className="underline">
             Register
           </button>
         </div>
