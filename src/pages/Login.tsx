@@ -6,7 +6,6 @@ import { Eye, EyeOff } from "lucide-react";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,20 +20,15 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      // Attempt login
       const userCred = await signInWithEmailAndPassword(auth, email, password);
       const user = userCred.user;
 
-      // Email verification check
       if (!user.emailVerified) {
         await signOut(auth);
-        setError(
-          "Email not verified. Please check your inbox to verify your account."
-        );
+        setError("Email not verified. Please verify your account.");
         return;
       }
 
-      // Save UID & navigate
       localStorage.setItem("user_id", user.uid);
       navigate("/landing");
     } catch (err: any) {
@@ -43,19 +37,19 @@ const Login: React.FC = () => {
 
       switch (err.code) {
         case "auth/user-not-found":
-          msg = "Email not registered. Please register to continue.";
+          msg = "Email not registered.";
           break;
         case "auth/wrong-password":
-          msg = "Incorrect password. Please try again.";
+          msg = "Incorrect password.";
           break;
         case "auth/invalid-email":
-          msg = "Invalid email address format.";
+          msg = "Invalid email format.";
           break;
         case "auth/too-many-requests":
-          msg = "Too many failed attempts. Try again later.";
+          msg = "Too many attempts. Try again later.";
           break;
         case "auth/network-request-failed":
-          msg = "Network error. Please check your connection.";
+          msg = "Network error. Check your connection.";
           break;
       }
       setError(msg);
@@ -65,40 +59,37 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#050507] text-gray-200 px-4">
+    <div className="flex justify-center items-center min-h-[70vh] text-gray-200">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md p-8 rounded-2xl bg-[rgba(255,255,255,0.03)] backdrop-blur-md border border-[rgba(255,255,255,0.05)] shadow-[0_0_20px_rgba(0,255,0,0.05)]"
+        className="w-full max-w-md p-8 rounded-2xl bg-[rgba(255,255,255,0.03)] backdrop-blur-md border border-[rgba(255,255,255,0.05)] shadow-[0_0_25px_rgba(0,255,0,0.05)]"
       >
         <h1 className="text-2xl font-semibold mb-6 text-center text-green-200">
           ScaleFund — Login
         </h1>
 
-        {/* Email Input */}
         <input
           type="email"
           placeholder="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 mb-4 rounded-lg bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400 text-gray-100 placeholder-gray-500"
+          className="w-full p-3 mb-4 rounded-lg bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400 placeholder-gray-500"
           required
         />
 
-        {/* Password Input with Eye Icon */}
         <div className="relative mb-4">
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 rounded-lg bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400 text-gray-100 placeholder-gray-500 pr-10"
+            className="w-full p-3 rounded-lg bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400 placeholder-gray-500 pr-10"
             required
           />
           <button
             type="button"
             onClick={togglePasswordVisibility}
             className="absolute right-3 top-3 text-gray-400 hover:text-green-300 transition"
-            aria-label="Toggle password visibility"
           >
             {showPassword ? (
               <EyeOff className="w-5 h-5" />
@@ -108,37 +99,32 @@ const Login: React.FC = () => {
           </button>
         </div>
 
-        {/* Error Message */}
         {error && (
-          <div className="text-red-400 mb-4 text-sm text-center font-medium">
-            {error}
-          </div>
+          <p className="text-red-400 text-sm mb-4 text-center">{error}</p>
         )}
 
-        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
-          className={`w-full p-3 rounded-xl font-medium transition-all duration-300 ${
+          className={`w-full p-3 rounded-xl font-medium transition-all ${
             loading
-              ? "bg-[rgba(0,255,0,0.2)] text-gray-400 cursor-not-allowed"
-              : "bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200"
+              ? "bg-[rgba(0,255,0,0.15)] text-gray-400 cursor-not-allowed"
+              : "bg-[rgba(0,255,0,0.25)] hover:bg-[rgba(0,255,0,0.35)] text-green-200"
           }`}
         >
           {loading ? "Signing in..." : "Sign in"}
         </button>
 
-        {/* Register Link */}
-        <div className="flex justify-center mt-5 text-sm text-gray-400">
-          <span>Don’t have an account?&nbsp;</span>
+        <p className="mt-5 text-sm text-center text-gray-400">
+          Don’t have an account?{" "}
           <button
             type="button"
             onClick={() => navigate("/register")}
-            className="underline text-green-400 hover:text-green-300 transition"
+            className="underline text-green-400 hover:text-green-300"
           >
             Register
           </button>
-        </div>
+        </p>
       </form>
     </div>
   );
