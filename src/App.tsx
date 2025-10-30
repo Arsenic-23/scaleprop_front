@@ -8,7 +8,12 @@ import {
 import { useEffect } from "react";
 import { useUser, UserProvider } from "./context/UserContext";
 
+// Public Pages
 import LandingPage from "./pages/LandingPage";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+
+// Protected Pages
 import Home from "./pages/Home";
 import Plans from "./pages/Plans";
 import Payment from "./pages/Payment";
@@ -21,6 +26,8 @@ import AdminPanel from "./pages/AdminPanel";
 import Announcements from "./pages/Announcements";
 import Support from "./pages/Support";
 import Notifications from "./pages/Notifications";
+
+// Components
 import BottomNav from "./components/BottomNav";
 
 function PrivateRoute({ children }: { children: JSX.Element }) {
@@ -51,10 +58,14 @@ function AppWrapper() {
   return (
     <>
       <Routes>
-        {/* Redirect to home layout with login */}
+        {/* Redirect to login on root */}
         <Route path="/" element={<Navigate to="/home/login" replace />} />
 
-        {/* Public Landing Layout */}
+        {/* Public Routes */}
+        <Route path="/home/login" element={<Login />} />
+        <Route path="/home/register" element={<Register />} />
+
+        {/* Landing layout (optional extra page before main dashboard) */}
         <Route path="/home/*" element={<LandingPage />} />
 
         {/* Protected Routes */}
