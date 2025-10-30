@@ -25,7 +25,7 @@ import BottomNav from "./components/BottomNav";
 
 function PrivateRoute({ children }: { children: JSX.Element }) {
   const userId = localStorage.getItem("user_id");
-  return userId ? children : <Navigate to="/landing/login" replace />;
+  return userId ? children : <Navigate to="/home/login" replace />;
 }
 
 function AppWrapper() {
@@ -33,10 +33,10 @@ function AppWrapper() {
   const { user, setUser } = useUser();
 
   const showBottomNavRoutes = [
-    "/home",
+    "/landing",
+    "/plans",
     "/account",
     "/profile",
-    "/plans",
     "/support",
   ];
   const showBottomNav = showBottomNavRoutes.includes(location.pathname);
@@ -51,15 +51,15 @@ function AppWrapper() {
   return (
     <>
       <Routes>
-        {/* Default route redirects to Landing with Login */}
-        <Route path="/" element={<Navigate to="/landing/login" replace />} />
+        {/* Redirect to home layout with login */}
+        <Route path="/" element={<Navigate to="/home/login" replace />} />
 
-        {/* Landing with nested login/register */}
-        <Route path="/landing/*" element={<LandingPage />} />
+        {/* Public Landing Layout */}
+        <Route path="/home/*" element={<LandingPage />} />
 
-        {/* Protected routes */}
+        {/* Protected Routes */}
         <Route
-          path="/home"
+          path="/landing"
           element={
             <PrivateRoute>
               <Home />
