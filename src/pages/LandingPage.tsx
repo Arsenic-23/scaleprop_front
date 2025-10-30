@@ -1,6 +1,8 @@
 import { LogoScroller } from "../components/LogoScroller";
-import { useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import React from "react";
+import Login from "./Login";
+import Register from "./Register";
 
 export default function LandingPage(): JSX.Element {
   const navigate = useNavigate();
@@ -14,7 +16,7 @@ export default function LandingPage(): JSX.Element {
       }}
     >
       {/* Logo and Title */}
-      <div className="z-10 flex items-center space-x-2 mt-6 sm:mt-8 mb-12 sm:mb-14">
+      <div className="z-10 flex items-center space-x-2 mt-6 sm:mt-8 mb-8 sm:mb-10">
         <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center">
           <img
             src="/logo.png"
@@ -33,15 +35,22 @@ export default function LandingPage(): JSX.Element {
         </h1>
       </div>
 
-      {/* Center empty space for balanced composition */}
+      {/* Center content: Login or Register */}
       <div className="flex-grow flex items-center justify-center w-full z-10">
-        {/* Intentionally left empty to maintain aesthetic balance */}
+        <div className="w-full flex justify-center">
+          <div className="max-w-lg w-full">
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+            </Routes>
+          </div>
+        </div>
       </div>
 
-      {/* LogoScroller and Tagline near bottom */}
-      <div className="w-full max-w-6xl z-10 mb-8 sm:mb-10 flex flex-col items-center space-y-8 sm:space-y-10">
+      {/* LogoScroller + tagline near bottom */}
+      <div className="w-full max-w-6xl z-10 flex flex-col items-center space-y-6 sm:space-y-8 pb-10 mt-auto">
         <LogoScroller />
-
         <p
           className="text-center font-light opacity-80 tracking-wide"
           style={{
