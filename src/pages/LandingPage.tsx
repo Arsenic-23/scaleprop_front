@@ -1,8 +1,12 @@
-import React from "react";
-import { Outlet } from "react-router-dom";
 import { LogoScroller } from "../components/LogoScroller";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import React from "react";
+import Login from "./Login";
+import Register from "./Register";
 
 export default function LandingPage(): JSX.Element {
+  const navigate = useNavigate();
+
   return (
     <div
       className="relative min-h-[100dvh] bg-black text-white flex flex-col items-center overflow-y-auto px-4 sm:px-6 lg:px-8"
@@ -12,7 +16,7 @@ export default function LandingPage(): JSX.Element {
       }}
     >
       {/* Logo and Title */}
-      <div className="z-10 flex items-center space-x-2 mt-6 sm:mt-8 mb-12 sm:mb-14">
+      <div className="z-10 flex items-center space-x-2 mt-6 sm:mt-8 mb-8 sm:mb-10">
         <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center">
           <img
             src="/logo.png"
@@ -31,13 +35,21 @@ export default function LandingPage(): JSX.Element {
         </h1>
       </div>
 
-      {/* Login/Register Content Rendered Here */}
+      {/* Center content: Login or Register */}
       <div className="flex-grow flex items-center justify-center w-full z-10">
-        <Outlet />
+        <div className="w-full flex justify-center">
+          <div className="max-w-lg w-full">
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+            </Routes>
+          </div>
+        </div>
       </div>
 
-      {/* LogoScroller and Tagline near bottom */}
-      <div className="w-full max-w-6xl z-10 mb-6 sm:mb-8 flex flex-col items-center space-y-6 sm:space-y-8">
+      {/* LogoScroller + tagline near bottom */}
+      <div className="w-full max-w-6xl z-10 flex flex-col items-center space-y-6 sm:space-y-8 pb-10 mt-auto">
         <LogoScroller />
         <p
           className="text-center font-light opacity-80 tracking-wide"
