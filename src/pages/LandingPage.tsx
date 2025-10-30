@@ -1,7 +1,8 @@
 import { LogoScroller } from "../components/LogoScroller";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 
-export default function LandingPage() {
+export default function LandingPage(): JSX.Element {
   const navigate = useNavigate();
 
   return (
@@ -13,7 +14,7 @@ export default function LandingPage() {
       }}
     >
       {/* Logo and Title */}
-      <div className="z-10 flex items-center space-x-2 mt-4 sm:mt-6 mb-10 sm:mb-12">
+      <div className="z-10 flex items-center space-x-2 mt-6 sm:mt-8 mb-12 sm:mb-14">
         <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center">
           <img
             src="/logo.png"
@@ -32,13 +33,13 @@ export default function LandingPage() {
         </h1>
       </div>
 
-      {/* Middle space for clean breathing room */}
+      {/* Center empty space for balanced composition */}
       <div className="flex-grow flex items-center justify-center w-full z-10">
-        {/* Empty space intentionally left for balanced composition */}
+        {/* Intentionally left empty to maintain aesthetic balance */}
       </div>
 
-      {/* Logo Scroller + Tagline Section */}
-      <div className="w-full max-w-6xl z-10 mb-24 sm:mb-28 flex flex-col items-center space-y-8 sm:space-y-10">
+      {/* LogoScroller and Tagline near bottom */}
+      <div className="w-full max-w-6xl z-10 mb-8 sm:mb-10 flex flex-col items-center space-y-8 sm:space-y-10">
         <LogoScroller />
 
         <p
