@@ -1,53 +1,118 @@
-import React from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Login from "./Login";
-import Register from "./Register";
-import { LogoScroller } from "../components/LogoScroller";
+import { useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase.config";
 
-export default function LandingPage(): JSX.Element {
-  const location = useLocation();
+const LandingPage: React.FC = () => {
+  const navigate = useNavigate();
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      if (isLogin) {
+        await signInWithEmailAndPassword(auth, email, password);
+      } else {
+        if (password !== confirmPassword) {
+          setError("Passwords do not match");
+          setLoading(false);
+          return;
+        }
+        await createUserWithEmailAndPassword(auth, email, password);
+      }
+      navigate("/home");
+    } catch (err: any) {
+      setError(err.message || "Authentication failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="relative min-h-screen bg-black text-white flex flex-col items-center justify-between overflow-hidden px-4">
-      {/* Header */}
-      <div className="z-10 flex items-center space-x-3 mt-8 mb-10">
-        <img
-          src="/logo.png"
-          alt="ScaleFund"
-          className="w-12 h-12 object-contain"
-        />
-        <h1 className="text-2xl font-semibold tracking-tight">ScaleFund</h1>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-black text-white">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white/10 backdrop-blur-md p-8 rounded-2xl w-full max-w-sm shadow-xl border border-white/20"
+      >
+        <h1 className="text-2xl font-semibold text-center mb-6">
+          {isLogin ? "Welcome Back" : "Create an Account"}
+        </h1>
 
-      {/* Auth Switch */}
-      <div className="flex-grow flex items-center justify-center w-full z-10">
-        <div className="max-w-lg w-full">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={location.pathname}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
-              transition={{ duration: 0.4 }}
-            >
-              <Routes location={location}>
-                <Route path="/" element={<Login />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-              </Routes>
-            </motion.div>
-          </AnimatePresence>
+        <form onSubmit={handleAuth} className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full p-3 rounded-lg bg-white/20 placeholder-gray-300 outline-none"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full p-3 rounded-lg bg-white/20 placeholder-gray-300 outline-none"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          {!isLogin && (
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              className="w-full p-3 rounded-lg bg-white/20 placeholder-gray-300 outline-none"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          )}
+
+          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-500 hover:bg-blue-600 transition-all p-3 rounded-lg font-medium"
+          >
+            {loading ? "Please wait..." : isLogin ? "Sign In" : "Sign Up"}
+          </button>
+        </form>
+
+        <div className="text-center mt-6 text-sm">
+          {isLogin ? (
+            <>
+              Don't have an account?{" "}
+              <button
+                onClick={() => setIsLogin(false)}
+                className="text-blue-400 hover:underline"
+              >
+                Register
+              </button>
+            </>
+          ) : (
+            <>
+              Already have an account?{" "}
+              <button
+                onClick={() => setIsLogin(true)}
+                className="text-blue-400 hover:underline"
+              >
+                Sign In
+              </button>
+            </>
+          )}
         </div>
-      </div>
-
-      {/* Footer */}
-      <div className="z-10 w-full flex flex-col items-center space-y-8 pb-10">
-        <LogoScroller />
-        <p className="text-center text-sm text-gray-400 opacity-80">
-          Crafted for those who dare to scale beyond limits.
-        </p>
-      </div>
+      </motion.div>
     </div>
   );
-}
+};
+
+export default LandingPage;
