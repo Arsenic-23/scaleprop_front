@@ -8,10 +8,9 @@ import {
 import { useEffect } from "react";
 import { useUser, UserProvider } from "./context/UserContext";
 
-// Public Page (auth inside)
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import LandingPage from "./pages/LandingPage";
-
-// Protected Pages
 import Home from "./pages/Home";
 import Plans from "./pages/Plans";
 import Payment from "./pages/Payment";
@@ -25,12 +24,11 @@ import Announcements from "./pages/Announcements";
 import Support from "./pages/Support";
 import Notifications from "./pages/Notifications";
 
-// Components
 import BottomNav from "./components/BottomNav";
 
 function PrivateRoute({ children }: { children: JSX.Element }) {
   const userId = localStorage.getItem("user_id");
-  return userId ? children : <Navigate to="/" replace />;
+  return userId ? children : <Navigate to="/login" replace />;
 }
 
 function AppWrapper() {
@@ -39,9 +37,9 @@ function AppWrapper() {
 
   const showBottomNavRoutes = [
     "/home",
-    "/plans",
     "/account",
     "/profile",
+    "/plans",
     "/support",
   ];
   const showBottomNav = showBottomNavRoutes.includes(location.pathname);
@@ -56,10 +54,18 @@ function AppWrapper() {
   return (
     <>
       <Routes>
-        {/* Root always shows LandingPage with login/register toggle */}
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
-        {/* Protected Routes */}
+        <Route
+          path="/landing"
+          element={
+            <PrivateRoute>
+              <LandingPage />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/home"
           element={
@@ -156,9 +162,6 @@ function AppWrapper() {
             </PrivateRoute>
           }
         />
-
-        {/* Redirect unknown routes */}
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
       {showBottomNav && <BottomNav />}
