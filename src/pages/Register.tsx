@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
+  onAuthStateChanged,
   sendEmailVerification,
   signOut,
-  onAuthStateChanged,
   User,
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
@@ -46,7 +46,7 @@ const Register: React.FC = () => {
     setInfo(null);
 
     if (!firstName || !lastName)
-      return setError("Enter both first and last names.");
+      return setError("Enter first and last name.");
     if (password.length < 8)
       return setError("Password must be at least 8 characters.");
     if (password !== confirm)
@@ -61,22 +61,26 @@ const Register: React.FC = () => {
       const readyUser = await waitForAuthReady();
       if (!readyUser) throw new Error("Authentication not ready.");
 
-      await setDoc(doc(db, "users", readyUser.uid), {
-        firstName,
-        lastName,
-        email,
-        uid: readyUser.uid,
-        verified: false,
-        createdAt: serverTimestamp(),
-      });
+      await setDoc(
+        doc(db, "users", readyUser.uid),
+        {
+          firstName,
+          lastName,
+          email,
+          uid: readyUser.uid,
+          verified: false,
+          createdAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
 
       await sendEmailVerification(readyUser);
       setInfo("Verification email sent. Please check your inbox.");
 
-      const verifyInterval = setInterval(async () => {
+      const verifyCheck = setInterval(async () => {
         await readyUser.reload();
         if (readyUser.emailVerified) {
-          clearInterval(verifyInterval);
+          clearInterval(verifyCheck);
           await setDoc(
             doc(db, "users", readyUser.uid),
             { verified: true },
@@ -85,7 +89,7 @@ const Register: React.FC = () => {
           localStorage.setItem("user_id", readyUser.uid);
           navigate("/landing");
         }
-      }, 4000);
+      }, 3000);
     } catch (err: any) {
       console.error("Register error:", err);
       let msg = "Registration failed.";
@@ -95,6 +99,8 @@ const Register: React.FC = () => {
         msg = "Invalid email address.";
       else if (err.code === "auth/weak-password")
         msg = "Password too weak.";
+      else if (err.code === "permission-denied")
+        msg = "Insufficient Firestore permissions.";
       setError(msg);
       await signOut(auth);
     } finally {
@@ -103,12 +109,12 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[70vh] text-gray-200">
+    <div className="min-h-screen flex items-center justify-center bg-[#050507] text-gray-200">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md p-8 rounded-2xl bg-[rgba(255,255,255,0.03)] backdrop-blur-md border border-[rgba(255,255,255,0.05)] shadow-[0_0_25px_rgba(0,255,0,0.05)]"
+        className="w-full max-w-md p-8 rounded-2xl bg-[rgba(255,255,255,0.03)] backdrop-blur-md border border-[rgba(255,255,255,0.04)]"
       >
-        <h1 className="text-2xl font-semibold mb-6 text-center text-green-200">
+        <h1 className="text-2xl font-semibold mb-6 text-center">
           ScaleFund — Register
         </h1>
 
@@ -156,23 +162,27 @@ const Register: React.FC = () => {
           required
         />
 
-        {error && <p className="text-red-400 text-sm mb-4 text-center">{error}</p>}
-        {info && <p className="text-green-400 text-sm mb-4 text-center">{info}</p>}
+        {error && (
+          <div className="text-red-400 mb-4 text-sm text-center">{error}</div>
+        )}
+        {info && (
+          <div className="text-green-400 mb-4 text-sm text-center">{info}</div>
+        )}
 
         <button
           type="submit"
           disabled={loading}
           className={`w-full p-3 rounded-xl font-medium transition-all ${
             loading
-              ? "bg-[rgba(0,255,0,0.15)] text-gray-400 cursor-not-allowed"
-              : "bg-[rgba(0,255,0,0.25)] hover:bg-[rgba(0,255,0,0.35)] text-green-200"
+              ? "bg-[rgba(0,255,0,0.2)] text-gray-400 cursor-not-allowed"
+              : "bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200"
           }`}
         >
           {loading ? "Creating account..." : "Create account"}
         </button>
 
-        <p className="mt-5 text-sm text-center text-gray-400">
-          Already have an account?{" "}
+        <div className="flex justify-center mt-4 text-sm text-gray-400">
+          <span>Already have an account?&nbsp;</span>
           <button
             type="button"
             onClick={() => navigate("/login")}
@@ -180,7 +190,7 @@ const Register: React.FC = () => {
           >
             Log in
           </button>
-        </p>
+        </div>
       </form>
     </div>
   );
