@@ -1,9 +1,13 @@
-import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
 import { useEffect } from "react";
 import { useUser, UserProvider } from "./context/UserContext";
 
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 import LandingPage from "./pages/LandingPage";
 import Home from "./pages/Home";
 import Plans from "./pages/Plans";
@@ -17,19 +21,24 @@ import AdminPanel from "./pages/AdminPanel";
 import Announcements from "./pages/Announcements";
 import Support from "./pages/Support";
 import Notifications from "./pages/Notifications";
-
 import BottomNav from "./components/BottomNav";
 
 function PrivateRoute({ children }: { children: JSX.Element }) {
   const userId = localStorage.getItem("user_id");
-  return userId ? children : <Navigate to="/login" replace />;
+  return userId ? children : <Navigate to="/landing/login" replace />;
 }
 
 function AppWrapper() {
   const location = useLocation();
   const { user, setUser } = useUser();
 
-  const showBottomNavRoutes = ["/home", "/account", "/profile", "/plans", "/support"];
+  const showBottomNavRoutes = [
+    "/home",
+    "/account",
+    "/profile",
+    "/plans",
+    "/support",
+  ];
   const showBottomNav = showBottomNavRoutes.includes(location.pathname);
 
   useEffect(() => {
@@ -42,22 +51,13 @@ function AppWrapper() {
   return (
     <>
       <Routes>
-        {/* Default route redirects to login */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        {/* Default route redirects to Landing with Login */}
+        <Route path="/" element={<Navigate to="/landing/login" replace />} />
 
-        {/* Public routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        {/* Landing with nested login/register */}
+        <Route path="/landing/*" element={<LandingPage />} />
 
         {/* Protected routes */}
-        <Route
-          path="/landing"
-          element={
-            <PrivateRoute>
-              <LandingPage />
-            </PrivateRoute>
-          }
-        />
         <Route
           path="/home"
           element={
