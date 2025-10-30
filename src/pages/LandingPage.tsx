@@ -13,7 +13,7 @@ export default function LandingPage() {
       }}
     >
       {/* Logo and Title */}
-      <div className="z-10 flex items-center space-x-2 mb-10 sm:mb-12 mt-4">
+      <div className="z-10 flex items-center space-x-2 mt-4 sm:mt-6 mb-10 sm:mb-12">
         <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center">
           <img
             src="/logo.png"
@@ -32,11 +32,13 @@ export default function LandingPage() {
         </h1>
       </div>
 
-      {/* Empty middle section for balanced breathing space */}
-      <div className="flex-grow flex items-center justify-center w-full z-10" />
+      {/* Middle space for clean breathing room */}
+      <div className="flex-grow flex items-center justify-center w-full z-10">
+        {/* Empty space intentionally left for balanced composition */}
+      </div>
 
       {/* Logo Scroller + Tagline Section */}
-      <div className="w-full max-w-6xl z-10 mb-16 sm:mb-20 flex flex-col items-center space-y-6 sm:space-y-8">
+      <div className="w-full max-w-6xl z-10 mb-24 sm:mb-28 flex flex-col items-center space-y-8 sm:space-y-10">
         <LogoScroller />
 
         <p
