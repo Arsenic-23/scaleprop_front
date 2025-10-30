@@ -8,10 +8,8 @@ import {
 import { useEffect } from "react";
 import { useUser, UserProvider } from "./context/UserContext";
 
-// Public Pages
+// Public Page (auth inside)
 import LandingPage from "./pages/LandingPage";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 
 // Protected Pages
 import Home from "./pages/Home";
@@ -32,7 +30,7 @@ import BottomNav from "./components/BottomNav";
 
 function PrivateRoute({ children }: { children: JSX.Element }) {
   const userId = localStorage.getItem("user_id");
-  return userId ? children : <Navigate to="/home/login" replace />;
+  return userId ? children : <Navigate to="/" replace />;
 }
 
 function AppWrapper() {
@@ -40,7 +38,7 @@ function AppWrapper() {
   const { user, setUser } = useUser();
 
   const showBottomNavRoutes = [
-    "/landing",
+    "/home",
     "/plans",
     "/account",
     "/profile",
@@ -58,19 +56,12 @@ function AppWrapper() {
   return (
     <>
       <Routes>
-        {/* Redirect to login on root */}
-        <Route path="/" element={<Navigate to="/home/login" replace />} />
-
-        {/* Public Routes */}
-        <Route path="/home/login" element={<Login />} />
-        <Route path="/home/register" element={<Register />} />
-
-        {/* Landing layout (optional extra page before main dashboard) */}
-        <Route path="/home/*" element={<LandingPage />} />
+        {/* Root always shows LandingPage with login/register toggle */}
+        <Route path="/" element={<LandingPage />} />
 
         {/* Protected Routes */}
         <Route
-          path="/landing"
+          path="/home"
           element={
             <PrivateRoute>
               <Home />
@@ -165,6 +156,9 @@ function AppWrapper() {
             </PrivateRoute>
           }
         />
+
+        {/* Redirect unknown routes */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
       {showBottomNav && <BottomNav />}
