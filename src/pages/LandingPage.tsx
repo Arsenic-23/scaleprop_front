@@ -1,5 +1,4 @@
 import { LogoScroller } from "../components/LogoScroller";
-import { TypewriterTimeline } from "../components/TypewriterTimeline";
 import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
@@ -18,6 +17,7 @@ export default function LandingPage() {
         paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom, 0px))",
       }}
     >
+      {/* Logo and Title */}
       <div className="z-10 flex items-center space-x-2 mb-6">
         <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center">
           <img
@@ -37,14 +37,15 @@ export default function LandingPage() {
         </h1>
       </div>
 
-      <div className="flex-grow flex items-center justify-center w-full z-10">
-        <TypewriterTimeline />
-      </div>
+      {/* Removed TypewriterTimeline — blank space retained for layout balance */}
+      <div className="flex-grow flex items-center justify-center w-full z-10" />
 
+      {/* Logo Scroller */}
       <div className="w-full max-w-6xl z-10 mb-10">
         <LogoScroller />
       </div>
 
+      {/* CTA Section */}
       <div className="z-20 w-full flex flex-col items-center">
         <p
           className="text-center font-light opacity-80 mb-4 tracking-wide"
