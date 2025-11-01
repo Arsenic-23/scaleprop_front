@@ -1,21 +1,29 @@
 // src/pages/LandingPage.tsx
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogoScroller } from "../components/LogoScroller";
+import LoginForm from "../components/LoginForm";
+import RegisterForm from "../components/RegisterForm";
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
+  const [mode, setMode] = useState<"login" | "register">("login");
+
+  const handleSuccess = (uid: string) => {
+    console.log("Authenticated user:", uid);
+    navigate("/home");
+  };
 
   return (
     <div
-      className="relative min-h-[100dvh] bg-black text-white flex flex-col items-center overflow-y-auto px-4 sm:px-6 lg:px-8"
+      className="relative min-h-[100dvh] bg-[#050507] text-white flex flex-col items-center overflow-y-auto px-4 sm:px-6 lg:px-8"
       style={{
         paddingTop: "calc(2.5rem + env(safe-area-inset-top, 0px))",
         paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom, 0px))",
       }}
     >
-      {/* Logo and Title */}
-      <div className="z-10 flex items-center space-x-2 mt-6 sm:mt-8 mb-12 sm:mb-14">
+      {/* Header Logo and Title */}
+      <div className="z-10 flex items-center space-x-2 mt-6 sm:mt-8 mb-10 sm:mb-12">
         <div className="w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center">
           <img
             src="/logo.png"
@@ -24,22 +32,32 @@ const LandingPage: React.FC = () => {
           />
         </div>
         <h1
-          className="font-semibold tracking-tight"
+          className="font-semibold tracking-tight text-green-200"
           style={{
             fontFamily: "'Inter', sans-serif",
             fontSize: "clamp(1.25rem, 2.5vw, 2rem)",
           }}
         >
-          Scalefund
+          ScaleFund
         </h1>
       </div>
 
-      {/* Center empty space for balanced composition */}
+      {/* Center Form Area */}
       <div className="flex-grow flex items-center justify-center w-full z-10">
-        {/* Intentionally left empty to maintain visual balance */}
+        {mode === "login" ? (
+          <LoginForm
+            onSuccess={handleSuccess}
+            onSwitchToRegister={() => setMode("register")}
+          />
+        ) : (
+          <RegisterForm
+            onSuccess={handleSuccess}
+            onSwitchToLogin={() => setMode("login")}
+          />
+        )}
       </div>
 
-      {/* LogoScroller and Tagline near bottom */}
+      {/* Footer Section */}
       <div className="w-full max-w-6xl z-10 mb-8 sm:mb-10 flex flex-col items-center space-y-8 sm:space-y-10">
         <LogoScroller />
         <p
@@ -52,6 +70,9 @@ const LandingPage: React.FC = () => {
           Crafted for those who dare to scale beyond limits.
         </p>
       </div>
+
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#050507]/50 to-black pointer-events-none" />
     </div>
   );
 };
