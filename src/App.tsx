@@ -1,3 +1,4 @@
+// src/App.tsx
 import {
   BrowserRouter as Router,
   Routes,
@@ -8,8 +9,6 @@ import {
 import { useEffect } from "react";
 import { useUser, UserProvider } from "./context/UserContext";
 
-import Login from "./pages/Login";
-import Register from "./pages/Register";
 import LandingPage from "./pages/LandingPage";
 import Home from "./pages/Home";
 import Plans from "./pages/Plans";
@@ -28,7 +27,7 @@ import BottomNav from "./components/BottomNav";
 
 function PrivateRoute({ children }: { children: JSX.Element }) {
   const userId = localStorage.getItem("user_id");
-  return userId ? children : <Navigate to="/login" replace />;
+  return userId ? children : <Navigate to="/" replace />;
 }
 
 function AppWrapper() {
@@ -54,18 +53,9 @@ function AppWrapper() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        {/* Landing Page now includes Login + Register logic */}
+        <Route path="/" element={<LandingPage />} />
 
-        <Route
-          path="/landing"
-          element={
-            <PrivateRoute>
-              <LandingPage />
-            </PrivateRoute>
-          }
-        />
         <Route
           path="/home"
           element={
