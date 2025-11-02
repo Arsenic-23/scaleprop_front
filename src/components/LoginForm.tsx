@@ -1,4 +1,4 @@
-=import React, { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth } from "../firebase.config";
 import { Eye, EyeOff } from "lucide-react";
