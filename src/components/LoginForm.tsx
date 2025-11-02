@@ -27,74 +27,47 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
 
-  useEffect(() => {
-    setFormError(null);
-  }, [email, password]);
-
   const resetErrors = () => {
     setEmailError(null);
     setPasswordError(null);
     setFormError(null);
   };
 
-  const validateInputs = (): boolean => {
-    resetErrors();
-    let ok = true;
-
-    const trimmedEmail = email.trim();
-
-    if (!trimmedEmail) {
-      setEmailError("Email is required.");
-      emailRef.current?.focus();
-      ok = false;
-    } else if (!EMAIL_REGEX.test(trimmedEmail)) {
-      setEmailError("Enter a valid email address.");
-      emailRef.current?.focus();
-      ok = false;
-    }
-
-    if (!password) {
-      if (ok) passwordRef.current?.focus();
-      setPasswordError("Password is required.");
-      ok = false;
-    } else if (password.length < 6) {
-      if (ok) passwordRef.current?.focus();
-      setPasswordError("Password must be at least 6 characters.");
-      ok = false;
-    }
-
-    return ok;
-  };
-
-  const mapFirebaseError = (code: string | undefined) => {
+  const mapFirebaseError = (code: string): string => {
     switch (code) {
       case "auth/user-not-found":
         return "No account found for this email. Register first.";
       case "auth/wrong-password":
-        return "Email or password is incorrect.";
+        return "Incorrect password.";
       case "auth/invalid-email":
         return "Invalid email address format.";
       case "auth/too-many-requests":
         return "Too many failed attempts. Try again later.";
       case "auth/network-request-failed":
-        return "Network error. Check your connection.";
+        return "Network error. Check your internet connection.";
       case "auth/user-disabled":
-        return "This account has been disabled. Contact support.";
-      case "auth/operation-not-allowed":
-        return "Email/password sign-in is not enabled in Firebase.";
+        return "This account has been disabled.";
+      case "auth/invalid-credential":
+        return "Invalid email or password.";
       default:
-        return "Sign in failed. Try again.";
+        return "Login failed. Try again.";
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormError(null);
+    resetErrors();
 
-    if (!validateInputs()) return;
+    if (!EMAIL_REGEX.test(email.trim())) {
+      setEmailError("Enter a valid email.");
+      return;
+    }
+    if (!password.trim()) {
+      setPasswordError("Password is required.");
+      return;
+    }
 
     setLoading(true);
-
     try {
       const userCred = await signInWithEmailAndPassword(
         auth,
@@ -103,33 +76,33 @@ const LoginForm: React.FC<LoginFormProps> = ({
       );
       const user = userCred.user;
 
-      if (!user) {
-        setFormError("Authentication failed. No user returned.");
-        return;
-      }
-
       if (!user.emailVerified) {
         await signOut(auth);
-        setFormError(
-          "Email not verified. Open the verification link sent to your inbox. Resend from registration if needed."
-        );
+        setFormError("Email not verified. Check your inbox.");
         return;
       }
 
       localStorage.setItem("user_id", user.uid);
       onSuccess?.(user.uid);
     } catch (err: any) {
-      console.error("Login error:", err);
-      const code = err?.code ?? err?.message;
-      const friendly = mapFirebaseError(code);
-      if (code === "auth/wrong-password") {
-        setPasswordError(friendly);
+      const code =
+        err?.code && typeof err.code === "string"
+          ? err.code
+          : err?.message || "unknown";
+      if (process.env.NODE_ENV === "development") console.warn("Firebase error:", err);
+
+      const message = mapFirebaseError(code);
+      if (
+        code === "auth/wrong-password" ||
+        code === "auth/invalid-credential"
+      ) {
+        setPasswordError(message);
         passwordRef.current?.focus();
       } else if (code === "auth/user-not-found") {
-        setEmailError(friendly);
+        setEmailError(message);
         emailRef.current?.focus();
       } else {
-        setFormError(friendly);
+        setFormError(message);
       }
     } finally {
       setLoading(false);
@@ -139,60 +112,42 @@ const LoginForm: React.FC<LoginFormProps> = ({
   return (
     <form
       onSubmit={handleSubmit}
-      aria-describedby={formError ? "login-form-error" : undefined}
       className="w-full max-w-md p-8 rounded-2xl bg-[rgba(255,255,255,0.03)] backdrop-blur-md border border-[rgba(255,255,255,0.05)]"
     >
       <h1 className="text-2xl font-semibold mb-6 text-center text-green-200">
         Login
       </h1>
 
-      <label className="block mb-2 text-sm text-gray-300">Email</label>
       <input
         ref={emailRef}
         type="email"
-        inputMode="email"
-        placeholder="you@domain.com"
+        placeholder="Email address"
         value={email}
-        onChange={(e) => {
-          setEmail(e.target.value);
-          setEmailError(null);
-        }}
-        aria-invalid={!!emailError}
-        aria-describedby={emailError ? "email-error" : undefined}
+        onChange={(e) => setEmail(e.target.value)}
         className={`w-full p-3 mb-2 rounded-lg bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400 text-gray-100 placeholder-gray-500 ${
           emailError ? "border border-red-500" : ""
         }`}
-        required
       />
       {emailError && (
-        <div id="email-error" className="text-red-400 mb-2 text-sm">
-          {emailError}
-        </div>
+        <div className="text-red-400 mb-2 text-sm text-center">{emailError}</div>
       )}
 
-      <label className="block mb-2 text-sm text-gray-300">Password</label>
       <div className="relative mb-2">
         <input
           ref={passwordRef}
           type={showPassword ? "text" : "password"}
           placeholder="Password"
           value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-            setPasswordError(null);
-          }}
-          aria-invalid={!!passwordError}
-          aria-describedby={passwordError ? "password-error" : undefined}
+          onChange={(e) => setPassword(e.target.value)}
           className={`w-full p-3 rounded-lg bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400 text-gray-100 placeholder-gray-500 pr-10 ${
             passwordError ? "border border-red-500" : ""
           }`}
-          required
         />
         <button
           type="button"
-          onClick={() => setShowPassword((s) => !s)}
+          onClick={() => setShowPassword((p) => !p)}
           className="absolute right-3 top-3 text-gray-400 hover:text-green-300"
-          aria-label={showPassword ? "Hide password" : "Show password"}
+          aria-label="Toggle password visibility"
         >
           {showPassword ? (
             <EyeOff className="w-5 h-5" />
@@ -202,25 +157,19 @@ const LoginForm: React.FC<LoginFormProps> = ({
         </button>
       </div>
       {passwordError && (
-        <div id="password-error" className="text-red-400 mb-2 text-sm">
+        <div className="text-red-400 mb-2 text-sm text-center">
           {passwordError}
         </div>
       )}
 
       {formError && (
-        <div
-          id="login-form-error"
-          role="alert"
-          className="text-red-400 mb-4 text-sm text-center font-medium"
-        >
-          {formError}
-        </div>
+        <div className="text-red-400 mb-3 text-sm text-center">{formError}</div>
       )}
 
       <button
         type="submit"
         disabled={loading}
-        className={`w-full p-3 rounded-xl font-medium transition-all duration-200 ${
+        className={`w-full p-3 rounded-xl font-medium transition-all ${
           loading
             ? "bg-[rgba(0,255,0,0.2)] text-gray-400 cursor-not-allowed"
             : "bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200"
