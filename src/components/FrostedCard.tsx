@@ -16,7 +16,7 @@ const FrostedCard: React.FC<FrostedCardProps> = ({
       className={`relative overflow-hidden rounded-2xl transition-all duration-300 flex items-center justify-center ${className}`}
       style={{
         width: "400px",
-        height: "520px",
+        height: "460px",
         background: "rgba(20, 20, 20, 0.45)",
         border: "1px solid rgba(255, 255, 255, 0.22)",
         boxShadow:
