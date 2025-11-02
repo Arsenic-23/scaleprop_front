@@ -13,14 +13,17 @@ const FrostedCard: React.FC<FrostedCardProps> = ({
 }) => {
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl w-full max-w-md p-8 transition-all duration-300 ${className}`}
+      className={`relative overflow-hidden rounded-2xl transition-all duration-300 flex items-center justify-center ${className}`}
       style={{
+        width: "400px",
+        height: "520px",
         background: "rgba(20, 20, 20, 0.45)",
         border: "1px solid rgba(255, 255, 255, 0.22)",
         boxShadow:
           "0 10px 32px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(255,255,255,0.10)",
         backdropFilter: "blur(22px) saturate(155%)",
         WebkitBackdropFilter: "blur(22px) saturate(155%)",
+        padding: "2rem",
         ...style,
       }}
     >
@@ -65,7 +68,7 @@ const FrostedCard: React.FC<FrostedCardProps> = ({
       />
 
       {/* Card content */}
-      <div className="relative z-10 flex flex-col items-center justify-center w-full">
+      <div className="relative z-10 w-full flex flex-col items-center justify-center">
         {children}
       </div>
     </div>
