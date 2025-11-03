@@ -3,8 +3,8 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   sendEmailVerification,
-  signOut,
   onAuthStateChanged,
+  reload,
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../firebase.config";
@@ -33,11 +33,14 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
 
   const navigate = useNavigate();
 
-  // Watch user verification state
+  // Automatically redirect if user verified
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user && user.emailVerified) {
-        navigate("/home");
+      if (user) {
+        await reload(user);
+        if (user.emailVerified) {
+          navigate("/home");
+        }
       }
     });
     return unsubscribe;
@@ -104,9 +107,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
     setResending(true);
     setError(null);
     try {
+      await reload(auth.currentUser);
       await sendEmailVerification(auth.currentUser);
-      setInfo("Verification email resent. Check your inbox again.");
-    } catch (err: any) {
+      setInfo("Verification email resent successfully.");
+    } catch {
       setError("Failed to resend verification email. Try again later.");
     } finally {
       setResending(false);
@@ -192,22 +196,21 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
               : "bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200"
           }`}
         >
-          {loading ? "Creating account..." : verificationSent ? "Verification sent" : "Create account"}
+          {loading ? "Creating account..." : verificationSent ? "Verification Sent" : "Create account"}
         </button>
 
         {verificationSent && (
-          <button
-            type="button"
-            onClick={handleResend}
-            disabled={resending}
-            className={`w-full p-3 rounded-xl font-medium transition-all ${
-              resending
-                ? "bg-[rgba(0,255,0,0.1)] text-gray-400 cursor-not-allowed"
-                : "bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200"
-            }`}
-          >
-            {resending ? "Resending..." : "Resend Verification Email"}
-          </button>
+          <div className="text-xs text-right text-gray-400 mt-1">
+            Didn’t get the email?{" "}
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resending}
+              className="text-green-400 hover:text-green-300 underline ml-1"
+            >
+              {resending ? "Resending..." : "Resend"}
+            </button>
+          </div>
         )}
 
         <div className="text-sm text-gray-400 text-center mt-3">
