@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { auth } from "../firebase.config";
+import { auth, db } from "../firebase.config";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { Eye, EyeOff } from "lucide-react";
 import FrostedCard from "../components/FrostedCard";
 
@@ -32,8 +33,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
 
   const mapFirebaseError = (code: string): string => {
     switch (code) {
-      case "auth/user-not-found":
-        return "No account found for this email. Register first.";
       case "auth/wrong-password":
         return "Incorrect password.";
       case "auth/invalid-email":
@@ -51,6 +50,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
     }
   };
 
+  const checkEmailExists = async (email: string): Promise<boolean> => {
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("email", "==", email));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     resetErrors();
@@ -66,6 +72,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
 
     setLoading(true);
     try {
+    
+      const emailExists = await checkEmailExists(email.trim());
+      if (!emailExists) {
+        setEmailError("Email not registered.");
+        return;
+      }
+
       const userCred = await signInWithEmailAndPassword(auth, email.trim(), password);
       const user = userCred.user;
 
@@ -84,9 +97,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
       if (["auth/wrong-password", "auth/invalid-credential"].includes(code)) {
         setPasswordError(message);
         passwordRef.current?.focus();
-      } else if (code === "auth/user-not-found") {
-        setEmailError(message);
-        emailRef.current?.focus();
       } else {
         setFormError(message);
       }
@@ -97,11 +107,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
 
   return (
     <FrostedCard>
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-3">
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-3 w-full">
         <h1 className="text-2xl font-semibold text-center text-green-200 mb-4">
           Login
         </h1>
 
+        {/* Email Field */}
         <input
           ref={emailRef}
           type="email"
@@ -116,6 +127,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
           <div className="text-red-400 text-sm text-center">{emailError}</div>
         )}
 
+        {/* Password Field */}
         <div className="relative">
           <input
             ref={passwordRef}
@@ -144,6 +156,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
           <div className="text-red-400 text-sm text-center">{formError}</div>
         )}
 
+        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
