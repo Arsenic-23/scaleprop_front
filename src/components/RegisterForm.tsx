@@ -8,6 +8,7 @@ import {
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../firebase.config";
 import { Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import FrostedCard from "../components/FrostedCard";
 
 interface RegisterFormProps {
@@ -26,6 +27,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
   const [info, setInfo] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [createdUser, setCreatedUser] = useState<any>(null);
+  const [resending, setResending] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +66,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
 
       await sendEmailVerification(user);
       setInfo("Verification email sent. Please check your inbox.");
-      await signOut(auth);
+      setCreatedUser(user);
+
+      // Navigate to home after successful registration
+      navigate("/home");
+      if (onSuccess) onSuccess(user.uid);
     } catch (err: any) {
       let msg = "Registration failed.";
       switch (err.code) {
@@ -83,6 +92,21 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
       setError(msg);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResendEmail = async () => {
+    if (!createdUser) return setError("No user found to resend email.");
+    setError(null);
+    setInfo(null);
+    setResending(true);
+    try {
+      await sendEmailVerification(createdUser);
+      setInfo("Verification email resent. Please check your inbox.");
+    } catch (err: any) {
+      setError("Failed to resend verification email.");
+    } finally {
+      setResending(false);
     }
   };
 
@@ -169,6 +193,21 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
         >
           {loading ? "Creating account..." : "Create account"}
         </button>
+
+        {createdUser && (
+          <button
+            type="button"
+            onClick={handleResendEmail}
+            disabled={resending}
+            className={`w-full p-3 rounded-xl font-medium transition-all ${
+              resending
+                ? "bg-[rgba(0,255,0,0.2)] text-gray-400 cursor-not-allowed"
+                : "bg-[rgba(0,255,0,0.1)] hover:bg-[rgba(0,255,0,0.2)] text-green-300"
+            }`}
+          >
+            {resending ? "Resending..." : "Resend verification email"}
+          </button>
+        )}
 
         <div className="text-sm text-gray-400 text-center mt-3">
           Already have an account?{" "}
