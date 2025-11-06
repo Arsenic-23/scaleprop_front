@@ -33,7 +33,8 @@ const Register: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [verified, setVerified] = useState(false);
-
+  const [checking, setChecking] = useState(false);
+  
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -81,21 +82,25 @@ const Register: React.FC = () => {
       );
 
       await sendEmailVerification(readyUser);
-      setInfo("Verification email sent. Please verify your email.");
-
-      const verifyCheck = setInterval(async () => {
+      setInfo("Verification email sent. Please check your inbox.");
+      
+      setChecking(true);
+      const poll = setInterval(async () => {
         await readyUser.reload();
-        if (readyUser.emailVerified) {
-          clearInterval(verifyCheck);
+        const refreshedUser = auth.currentUser;
+        if (refreshedUser && refreshedUser.emailVerified) {
+          clearInterval(poll);
           await setDoc(
-            doc(db, "users", readyUser.uid),
+            doc(db, "users", refreshedUser.uid),
             { verified: true },
             { merge: true }
           );
+          localStorage.setItem("user_id", refreshedUser.uid);
           setVerified(true);
-          localStorage.setItem("user_id", readyUser.uid);
+          setChecking(false);
+          setInfo(null);
         }
-      }, 3000);
+      }, 4000);
     } catch (err: any) {
       console.error("Register error:", err);
       let msg = "Registration failed.";
@@ -182,6 +187,11 @@ const Register: React.FC = () => {
             {info && (
               <div className="text-green-400 mb-4 text-sm text-center">
                 {info}
+              </div>
+            )}
+            {checking && (
+              <div className="text-gray-400 mb-4 text-sm text-center animate-pulse">
+                Waiting for verification...
               </div>
             )}
 
