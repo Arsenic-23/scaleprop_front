@@ -30,14 +30,14 @@ const Register: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [verified, setVerified] = useState(false);
   const [checking, setChecking] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
-  const [verificationSent, setVerificationSent] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -57,7 +57,11 @@ const Register: React.FC = () => {
         setVerified(true);
         setInfo(null);
         setChecking(false);
-        await setDoc(doc(db, "users", refreshed.uid), { verified: true }, { merge: true });
+        await setDoc(
+          doc(db, "users", refreshed.uid),
+          { verified: true },
+          { merge: true }
+        );
         localStorage.setItem("user_id", refreshed.uid);
       }
     } catch {}
@@ -82,6 +86,7 @@ const Register: React.FC = () => {
 
     const handleFocus = () => checkVerification();
     window.addEventListener("focus", handleFocus);
+
     return () => {
       unsub();
       stopPoll();
@@ -91,7 +96,9 @@ const Register: React.FC = () => {
 
   useEffect(() => {
     if (resendTimer <= 0) return;
-    const t = setInterval(() => setResendTimer((prev) => prev - 1), 1000);
+    const t = setInterval(() => {
+      setResendTimer((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
     return () => clearInterval(t);
   }, [resendTimer]);
 
@@ -101,7 +108,8 @@ const Register: React.FC = () => {
     setInfo(null);
 
     if (!firstName || !lastName) return setError("Enter first and last name.");
-    if (password.length < 8) return setError("Password must be at least 8 characters.");
+    if (password.length < 8)
+      return setError("Password must be at least 8 characters.");
     if (password !== confirm) return setError("Passwords do not match.");
 
     setLoading(true);
@@ -127,17 +135,21 @@ const Register: React.FC = () => {
       );
 
       await sendEmailVerification(readyUser);
-      setVerificationSent(true);
+      setEmailSent(true);
       setInfo("Verification email sent. Please check your inbox.");
       setResendTimer(60);
       startPoll();
     } catch (err: any) {
       console.error("Register error:", err);
       let msg = "Registration failed.";
-      if (err?.code === "auth/email-already-in-use") msg = "Email already registered.";
-      else if (err?.code === "auth/invalid-email") msg = "Invalid email address.";
-      else if (err?.code === "auth/weak-password") msg = "Password too weak.";
-      else if (err?.code === "permission-denied") msg = "Insufficient Firestore permissions.";
+      if (err?.code === "auth/email-already-in-use")
+        msg = "Email already registered.";
+      else if (err?.code === "auth/invalid-email")
+        msg = "Invalid email address.";
+      else if (err?.code === "auth/weak-password")
+        msg = "Password too weak.";
+      else if (err?.code === "permission-denied")
+        msg = "Insufficient Firestore permissions.";
       setError(msg);
       await signOut(auth);
     } finally {
@@ -150,16 +162,14 @@ const Register: React.FC = () => {
     if (!user) return;
     try {
       await sendEmailVerification(user);
-      setInfo("Verification email resent. Please check your inbox.");
-      setResendTimer(60); 
+      setInfo("Verification email resent. Check your inbox.");
+      setResendTimer(60);
     } catch {
       setError("Failed to resend verification. Try again later.");
     }
   };
 
-  const handleProceed = () => {
-    navigate("/home"); 
-  };
+  const handleProceed = () => navigate("/home");
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#050507] text-gray-200">
@@ -229,23 +239,6 @@ const Register: React.FC = () => {
               </div>
             )}
 
-            {verificationSent && (
-              <button
-                type="button"
-                disabled={resendTimer > 0}
-                onClick={handleResend}
-                className={`w-full mb-4 p-3 rounded-xl font-medium transition-all ${
-                  resendTimer > 0
-                    ? "bg-[rgba(255,255,255,0.05)] text-gray-500 cursor-not-allowed"
-                    : "bg-[rgba(0,255,0,0.1)] hover:bg-[rgba(0,255,0,0.2)] text-green-300"
-                }`}
-              >
-                {resendTimer > 0
-                  ? `Resend available in ${resendTimer}s`
-                  : "Resend verification email"}
-              </button>
-            )}
-
             <button
               type="submit"
               disabled={loading}
@@ -257,6 +250,23 @@ const Register: React.FC = () => {
             >
               {loading ? "Creating account..." : "Create account"}
             </button>
+
+            {emailSent && (
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={resendTimer > 0}
+                className={`w-full mt-3 p-3 rounded-xl font-medium transition-all ${
+                  resendTimer > 0
+                    ? "bg-[rgba(255,255,255,0.05)] text-gray-500 cursor-not-allowed"
+                    : "bg-[rgba(0,255,0,0.1)] hover:bg-[rgba(0,255,0,0.2)] text-green-300"
+                }`}
+              >
+                {resendTimer > 0
+                  ? `Resend available in ${resendTimer}s`
+                  : "Resend verification email"}
+              </button>
+            )}
 
             <div className="flex justify-center mt-4 text-sm text-gray-400">
               <span>Already have an account?&nbsp;</span>
