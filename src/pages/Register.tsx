@@ -32,13 +32,19 @@ const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
+  const [verified, setVerified] = useState(false);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      if (user?.emailVerified) navigate("/landing");
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        await user.reload();
+        setVerified(user.emailVerified);
+      } else {
+        setVerified(false);
+      }
     });
     return () => unsub();
-  }, [navigate]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,7 +81,7 @@ const Register: React.FC = () => {
       );
 
       await sendEmailVerification(readyUser);
-      setInfo("Verification email sent. Please check your inbox.");
+      setInfo("Verification email sent. Please verify your email.");
 
       const verifyCheck = setInterval(async () => {
         await readyUser.reload();
@@ -86,8 +92,8 @@ const Register: React.FC = () => {
             { verified: true },
             { merge: true }
           );
+          setVerified(true);
           localStorage.setItem("user_id", readyUser.uid);
-          navigate("/landing");
         }
       }, 3000);
     } catch (err: any) {
@@ -108,6 +114,10 @@ const Register: React.FC = () => {
     }
   };
 
+  const handleProceed = () => {
+    navigate("/landing");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#050507] text-gray-200">
       <form
@@ -118,79 +128,100 @@ const Register: React.FC = () => {
           ScaleFund — Register
         </h1>
 
-        <div className="grid grid-cols-2 gap-4 mb-4">
-          <input
-            placeholder="First name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            className="p-3 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
-            required
-          />
-          <input
-            placeholder="Last name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            className="p-3 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
-            required
-          />
-        </div>
+        {!verified ? (
+          <>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <input
+                placeholder="First name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="p-3 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
+                required
+              />
+              <input
+                placeholder="Last name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="p-3 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
+                required
+              />
+            </div>
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
-          required
-        />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
+              required
+            />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
-          required
-        />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
+              required
+            />
 
-        <input
-          type="password"
-          placeholder="Confirm password"
-          value={confirm}
-          onChange={(e) => setConfirm(e.target.value)}
-          className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
-          required
-        />
+            <input
+              type="password"
+              placeholder="Confirm password"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
+              required
+            />
 
-        {error && (
-          <div className="text-red-400 mb-4 text-sm text-center">{error}</div>
+            {error && (
+              <div className="text-red-400 mb-4 text-sm text-center">
+                {error}
+              </div>
+            )}
+            {info && (
+              <div className="text-green-400 mb-4 text-sm text-center">
+                {info}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full p-3 rounded-xl font-medium transition-all ${
+                loading
+                  ? "bg-[rgba(0,255,0,0.2)] text-gray-400 cursor-not-allowed"
+                  : "bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200"
+              }`}
+            >
+              {loading ? "Creating account..." : "Create account"}
+            </button>
+
+            <div className="flex justify-center mt-4 text-sm text-gray-400">
+              <span>Already have an account?&nbsp;</span>
+              <button
+                type="button"
+                onClick={() => navigate("/login")}
+                className="underline text-green-400 hover:text-green-300"
+              >
+                Log in
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-col items-center text-center">
+            <h2 className="text-lg text-green-400 mb-3">
+              Email verified successfully!
+            </h2>
+            <button
+              onClick={handleProceed}
+              type="button"
+              className="w-full p-3 rounded-xl bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200 font-medium transition-all"
+            >
+              Proceed to Home
+            </button>
+          </div>
         )}
-        {info && (
-          <div className="text-green-400 mb-4 text-sm text-center">{info}</div>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full p-3 rounded-xl font-medium transition-all ${
-            loading
-              ? "bg-[rgba(0,255,0,0.2)] text-gray-400 cursor-not-allowed"
-              : "bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200"
-          }`}
-        >
-          {loading ? "Creating account..." : "Create account"}
-        </button>
-
-        <div className="flex justify-center mt-4 text-sm text-gray-400">
-          <span>Already have an account?&nbsp;</span>
-          <button
-            type="button"
-            onClick={() => navigate("/login")}
-            className="underline text-green-400 hover:text-green-300"
-          >
-            Log in
-          </button>
-        </div>
       </form>
     </div>
   );
