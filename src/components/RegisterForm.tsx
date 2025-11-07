@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
@@ -13,11 +13,10 @@ import FrostedCard from "../components/FrostedCard";
 import { useNavigate } from "react-router-dom";
 
 interface RegisterFormProps {
-  onSuccess?: (uid: string) => void;
   onSwitchToLogin?: () => void;
 }
 
-const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin }) => {
+const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -28,31 +27,57 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
   const [info, setInfo] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [verificationSent, setVerificationSent] = useState(false);
-  const [resending, setResending] = useState(false);
+  const [checking, setChecking] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
 
   const navigate = useNavigate();
+  const pollRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Automatically redirect if user verified
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        await reload(user);
-        if (user.emailVerified) {
+  // Polling function to check verification
+  const startVerificationCheck = () => {
+    if (pollRef.current) return;
+    setChecking(true);
+    pollRef.current = setInterval(async () => {
+      if (auth.currentUser) {
+        await reload(auth.currentUser);
+        if (auth.currentUser.emailVerified) {
+          clearInterval(pollRef.current!);
+          pollRef.current = null;
+          setChecking(false);
           navigate("/home");
         }
       }
-    });
-    return unsubscribe;
-  }, [navigate]);
+    }, 4000);
+  };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        await reload(user);
+        if (user.emailVerified) navigate("/home");
+      }
+    });
+    return () => {
+      unsub();
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
+  }, [navigate]);
+  
+  useEffect(() => {
+    if (resendTimer <= 0) return;
+    const t = setInterval(() => setResendTimer((prev) => prev - 1), 1000);
+    return () => clearInterval(t);
+  }, [resendTimer]);
+
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setInfo(null);
 
-    if (!firstName.trim() || !lastName.trim()) return setError("Please enter your first and last name.");
-    if (password.length < 8) return setError("Password must be at least 8 characters.");
+    if (!firstName.trim() || !lastName.trim())
+      return setError("Please enter your first and last name.");
+    if (password.length < 8)
+      return setError("Password must be at least 8 characters.");
     if (password !== confirm) return setError("Passwords do not match.");
 
     setLoading(true);
@@ -60,7 +85,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       const user = cred.user;
 
-      await updateProfile(user, { displayName: `${firstName.trim()} ${lastName.trim()}` });
+      await updateProfile(user, { displayName: `${firstName} ${lastName}` });
 
       await setDoc(
         doc(db, "users", user.uid),
@@ -76,8 +101,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
       );
 
       await sendEmailVerification(user);
-      setVerificationSent(true);
       setInfo("Verification email sent. Please check your inbox.");
+      setResendTimer(60);
+      startVerificationCheck();
     } catch (err: any) {
       let msg = "Registration failed.";
       switch (err.code) {
@@ -104,23 +130,21 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
 
   const handleResend = async () => {
     if (!auth.currentUser) return;
-    setResending(true);
-    setError(null);
     try {
-      await reload(auth.currentUser);
       await sendEmailVerification(auth.currentUser);
       setInfo("Verification email resent successfully.");
+      setResendTimer(60);
     } catch {
       setError("Failed to resend verification email. Try again later.");
-    } finally {
-      setResending(false);
     }
   };
 
   return (
     <FrostedCard>
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-3">
-        <h1 className="text-2xl font-semibold text-center text-green-200 mb-4">Register</h1>
+      <form onSubmit={handleRegister} className="flex flex-col space-y-3">
+        <h1 className="text-2xl font-semibold text-center text-green-200 mb-4">
+          Register
+        </h1>
 
         <div className="grid grid-cols-2 gap-3">
           <input
@@ -162,7 +186,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
             onClick={() => setShowPassword((p) => !p)}
             className="absolute right-3 top-3 text-gray-400 hover:text-green-300"
           >
-            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            {showPassword ? (
+              <EyeOff className="w-5 h-5" />
+            ) : (
+              <Eye className="w-5 h-5" />
+            )}
           </button>
         </div>
 
@@ -180,38 +208,52 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSuccess, onSwitchToLogin 
             onClick={() => setShowConfirm((p) => !p)}
             className="absolute right-3 top-3 text-gray-400 hover:text-green-300"
           >
-            {showConfirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            {showConfirm ? (
+              <EyeOff className="w-5 h-5" />
+            ) : (
+              <Eye className="w-5 h-5" />
+            )}
           </button>
         </div>
 
         {error && <div className="text-red-400 text-sm text-center">{error}</div>}
         {info && <div className="text-green-400 text-sm text-center">{info}</div>}
+        {checking && (
+          <div className="text-gray-400 text-sm text-center animate-pulse">
+            Waiting for verification...
+          </div>
+        )}
+
+        {resendTimer > 0 ? (
+          <div className="text-xs text-right text-gray-400">
+            Resend available in {resendTimer}s
+          </div>
+        ) : (
+          info && (
+            <div className="text-xs text-right text-gray-400">
+              Didn’t get the email?{" "}
+              <button
+                type="button"
+                onClick={handleResend}
+                className="text-green-400 hover:text-green-300 underline ml-1"
+              >
+                Resend
+              </button>
+            </div>
+          )
+        )}
 
         <button
           type="submit"
-          disabled={loading || verificationSent}
+          disabled={loading}
           className={`w-full p-3 rounded-xl font-medium transition-all ${
             loading
-              ? "bg-[rgba(0,255,0,0.2)] text-gray-400 cursor-not-allowed"
+              ? "bg-[rgba(255,255,255,0.05)] text-gray-500 cursor-not-allowed"
               : "bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200"
           }`}
         >
-          {loading ? "Creating account..." : verificationSent ? "Verification Sent" : "Create account"}
+          {loading ? "Processing..." : "Register"}
         </button>
-
-        {verificationSent && (
-          <div className="text-xs text-right text-gray-400 mt-1">
-            Didn’t get the email?{" "}
-            <button
-              type="button"
-              onClick={handleResend}
-              disabled={resending}
-              className="text-green-400 hover:text-green-300 underline ml-1"
-            >
-              {resending ? "Resending..." : "Resend"}
-            </button>
-          </div>
-        )}
 
         <div className="text-sm text-gray-400 text-center mt-3">
           Already have an account?{" "}
