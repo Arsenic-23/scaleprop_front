@@ -25,14 +25,12 @@ async function waitForAuthReady(timeout = 4000): Promise<User | null> {
 const Register: React.FC = () => {
   const navigate = useNavigate();
 
-  // form state
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
-  // ui state
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
@@ -91,7 +89,6 @@ const Register: React.FC = () => {
     };
   }, []);
 
-  // resend cooldown timer
   useEffect(() => {
     if (resendTimer <= 0) return;
     const t = setInterval(() => setResendTimer((prev) => prev - 1), 1000);
@@ -101,7 +98,7 @@ const Register: React.FC = () => {
   const sendVerificationEmail = async (user: User) => {
     await sendEmailVerification(user);
     setInfo("Verification email sent. Check your inbox.");
-    setResendTimer(60); // start 60s cooldown
+    setResendTimer(60); 
     startPoll();
   };
 
@@ -171,106 +168,97 @@ const Register: React.FC = () => {
           ScaleFund — Register
         </h1>
 
-        {!verified ? (
-          <>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              <input
-                placeholder="First name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                className="p-3 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
-                required
-              />
-              <input
-                placeholder="Last name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                className="p-3 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
-                required
-              />
-            </div>
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <input
+            placeholder="First name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            className="p-3 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
+            required
+          />
+          <input
+            placeholder="Last name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            className="p-3 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
+            required
+          />
+        </div>
 
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
-              required
-            />
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
+          required
+        />
 
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
-              required
-            />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
+          required
+        />
 
-            <input
-              type="password"
-              placeholder="Confirm password"
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
-              required
-            />
+        <input
+          type="password"
+          placeholder="Confirm password"
+          value={confirm}
+          onChange={(e) => setConfirm(e.target.value)}
+          className="w-full p-3 mb-4 rounded bg-[rgba(255,255,255,0.05)] outline-none focus:ring-2 focus:ring-green-400"
+          required
+        />
 
-            {error && (
-              <div className="text-red-400 mb-4 text-sm text-center">{error}</div>
-            )}
-            {info && (
-              <div className="text-green-400 mb-4 text-sm text-center">{info}</div>
-            )}
-            {checking && (
-              <div className="text-gray-400 mb-3 text-sm text-center animate-pulse">
-                Waiting for verification...
-              </div>
-            )}
-
-            <button
-              type={resendTimer > 0 ? "button" : "submit"}
-              disabled={loading}
-              onClick={resendTimer > 0 ? undefined : handleResend}
-              className={`w-full p-3 rounded-xl font-medium transition-all ${
-                loading || resendTimer > 0
-                  ? "bg-[rgba(255,255,255,0.05)] text-gray-500 cursor-not-allowed"
-                  : "bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200"
-              }`}
-            >
-              {loading
-                ? "Processing..."
-                : resendTimer > 0
-                ? `Resend available in ${resendTimer}s`
-                : "Register / Resend Verification"}
-            </button>
-
-            <div className="flex justify-center mt-4 text-sm text-gray-400">
-              <span>Already have an account?&nbsp;</span>
-              <button
-                type="button"
-                onClick={() => navigate("/login")}
-                className="underline text-green-400 hover:text-green-300"
-              >
-                Log in
-              </button>
-            </div>
-          </>
-        ) : (
-          <div className="flex flex-col items-center text-center">
-            <h2 className="text-lg text-green-400 mb-3">
-              Email verified successfully!
-            </h2>
-            <button
-              onClick={() => navigate("/home")}
-              type="button"
-              className="w-full p-3 rounded-xl bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200 font-medium transition-all"
-            >
-              Continue
-            </button>
+        {error && (
+          <div className="text-red-400 mb-4 text-sm text-center">{error}</div>
+        )}
+        {info && (
+          <div className="text-green-400 mb-4 text-sm text-center">{info}</div>
+        )}
+        {checking && (
+          <div className="text-gray-400 mb-3 text-sm text-center animate-pulse">
+            Waiting for verification...
           </div>
         )}
+        {resendTimer > 0 && (
+          <div className="text-gray-400 mb-3 text-sm text-center">
+            Resend available in {resendTimer}s
+          </div>
+        )}
+        {resendTimer === 0 && auth.currentUser && !auth.currentUser.emailVerified && (
+          <div
+            className="text-green-400 text-sm text-center mb-3 cursor-pointer hover:text-green-300"
+            onClick={handleResend}
+          >
+            Resend verification email
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full p-3 rounded-xl font-medium transition-all ${
+            loading
+              ? "bg-[rgba(255,255,255,0.05)] text-gray-500 cursor-not-allowed"
+              : "bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200"
+          }`}
+        >
+          {loading ? "Processing..." : "Register"}
+        </button>
+
+        <div className="flex justify-center mt-4 text-sm text-gray-400">
+          <span>Already have an account?&nbsp;</span>
+          <button
+            type="button"
+            onClick={() => navigate("/login")}
+            className="underline text-green-400 hover:text-green-300"
+          >
+            Log in
+          </button>
+        </div>
       </form>
     </div>
   );
