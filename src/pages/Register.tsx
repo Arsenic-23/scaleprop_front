@@ -5,7 +5,6 @@ import {
   updateProfile,
   onAuthStateChanged,
   sendEmailVerification,
-  signOut,
   User,
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
@@ -46,21 +45,21 @@ const Register: React.FC = () => {
   };
 
   const checkVerification = async () => {
-    const u = auth.currentUser;
-    if (!u) return;
+    const user = auth.currentUser;
+    if (!user) return;
     try {
-      await u.reload();
-      const refreshed = auth.currentUser;
-      if (refreshed?.emailVerified) {
+      await user.reload();
+      if (user.emailVerified) {
         stopPoll();
         setVerified(true);
-        setInfo(null);
         setChecking(false);
-        await setDoc(doc(db, "users", refreshed.uid), { verified: true }, { merge: true });
-        localStorage.setItem("user_id", refreshed.uid);
-        navigate("/home");
+        setInfo("Email verified! You can now continue to Home.");
+        await setDoc(doc(db, "users", user.uid), { verified: true }, { merge: true });
+        localStorage.setItem("user_id", user.uid);
       }
-    } catch {}
+    } catch (err) {
+      console.error("Verification check failed:", err);
+    }
   };
 
   const startPoll = () => {
@@ -70,18 +69,15 @@ const Register: React.FC = () => {
   };
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (u) => {
-      if (!u) {
-        setVerified(false);
-        stopPoll();
-        return;
-      }
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      if (!user) return;
       await checkVerification();
-      if (!u.emailVerified) startPoll();
+      if (!user.emailVerified) startPoll();
     });
 
     const handleFocus = () => checkVerification();
     window.addEventListener("focus", handleFocus);
+
     return () => {
       unsub();
       stopPoll();
@@ -89,6 +85,7 @@ const Register: React.FC = () => {
     };
   }, []);
 
+  // resend countdown
   useEffect(() => {
     if (resendTimer <= 0) return;
     const t = setInterval(() => setResendTimer((prev) => prev - 1), 1000);
@@ -98,7 +95,7 @@ const Register: React.FC = () => {
   const sendVerificationEmail = async (user: User) => {
     await sendEmailVerification(user);
     setInfo("Verification email sent. Check your inbox.");
-    setResendTimer(60); 
+    setResendTimer(60);
     startPoll();
   };
 
@@ -106,6 +103,7 @@ const Register: React.FC = () => {
     e.preventDefault();
     setError(null);
     setInfo(null);
+    setVerified(false);
 
     if (!firstName || !lastName) return setError("Enter first and last name.");
     if (password.length < 8) return setError("Password must be at least 8 characters.");
@@ -142,7 +140,6 @@ const Register: React.FC = () => {
       else if (err?.code === "auth/weak-password") msg = "Password too weak.";
       else if (err?.code === "permission-denied") msg = "Insufficient Firestore permissions.";
       setError(msg);
-      await signOut(auth);
     } finally {
       setLoading(false);
     }
@@ -158,15 +155,17 @@ const Register: React.FC = () => {
     }
   };
 
+  const handleContinue = () => {
+    navigate("/home");
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#050507] text-gray-200">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md p-8 rounded-2xl bg-[rgba(255,255,255,0.03)] backdrop-blur-md border border-[rgba(255,255,255,0.04)]"
       >
-        <h1 className="text-2xl font-semibold mb-6 text-center">
-          ScaleFund — Register
-        </h1>
+        <h1 className="text-2xl font-semibold mb-6 text-center">ScaleFund — Register</h1>
 
         <div className="grid grid-cols-2 gap-4 mb-4">
           <input
@@ -212,13 +211,9 @@ const Register: React.FC = () => {
           required
         />
 
-        {error && (
-          <div className="text-red-400 mb-4 text-sm text-center">{error}</div>
-        )}
-        {info && (
-          <div className="text-green-400 mb-4 text-sm text-center">{info}</div>
-        )}
-        {checking && (
+        {error && <div className="text-red-400 mb-4 text-sm text-center">{error}</div>}
+        {info && <div className="text-green-400 mb-4 text-sm text-center">{info}</div>}
+        {checking && !verified && (
           <div className="text-gray-400 mb-3 text-sm text-center animate-pulse">
             Waiting for verification...
           </div>
@@ -238,15 +233,22 @@ const Register: React.FC = () => {
         )}
 
         <button
-          type="submit"
-          disabled={loading}
+          type={verified ? "button" : "submit"}
+          onClick={verified ? handleContinue : undefined}
+          disabled={loading || (checking && !verified)}
           className={`w-full p-3 rounded-xl font-medium transition-all ${
-            loading
+            loading || (checking && !verified)
               ? "bg-[rgba(255,255,255,0.05)] text-gray-500 cursor-not-allowed"
               : "bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200"
           }`}
         >
-          {loading ? "Processing..." : "Register"}
+          {loading
+            ? "Processing..."
+            : checking && !verified
+            ? "Waiting for verification..."
+            : verified
+            ? "Continue to Home"
+            : "Register"}
         </button>
 
         <div className="flex justify-center mt-4 text-sm text-gray-400">
