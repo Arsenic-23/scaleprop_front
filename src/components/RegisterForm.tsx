@@ -28,12 +28,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [checking, setChecking] = useState(false);
+  const [verified, setVerified] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
 
   const navigate = useNavigate();
   const pollRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Polling function to check verification
   const startVerificationCheck = () => {
     if (pollRef.current) return;
     setChecking(true);
@@ -43,26 +43,19 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
         if (auth.currentUser.emailVerified) {
           clearInterval(pollRef.current!);
           pollRef.current = null;
+          setVerified(true);
           setChecking(false);
-          navigate("/home");
+          setInfo("Email verified! You can now continue to Home.");
         }
       }
     }, 4000);
   };
-
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        await reload(user);
-        if (user.emailVerified) navigate("/home");
-      }
-    });
     return () => {
-      unsub();
       if (pollRef.current) clearInterval(pollRef.current);
     };
-  }, [navigate]);
-  
+  }, []);
+
   useEffect(() => {
     if (resendTimer <= 0) return;
     const t = setInterval(() => setResendTimer((prev) => prev - 1), 1000);
@@ -73,6 +66,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
     e.preventDefault();
     setError(null);
     setInfo(null);
+    setVerified(false);
 
     if (!firstName.trim() || !lastName.trim())
       return setError("Please enter your first and last name.");
@@ -137,6 +131,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
     } catch {
       setError("Failed to resend verification email. Try again later.");
     }
+  };
+
+  const handleContinue = () => {
+    navigate("/home");
   };
 
   return (
@@ -218,7 +216,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
 
         {error && <div className="text-red-400 text-sm text-center">{error}</div>}
         {info && <div className="text-green-400 text-sm text-center">{info}</div>}
-        {checking && (
+        {checking && !verified && (
           <div className="text-gray-400 text-sm text-center animate-pulse">
             Waiting for verification...
           </div>
@@ -229,7 +227,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
             Resend available in {resendTimer}s
           </div>
         ) : (
-          info && (
+          info && !verified && (
             <div className="text-xs text-right text-gray-400">
               Didn’t get the email?{" "}
               <button
@@ -244,15 +242,22 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
         )}
 
         <button
-          type="submit"
-          disabled={loading}
+          type={verified ? "button" : "submit"}
+          onClick={verified ? handleContinue : undefined}
+          disabled={loading || (checking && !verified)}
           className={`w-full p-3 rounded-xl font-medium transition-all ${
-            loading
+            loading || (checking && !verified)
               ? "bg-[rgba(255,255,255,0.05)] text-gray-500 cursor-not-allowed"
               : "bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200"
           }`}
         >
-          {loading ? "Processing..." : "Register"}
+          {loading
+            ? "Processing..."
+            : checking && !verified
+            ? "Waiting for verification..."
+            : verified
+            ? "Continue to Home"
+            : "Register"}
         </button>
 
         <div className="text-sm text-gray-400 text-center mt-3">
