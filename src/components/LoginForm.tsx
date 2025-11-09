@@ -93,20 +93,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-black text-white">
-      <FrostedCard>
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4 w-full">
-          <h1 className="text-3xl font-semibold text-center text-white mb-6 tracking-wide">
-            Welcome Back
+    <div className="flex items-center justify-center min-h-screen bg-black text-white px-4">
+      <FrostedCard className="w-full max-w-md p-8 rounded-2xl backdrop-blur-lg bg-white/10 border border-white/20">
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
+          <h1 className="text-2xl font-medium text-center text-white mb-4">
+            Sign in to your account
           </h1>
 
           <input
             ref={emailRef}
             type="email"
-            placeholder="Email"
+            placeholder="Email address"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`w-full p-3 rounded-lg bg-black/40 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white ${
+            className={`p-3 rounded-md bg-black/40 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white ${
               emailError ? "border-red-500" : ""
             }`}
           />
@@ -119,7 +119,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={`w-full p-3 pr-10 rounded-lg bg-black/40 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white ${
+              className={`w-full p-3 pr-10 rounded-md bg-black/40 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white ${
                 passwordError ? "border-red-500" : ""
               }`}
             />
@@ -128,16 +128,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
               onClick={() => setShowPassword((p) => !p)}
               className="absolute right-3 top-3 text-gray-400 hover:text-white"
             >
-              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
+
           {passwordError && <p className="text-red-400 text-sm text-center">{passwordError}</p>}
           {formError && <p className="text-red-400 text-sm text-center">{formError}</p>}
 
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 mt-2 rounded-lg font-medium transition-all border ${
+            className={`w-full py-3 mt-2 rounded-md font-medium transition-all border ${
               loading
                 ? "bg-white/10 text-gray-400 cursor-not-allowed"
                 : "bg-white text-black hover:bg-transparent hover:text-white border-white"
@@ -146,7 +147,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
             {loading ? "Signing in..." : "Sign in"}
           </button>
 
-          <p className="text-sm text-center text-gray-400 mt-4">
+          <p className="text-sm text-center text-gray-400 mt-2">
             Don’t have an account?{" "}
             <button
               type="button"
