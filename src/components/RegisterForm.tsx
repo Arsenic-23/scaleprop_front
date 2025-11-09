@@ -3,14 +3,13 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
   sendEmailVerification,
-  onAuthStateChanged,
   reload,
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../firebase.config";
 import { Eye, EyeOff } from "lucide-react";
-import FrostedCard from "../components/FrostedCard";
 import { useNavigate } from "react-router-dom";
+import AuthLayout from "./AuthLayout";
 
 interface RegisterFormProps {
   onSwitchToLogin?: () => void;
@@ -25,36 +24,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [checking, setChecking] = useState(false);
   const [verified, setVerified] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
-
-  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const pollRef = useRef<NodeJS.Timeout | null>(null);
-
-  const startVerificationCheck = () => {
-    if (pollRef.current) return;
-    setChecking(true);
-    pollRef.current = setInterval(async () => {
-      if (auth.currentUser) {
-        await reload(auth.currentUser);
-        if (auth.currentUser.emailVerified) {
-          clearInterval(pollRef.current!);
-          pollRef.current = null;
-          setVerified(true);
-          setChecking(false);
-          setInfo("Email verified! You can now continue to Home.");
-        }
-      }
-    }, 4000);
-  };
-  useEffect(() => {
-    return () => {
-      if (pollRef.current) clearInterval(pollRef.current);
-    };
-  }, []);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (resendTimer <= 0) return;
@@ -62,60 +37,52 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
     return () => clearInterval(t);
   }, [resendTimer]);
 
+  const startVerificationCheck = () => {
+    if (pollRef.current) return;
+    pollRef.current = setInterval(async () => {
+      if (auth.currentUser) {
+        await reload(auth.currentUser);
+        if (auth.currentUser.emailVerified) {
+          clearInterval(pollRef.current!);
+          pollRef.current = null;
+          setVerified(true);
+          setInfo("Email verified! You can continue.");
+        }
+      }
+    }, 4000);
+  };
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setInfo(null);
-    setVerified(false);
-
-    if (!firstName.trim() || !lastName.trim())
-      return setError("Please enter your first and last name.");
-    if (password.length < 8)
-      return setError("Password must be at least 8 characters.");
+    if (!firstName || !lastName) return setError("Please enter your full name.");
+    if (password.length < 8) return setError("Password must be at least 8 characters.");
     if (password !== confirm) return setError("Passwords do not match.");
-
     setLoading(true);
     try {
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       const user = cred.user;
-
       await updateProfile(user, { displayName: `${firstName} ${lastName}` });
-
-      await setDoc(
-        doc(db, "users", user.uid),
-        {
-          firstName: firstName.trim(),
-          lastName: lastName.trim(),
-          email,
-          uid: user.uid,
-          verified: false,
-          createdAt: serverTimestamp(),
-        },
-        { merge: true }
-      );
-
+      await setDoc(doc(db, "users", user.uid), {
+        firstName,
+        lastName,
+        email,
+        createdAt: serverTimestamp(),
+      });
       await sendEmailVerification(user);
-      setInfo("Verification email sent. Please check your inbox.");
+      setInfo("Verification email sent. Check your inbox.");
       setResendTimer(60);
       startVerificationCheck();
     } catch (err: any) {
-      let msg = "Registration failed.";
-      switch (err.code) {
-        case "auth/email-already-in-use":
-          msg = "This email is already registered.";
-          break;
-        case "auth/invalid-email":
-          msg = "Invalid email format.";
-          break;
-        case "auth/weak-password":
-          msg = "Password is too weak.";
-          break;
-        case "auth/network-request-failed":
-          msg = "Network error. Check your connection.";
-          break;
-        default:
-          msg = err.message || "Unexpected error occurred.";
-      }
+      const msg =
+        err.code === "auth/email-already-in-use"
+          ? "This email is already registered."
+          : err.code === "auth/invalid-email"
+          ? "Invalid email address."
+          : err.code === "auth/weak-password"
+          ? "Weak password."
+          : "Registration failed.";
       setError(msg);
     } finally {
       setLoading(false);
@@ -126,38 +93,30 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
     if (!auth.currentUser) return;
     try {
       await sendEmailVerification(auth.currentUser);
-      setInfo("Verification email resent successfully.");
+      setInfo("Verification email resent.");
       setResendTimer(60);
     } catch {
-      setError("Failed to resend verification email. Try again later.");
+      setError("Failed to resend verification email.");
     }
   };
 
-  const handleContinue = () => {
-    navigate("/home");
-  };
+  const handleContinue = () => navigate("/home");
 
   return (
-    <FrostedCard>
-      <form onSubmit={handleRegister} className="flex flex-col space-y-3">
-        <h1 className="text-2xl font-semibold text-center text-green-200 mb-4">
-          Register
-        </h1>
-
+    <AuthLayout title="Register">
+      <form onSubmit={handleRegister} className="flex flex-col space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <input
             placeholder="First name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="p-3 rounded bg-[rgba(255,255,255,0.05)] focus:ring-2 focus:ring-green-400 text-gray-100 placeholder-gray-500"
-            required
+            className="p-3 rounded-lg bg-black border border-white text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
           />
           <input
             placeholder="Last name"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            className="p-3 rounded bg-[rgba(255,255,255,0.05)] focus:ring-2 focus:ring-green-400 text-gray-100 placeholder-gray-500"
-            required
+            className="p-3 rounded-lg bg-black border border-white text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
           />
         </div>
 
@@ -166,8 +125,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
           placeholder="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 rounded bg-[rgba(255,255,255,0.05)] focus:ring-2 focus:ring-green-400 text-gray-100 placeholder-gray-500"
-          required
+          className="w-full p-3 rounded-lg bg-black border border-white text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
         />
 
         <div className="relative">
@@ -176,19 +134,14 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 pr-10 rounded bg-[rgba(255,255,255,0.05)] focus:ring-2 focus:ring-green-400 text-gray-100 placeholder-gray-500"
-            required
+            className="w-full p-3 pr-10 rounded-lg bg-black border border-white text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
           />
           <button
             type="button"
             onClick={() => setShowPassword((p) => !p)}
-            className="absolute right-3 top-3 text-gray-400 hover:text-green-300"
+            className="absolute right-3 top-3 text-gray-400 hover:text-white"
           >
-            {showPassword ? (
-              <EyeOff className="w-5 h-5" />
-            ) : (
-              <Eye className="w-5 h-5" />
-            )}
+            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
           </button>
         </div>
 
@@ -198,80 +151,63 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
             placeholder="Confirm password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
-            className="w-full p-3 pr-10 rounded bg-[rgba(255,255,255,0.05)] focus:ring-2 focus:ring-green-400 text-gray-100 placeholder-gray-500"
-            required
+            className="w-full p-3 pr-10 rounded-lg bg-black border border-white text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
           />
           <button
             type="button"
             onClick={() => setShowConfirm((p) => !p)}
-            className="absolute right-3 top-3 text-gray-400 hover:text-green-300"
+            className="absolute right-3 top-3 text-gray-400 hover:text-white"
           >
-            {showConfirm ? (
-              <EyeOff className="w-5 h-5" />
-            ) : (
-              <Eye className="w-5 h-5" />
-            )}
+            {showConfirm ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
           </button>
         </div>
 
-        {error && <div className="text-red-400 text-sm text-center">{error}</div>}
-        {info && <div className="text-green-400 text-sm text-center">{info}</div>}
-        {checking && !verified && (
-          <div className="text-gray-400 text-sm text-center animate-pulse">
-            Waiting for verification...
-          </div>
-        )}
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+        {info && <p className="text-green-400 text-sm text-center">{info}</p>}
 
-        {resendTimer > 0 ? (
-          <div className="text-xs text-right text-gray-400">
+        {resendTimer > 0 && !verified && (
+          <p className="text-xs text-center text-gray-400">
             Resend available in {resendTimer}s
-          </div>
-        ) : (
-          info && !verified && (
-            <div className="text-xs text-right text-gray-400">
-              Didn’t get the email?{" "}
-              <button
-                type="button"
-                onClick={handleResend}
-                className="text-green-400 hover:text-green-300 underline ml-1"
-              >
-                Resend
-              </button>
-            </div>
-          )
+          </p>
+        )}
+        {resendTimer <= 0 && info && !verified && (
+          <p className="text-xs text-center text-gray-400">
+            Didn’t get the email?{" "}
+            <button
+              type="button"
+              onClick={handleResend}
+              className="underline text-white hover:text-gray-300"
+            >
+              Resend
+            </button>
+          </p>
         )}
 
         <button
           type={verified ? "button" : "submit"}
           onClick={verified ? handleContinue : undefined}
-          disabled={loading || (checking && !verified)}
-          className={`w-full p-3 rounded-xl font-medium transition-all ${
-            loading || (checking && !verified)
-              ? "bg-[rgba(255,255,255,0.05)] text-gray-500 cursor-not-allowed"
-              : "bg-[rgba(0,255,0,0.15)] hover:bg-[rgba(0,255,0,0.25)] text-green-200"
-          }`}
+          disabled={loading}
+          className="w-full py-3 mt-2 bg-white text-black font-semibold rounded-lg hover:bg-transparent hover:text-white border border-white transition"
         >
           {loading
             ? "Processing..."
-            : checking && !verified
-            ? "Waiting for verification..."
             : verified
             ? "Continue to Home"
             : "Register"}
         </button>
 
-        <div className="text-sm text-gray-400 text-center mt-3">
+        <p className="text-sm text-center text-gray-400 mt-3">
           Already have an account?{" "}
           <button
             type="button"
             onClick={onSwitchToLogin}
-            className="underline text-green-400 hover:text-green-300"
+            className="underline text-white hover:text-gray-200"
           >
-            Log in
+            Login
           </button>
-        </div>
+        </p>
       </form>
-    </FrostedCard>
+    </AuthLayout>
   );
 };
 
