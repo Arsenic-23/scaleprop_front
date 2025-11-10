@@ -29,10 +29,11 @@ const FrostedCard: React.FC<FrostedCardProps> = ({
         padding: "2rem",
         transition:
           "transform 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.5s ease",
+        margin: 0,
         ...style,
       }}
     >
-      {/* === Layer 1: Subsurface bloom === */}
+      {/* === Visual Layers === */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -43,7 +44,6 @@ const FrostedCard: React.FC<FrostedCardProps> = ({
         }}
       />
 
-      {/* === Layer 2: Highlight rims (top-left glow) === */}
       <div
         className="absolute top-0 left-0 w-full h-full pointer-events-none"
         style={{
@@ -54,7 +54,6 @@ const FrostedCard: React.FC<FrostedCardProps> = ({
         }}
       />
 
-      {/* === Layer 3: Edge reflections === */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -68,7 +67,6 @@ const FrostedCard: React.FC<FrostedCardProps> = ({
         }}
       />
 
-      {/* === Layer 4: Grain / Microtexture === */}
       <div
         className="absolute inset-0 opacity-[0.08] pointer-events-none"
         style={{
@@ -80,7 +78,6 @@ const FrostedCard: React.FC<FrostedCardProps> = ({
         }}
       />
 
-      {/* === Layer 5: Ambient color bleed === */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -91,7 +88,6 @@ const FrostedCard: React.FC<FrostedCardProps> = ({
         }}
       />
 
-      {/* === Layer 6: Inner rim gloss === */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -101,7 +97,6 @@ const FrostedCard: React.FC<FrostedCardProps> = ({
         }}
       />
 
-      {/* === Layer 7: Top linear gloss edge === */}
       <div
         className="absolute top-0 left-0 right-0 h-[1.5px] pointer-events-none"
         style={{
@@ -111,7 +106,6 @@ const FrostedCard: React.FC<FrostedCardProps> = ({
         }}
       />
 
-      {/* === Layer 8: Corner sheen arcs === */}
       <div
         className="absolute -top-8 -left-8 w-32 h-32 rounded-full pointer-events-none blur-2xl"
         style={{
@@ -129,7 +123,6 @@ const FrostedCard: React.FC<FrostedCardProps> = ({
         }}
       />
 
-      {/* === Layer 9: Dynamic light reflection simulation === */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -140,7 +133,6 @@ const FrostedCard: React.FC<FrostedCardProps> = ({
         }}
       />
 
-      {/* === Layer 10: Depth shimmer with subtle movement (CSS only) === */}
       <div
         className="absolute inset-0 pointer-events-none animate-[sheen_8s_infinite_linear]"
         style={{
@@ -154,12 +146,11 @@ const FrostedCard: React.FC<FrostedCardProps> = ({
         }}
       />
 
-      {/* === Foreground: Actual Card Content === */}
+      {/* === Foreground === */}
       <div className="relative z-10 w-full h-full flex flex-col items-center justify-center px-4">
         {children}
       </div>
 
-      {/* === Keyframes for reflective motion === */}
       <style>
         {`
           @keyframes sheen {
