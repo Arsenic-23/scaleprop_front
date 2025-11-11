@@ -116,19 +116,22 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
   };
 
   return (
-    <FrostedCard className="w-full max-w-md mx-auto p-6 bg-[rgba(0,0,0,0.6)] backdrop-blur-lg border border-[rgba(255,255,255,0.1)] rounded-2xl shadow-lg">
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-        <h1 className="text-2xl font-normal text-center text-white tracking-wide">
-          Login
+    <FrostedCard className="w-full max-w-md mx-auto p-8 bg-[rgba(12,12,12,0.75)] backdrop-blur-lg border border-[rgba(255,255,255,0.08)] rounded-2xl shadow-xl">
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
+        <h1 className="text-3xl font-light text-center text-white mb-2">
+          Welcome Back
         </h1>
+        <p className="text-sm text-gray-400 text-center mb-2">
+          Sign in to continue
+        </p>
 
         <input
           ref={emailRef}
           type="email"
-          placeholder="Email"
+          placeholder="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className={`w-full p-3 rounded-md bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 ${
+          className={`w-full p-3 rounded-md bg-[rgba(255,255,255,0.07)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none ${
             emailError ? "border border-red-500" : "border border-transparent"
           }`}
         />
@@ -141,7 +144,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`w-full p-3 pr-10 rounded-md bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 ${
+            className={`w-full p-3 pr-10 rounded-md bg-[rgba(255,255,255,0.07)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none ${
               passwordError ? "border border-red-500" : "border border-transparent"
             }`}
           />
@@ -169,7 +172,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
           {loading ? "Signing in..." : "Sign In"}
         </button>
 
-        <div className="text-sm text-gray-400 text-center mt-3">
+        <div className="text-sm text-gray-400 text-center mt-4">
           Don’t have an account?{" "}
           <button
             type="button"
