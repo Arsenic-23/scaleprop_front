@@ -131,40 +131,41 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
     }
   };
 
-  const handleContinue = () => {
-    navigate("/home");
-  };
+  const handleContinue = () => navigate("/home");
 
   return (
-    <FrostedCard className="w-full max-w-md mx-auto p-6 bg-[rgba(0,0,0,0.6)] backdrop-blur-lg border border-[rgba(255,255,255,0.1)] rounded-2xl shadow-lg">
-      <form onSubmit={handleRegister} className="flex flex-col space-y-4">
-        <h1 className="text-2xl font-normal text-center text-white tracking-wide">
-          Register
+    <FrostedCard className="w-full max-w-md mx-auto p-8 bg-[rgba(12,12,12,0.75)] backdrop-blur-lg border border-[rgba(255,255,255,0.08)] rounded-2xl shadow-xl">
+      <form onSubmit={handleRegister} className="flex flex-col space-y-5">
+        <h1 className="text-3xl font-light text-center text-white mb-2">
+          Create Account
         </h1>
+        <p className="text-sm text-gray-400 text-center mb-2">
+          Join us by registering below
+        </p>
 
         <div className="grid grid-cols-2 gap-3">
           <input
             placeholder="First name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="p-3 rounded-md bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400"
+            className="p-3 rounded-md bg-[rgba(255,255,255,0.07)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none"
             required
           />
           <input
             placeholder="Last name"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            className="p-3 rounded-md bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400"
+            className="p-3 rounded-md bg-[rgba(255,255,255,0.07)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none"
             required
           />
         </div>
 
         <input
           type="email"
-          placeholder="Email"
+          placeholder="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="p-3 rounded-md bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400"
+          className="p-3 rounded-md bg-[rgba(255,255,255,0.07)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none"
           required
         />
 
@@ -174,7 +175,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 pr-10 rounded-md bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400"
+            className="w-full p-3 pr-10 rounded-md bg-[rgba(255,255,255,0.07)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none"
             required
           />
           <button
@@ -192,7 +193,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
             placeholder="Confirm password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
-            className="w-full p-3 pr-10 rounded-md bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400"
+            className="w-full p-3 pr-10 rounded-md bg-[rgba(255,255,255,0.07)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none"
             required
           />
           <button
@@ -251,7 +252,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
             : "Register"}
         </button>
 
-        <div className="text-sm text-gray-400 text-center mt-3">
+        <div className="text-sm text-gray-400 text-center mt-4">
           Already have an account?{" "}
           <button
             type="button"
