@@ -13,129 +13,64 @@ interface LoginFormProps {
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-const extractErrorCode = (err: any): string => {
-  if (!err) return "unknown";
-  if (typeof err === "string") return err.toLowerCase();
-  if (typeof err.code === "string") return err.code;
-  if (typeof err.status === "string") return err.status;
-  if (typeof err.message === "string") return err.message;
-  return "unknown";
-};
-
-const mapErrorToMessage = (code: string): string => {
-  switch (code) {
-    case "auth/user-not-found":
-      return "Email not registered.";
-    case "auth/wrong-password":
-      return "Incorrect password.";
-    case "auth/invalid-email":
-      return "Invalid email format.";
-    case "auth/too-many-requests":
-      return "Too many failed attempts. Try again later.";
-    case "auth/network-request-failed":
-      return "Network error. Check your connection.";
-    default:
-      return "Something went wrong. Try again.";
-  }
-};
-
-const checkEmailExists = async (email: string): Promise<{ exists: boolean; error?: any }> => {
-  try {
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("email", "==", email));
-    const snap = await getDocs(q);
-    return { exists: !snap.empty };
-  } catch (err) {
-    return { exists: false, error: err };
-  }
-};
-
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) => {
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [formError, setFormError] = useState<string | null>(null);
-
-  const resetErrors = () => {
-    setEmailError(null);
-    setPasswordError(null);
-    setFormError(null);
-  };
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    resetErrors();
+    setError("");
 
-    const trimmedEmail = email.trim();
-    if (!trimmedEmail) return setEmailError("Email is required.");
-    if (!EMAIL_REGEX.test(trimmedEmail)) return setEmailError("Invalid email format.");
-    if (!password) return setPasswordError("Password is required.");
-
+    if (!EMAIL_REGEX.test(email.trim())) return setError("Enter a valid email.");
+    if (!password) return setError("Password is required.");
     setLoading(true);
-    const { exists, error: fsErr } = await checkEmailExists(trimmedEmail);
-    if (fsErr) {
-      setFormError("Error accessing user data.");
-      setLoading(false);
-      return;
-    }
-    if (!exists) {
-      setEmailError("Email not registered.");
-      setLoading(false);
-      return;
-    }
 
     try {
-      const cred = await signInWithEmailAndPassword(auth, trimmedEmail, password);
-      const user = cred.user;
-
-      if (!user.emailVerified) {
-        await signOut(auth);
-        setFormError("Please verify your email before logging in.");
+      const q = query(collection(db, "users"), where("email", "==", email.trim()));
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        setError("Email not registered.");
         setLoading(false);
         return;
       }
 
-      localStorage.setItem("user_id", user.uid);
-      onSuccess?.(user.uid);
-    } catch (authErr: any) {
-      const code = extractErrorCode(authErr);
-      const msg = mapErrorToMessage(code);
-      if (code.includes("wrong-password")) setPasswordError(msg);
-      else if (code.includes("user-not-found")) setEmailError(msg);
-      else setFormError(msg);
+      const cred = await signInWithEmailAndPassword(auth, email.trim(), password);
+      if (!cred.user.emailVerified) {
+        await signOut(auth);
+        setError("Verify your email before logging in.");
+        setLoading(false);
+        return;
+      }
+
+      localStorage.setItem("user_id", cred.user.uid);
+      onSuccess?.(cred.user.uid);
+    } catch {
+      setError("Invalid credentials or network issue.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <FrostedCard className="w-full max-w-md mx-auto p-8 bg-[rgba(12,12,12,0.75)] backdrop-blur-lg border border-[rgba(255,255,255,0.08)] rounded-2xl shadow-xl">
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-5">
-        <h1 className="text-3xl font-light text-center text-white mb-2">
-          Welcome Back
+    <FrostedCard className="max-w-md w-full p-8 bg-[rgba(18,18,18,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.08)] rounded-3xl shadow-2xl">
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
+        <h1 className="text-center text-3xl font-semibold text-white tracking-tight">
+          Login
         </h1>
-        <p className="text-sm text-gray-400 text-center mb-2">
-          Sign in to continue
-        </p>
 
         <input
           ref={emailRef}
           type="email"
-          placeholder="Email address"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className={`w-full p-3 rounded-md bg-[rgba(255,255,255,0.07)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none ${
-            emailError ? "border border-red-500" : "border border-transparent"
-          }`}
+          className="w-full p-3 rounded-xl bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none"
         />
-        {emailError && <div className="text-red-400 text-sm text-center">{emailError}</div>}
 
         <div className="relative">
           <input
@@ -144,9 +79,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`w-full p-3 pr-10 rounded-md bg-[rgba(255,255,255,0.07)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none ${
-              passwordError ? "border border-red-500" : "border border-transparent"
-            }`}
+            className="w-full p-3 pr-10 rounded-xl bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none"
           />
           <button
             type="button"
@@ -156,23 +89,22 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
-        {passwordError && <div className="text-red-400 text-sm text-center">{passwordError}</div>}
 
-        {formError && <div className="text-red-400 text-sm text-center">{formError}</div>}
+        {error && <div className="text-red-400 text-sm text-center">{error}</div>}
 
         <button
           type="submit"
           disabled={loading}
-          className={`w-full p-3 rounded-md text-white font-medium transition-all ${
+          className={`w-full p-3 rounded-xl font-medium transition-all ${
             loading
-              ? "bg-green-900 cursor-not-allowed"
-              : "bg-green-600 hover:bg-green-700 active:bg-green-800"
+              ? "bg-green-900 text-gray-300 cursor-not-allowed"
+              : "bg-green-500 hover:bg-green-600 text-white"
           }`}
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>
 
-        <div className="text-sm text-gray-400 text-center mt-4">
+        <div className="text-sm text-gray-400 text-center">
           Don’t have an account?{" "}
           <button
             type="button"
