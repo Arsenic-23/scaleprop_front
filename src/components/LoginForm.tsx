@@ -10,8 +10,7 @@ interface LoginFormProps {
   onSwitchToRegister?: () => void;
 }
 
-const EMAIL_REGEX =
-  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) => {
   const emailRef = useRef<HTMLInputElement | null>(null);
@@ -57,11 +56,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
   };
 
   return (
-    <FrostedCard className="max-w-md w-full p-8 bg-[rgba(18,18,18,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.08)] rounded-3xl shadow-2xl">
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
-        <h1 className="text-center text-3xl font-semibold text-white tracking-tight">
-          Login
-        </h1>
+    <FrostedCard className="max-w-md w-full p-8 bg-[#0f0f0fd9] backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl">
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-6 font-[StackSansText]">
+        <h1 className="text-center text-3xl font-semibold text-white tracking-tight">Login</h1>
 
         <input
           ref={emailRef}
@@ -69,7 +66,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 rounded-xl bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none"
+          className="w-full p-3 rounded-xl bg-white/5 text-gray-200 placeholder-gray-500 focus:ring-0 focus:outline-none border border-white/10"
         />
 
         <div className="relative">
@@ -79,12 +76,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 pr-10 rounded-xl bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none"
+            className="w-full p-3 pr-10 rounded-xl bg-white/5 text-gray-200 placeholder-gray-500 focus:ring-0 focus:outline-none border border-white/10"
           />
           <button
             type="button"
             onClick={() => setShowPassword((p) => !p)}
-            className="absolute right-3 top-3 text-gray-400 hover:text-green-400"
+            className="absolute right-3 top-3 text-gray-400 hover:text-gray-200"
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
@@ -95,21 +92,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
         <button
           type="submit"
           disabled={loading}
-          className={`w-full p-3 rounded-xl font-medium transition-all ${
-            loading
-              ? "bg-green-900 text-gray-300 cursor-not-allowed"
-              : "bg-green-500 hover:bg-green-600 text-white"
+          className={`w-full p-3 rounded-xl font-medium transition-all bg-white/10 hover:bg-white/20 text-white border border-white/10 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>
 
         <div className="text-sm text-gray-400 text-center">
-          Don’t have an account?{" "}
+          Don’t have an account?{' '}
           <button
             type="button"
             onClick={onSwitchToRegister}
-            className="text-green-400 hover:text-green-300 underline"
+            className="text-gray-200 underline hover:text-white"
           >
             Register
           </button>
@@ -120,3 +115,4 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onSwitchToRegister }) 
 };
 
 export default LoginForm;
+
