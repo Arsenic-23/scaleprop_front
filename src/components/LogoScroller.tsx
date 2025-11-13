@@ -119,18 +119,39 @@ function ScrollingRow({ direction }: { direction: "left" | "right" }) {
 
       <motion.div style={{ x }} className="flex w-max select-none">
         {[...logos, ...logos].map((src, i) => (
-          <div
-            key={i}
-            className="w-[90px] h-[90px] flex items-center justify-center mx-2 rounded-2xl 
-            bg-white/10 border border-white/20 backdrop-blur-lg 
-            shadow-[inset_0_1px_2px_rgba(255,255,255,0.1),0_4px_12px_rgba(0,0,0,0.15)] 
-            hover:shadow-[0_0_12px_2px_rgba(255,255,255,0.2)] transition-all duration-300"
-          >
-            <img
-              src={src}
-              alt="logo"
-              className="h-16 w-16 object-contain filter grayscale transition-all duration-300 hover:grayscale-0"
+          <div key={i} className="relative mx-3">
+            {/* NOISE OVERLAY */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                pointerEvents: "none",
+                background:
+                  "url('https://grainy-gradients.vercel.app/noise.png')",
+                opacity: 0.32,
+                mixBlendMode: "overlay",
+                borderRadius: "20px",
+              }}
             />
+
+            {/* CARD */}
+            <div
+              className="w-[90px] h-[90px] flex items-center justify-center rounded-2xl transition-all duration-300"
+              style={{
+                background: "rgba(30,30,30,0.78)",
+                backdropFilter: "blur(48px)",
+                WebkitBackdropFilter: "blur(48px)",
+                border: "1px solid rgba(255,255,255,0.22)",
+                boxShadow:
+                  "0 18px 50px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 0 rgba(255,255,255,0.12)",
+              }}
+            >
+              <img
+                src={src}
+                alt="logo"
+                className="h-16 w-16 object-contain filter grayscale transition-all duration-300 hover:grayscale-0"
+              />
+            </div>
           </div>
         ))}
       </motion.div>
