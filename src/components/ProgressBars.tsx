@@ -47,23 +47,20 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
   return (
     <div className="w-full">
       {/* Top labels */}
-      <div className="flex justify-between text-[0.85rem] font-medium text-gray-400">
+      <div className="flex justify-between text-[0.8rem] sm:text-[0.9rem] lg:text-[1rem] font-medium text-gray-400">
         <span className="capitalize">{label}</span>
         <span>{totalLabel}</span>
       </div>
 
       {/* Capsule bar */}
-      <div className="mt-2 flex gap-[3px] h-[14px]">
+      <div className="mt-2 flex h-[14px] sm:h-[16px] lg:h-[18px] gap-[3px] sm:gap-[4px] lg:gap-[5px]">
         {Array.from({ length: segments }).map((_, i) => {
           const isFilled = i < filledSegments;
           return (
             <motion.div
               key={i}
               initial={{ scaleY: 0.6, opacity: 0.3 }}
-              animate={{
-                scaleY: 1,
-                opacity: 1,
-              }}
+              animate={{ scaleY: 1, opacity: 1 }}
               transition={{
                 delay: i * 0.012,
                 type: "spring",
@@ -79,7 +76,7 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
       </div>
 
       {/* Bottom labels */}
-      <div className="mt-2 flex justify-between text-[0.75rem] text-gray-500">
+      <div className="mt-2 flex justify-between text-[0.7rem] sm:text-[0.8rem] lg:text-[0.9rem] text-gray-500">
         <span>{usedLabel}</span>
         <span>{formatPct(value, max)}%</span>
       </div>
@@ -136,11 +133,18 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
   );
 };
 
-/* ✅ Responsive Wrapper — paste this where you render ProgressBarsGroup */
+/* Responsive Wrapper */
 export const ResponsiveProgressView = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#0f1116]">
-      <div className="w-full max-w-md px-4 sm:px-6 md:px-8 scale-[0.98] md:scale-100">
+      <div className="
+        w-full 
+        max-w-md 
+        sm:max-w-xl 
+        lg:max-w-2xl 
+        px-4 sm:px-6 md:px-8 
+        scale-[0.95] sm:scale-100 lg:scale-105
+      ">
         <ProgressBarsGroup
           profitTargetValue={8000}
           profitTargetMax={10000}
