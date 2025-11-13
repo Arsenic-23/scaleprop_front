@@ -97,25 +97,23 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
   const handleContinue = () => navigate("/home");
 
   return (
-    <FrostedCard className="max-w-md w-full p-8 bg-[rgba(18,18,18,0.7)] backdrop-blur-xl border border-[rgba(255,255,255,0.08)] rounded-3xl shadow-2xl">
-      <form onSubmit={handleRegister} className="flex flex-col space-y-6">
-        <h1 className="text-center text-3xl font-semibold text-white tracking-tight">
-          Register
-        </h1>
+    <FrostedCard className="max-w-md w-full p-8 bg-[#0f0f0fd9] backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl">
+      <form onSubmit={handleRegister} className="flex flex-col space-y-6 font-[StackSansText]">
+        <h1 className="text-center text-3xl font-semibold text-white tracking-tight">Register</h1>
 
         <div className="grid grid-cols-2 gap-3">
           <input
             placeholder="First name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="p-3 rounded-xl bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none"
+            className="p-3 rounded-xl bg-white/5 text-gray-200 placeholder-gray-500 focus:ring-0 focus:outline-none border border-white/10"
             required
           />
           <input
             placeholder="Last name"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            className="p-3 rounded-xl bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none"
+            className="p-3 rounded-xl bg-white/5 text-gray-200 placeholder-gray-500 focus:ring-0 focus:outline-none border border-white/10"
             required
           />
         </div>
@@ -125,7 +123,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="p-3 rounded-xl bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none"
+          className="p-3 rounded-xl bg-white/5 text-gray-200 placeholder-gray-500 focus:ring-0 focus:outline-none border border-white/10"
           required
         />
 
@@ -135,13 +133,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 pr-10 rounded-xl bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none"
+            className="w-full p-3 pr-10 rounded-xl bg-white/5 text-gray-200 placeholder-gray-500 focus:ring-0 focus:outline-none border border-white/10"
             required
           />
           <button
             type="button"
             onClick={() => setShowPassword((p) => !p)}
-            className="absolute right-3 top-3 text-gray-400 hover:text-green-400"
+            className="absolute right-3 top-3 text-gray-400 hover:text-gray-200"
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
@@ -153,13 +151,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
             placeholder="Confirm password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
-            className="w-full p-3 pr-10 rounded-xl bg-[rgba(255,255,255,0.08)] text-gray-100 placeholder-gray-400 focus:ring-2 focus:ring-green-400 focus:outline-none"
+            className="w-full p-3 pr-10 rounded-xl bg-white/5 text-gray-200 placeholder-gray-500 focus:ring-0 focus:outline-none border border-white/10"
             required
           />
           <button
             type="button"
             onClick={() => setShowConfirm((p) => !p)}
-            className="absolute right-3 top-3 text-gray-400 hover:text-green-400"
+            className="absolute right-3 top-3 text-gray-400 hover:text-gray-200"
           >
             {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
@@ -172,28 +170,23 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
           type={verified ? "button" : "submit"}
           onClick={verified ? handleContinue : undefined}
           disabled={loading}
-          className={`w-full p-3 rounded-xl font-medium transition-all ${
-            loading
-              ? "bg-green-900 text-gray-300 cursor-not-allowed"
-              : "bg-green-500 hover:bg-green-600 text-white"
+          className={`w-full p-3 rounded-xl font-medium transition-all bg-white/10 hover:bg-white/20 text-white border border-white/10 ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >
           {loading ? "Processing..." : verified ? "Continue" : "Register"}
         </button>
 
         {resendTimer > 0 ? (
-          <div className="text-xs text-gray-400 text-right">
-            Resend available in {resendTimer}s
-          </div>
+          <div className="text-xs text-gray-400 text-right">Resend available in {resendTimer}s</div>
         ) : (
-          info &&
-          !verified && (
+          info && !verified && (
             <div className="text-xs text-gray-400 text-right">
-              Didn’t get the email?{" "}
+              Didn’t get the email?{' '}
               <button
                 type="button"
                 onClick={handleResend}
-                className="text-green-400 hover:text-green-300 underline"
+                className="text-gray-200 underline hover:text-white"
               >
                 Resend
               </button>
@@ -202,11 +195,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSwitchToLogin }) => {
         )}
 
         <div className="text-sm text-gray-400 text-center">
-          Already have an account?{" "}
+          Already have an account?{' '}
           <button
             type="button"
             onClick={onSwitchToLogin}
-            className="text-green-400 hover:text-green-300 underline"
+            className="text-gray-200 underline hover:text-white"
           >
             Log in
           </button>
