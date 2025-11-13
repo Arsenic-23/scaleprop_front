@@ -36,7 +36,7 @@ const LandingPage: React.FC = () => {
           }}
         >
           <img
-            src="/logo.png"
+            src="/scale.png"
             alt="Scale Fund Logo"
             className="w-8 h-8 select-none drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]"
           />
