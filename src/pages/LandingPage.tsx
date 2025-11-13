@@ -50,7 +50,7 @@ const LandingPage: React.FC = () => {
             fontSize: "clamp(1.4rem, 2.6vw, 2.1rem)",
           }}
         >
-          ScaleFund
+          Scalefund
         </h1>
       </div>
 
