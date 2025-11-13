@@ -20,29 +20,61 @@ const LandingPage: React.FC = () => {
         paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom, 0px))",
       }}
     >
-      {/* Header Logo with glassmorphic circle */}
+      {/* Header Logo */}
       <div className="z-10 flex items-center space-x-3 mb-10 sm:mb-12">
+        {/* Glassmorphic Circle */}
         <div
-          className="rounded-full flex items-center justify-center"
+          className="relative flex items-center justify-center rounded-full"
           style={{
-            width: "60px",
-            height: "60px",
-            backdropFilter: "blur(16px)",
-            WebkitBackdropFilter: "blur(16px)",
+            width: "48px",
+            height: "48px",
+            backdropFilter: "blur(22px)",
+            WebkitBackdropFilter: "blur(22px)",
             background:
-              "linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.05))",
-            border: "1px solid rgba(255,255,255,0.3)",
-            boxShadow: "0 4px 20px rgba(255,255,255,0.1)",
+              "linear-gradient(145deg, rgba(25,25,25,0.85), rgba(60,60,60,0.55))",
+            border: "1px solid rgba(255,255,255,0.22)",
+            boxShadow:
+              "0 6px 22px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 2px rgba(255,255,255,0.1)",
           }}
         >
           <img
             src="/scale.png"
-            alt="Scale Fund Logo"
-            className="w-8 h-8 select-none drop-shadow-[0_0_6px_rgba(255,255,255,0.3)]"
+            alt="Scalefund Logo"
+            className="w-8 h-8 object-contain z-10 select-none drop-shadow-[0_0_4px_rgba(255,255,255,0.25)]"
+          />
+
+          {/* Reflection Layer */}
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              height: "55%",
+              borderTopLeftRadius: "9999px",
+              borderTopRightRadius: "9999px",
+              background:
+                "linear-gradient(to bottom, rgba(255,255,255,0.28), transparent)",
+              opacity: 0.5,
+              pointerEvents: "none",
+            }}
           />
         </div>
 
-        {/* White Branding */}
+        {/* Branding Text same as Home */}
+        <h1
+          className="text-2xl font-bold text-gray-300 tracking-tight"
+          style={{
+            fontFamily:
+              "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+            lineHeight: "2.4rem",
+          }}
+        >
+          Scalefund
+        </h1>
+      </div>
+
+      {/* Form Area */} */}
         <h1
           className="font-semibold tracking-tight text-white"
           style={{
@@ -50,7 +82,7 @@ const LandingPage: React.FC = () => {
             fontSize: "clamp(1.4rem, 2.6vw, 2.1rem)",
           }}
         >
-          Scalefund
+          ScaleFund
         </h1>
       </div>
 
