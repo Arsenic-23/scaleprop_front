@@ -1,3 +1,5 @@
+// Updated LandingPage with glassmorphic circle and white branding
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogoScroller } from "../components/LogoScroller";
@@ -20,9 +22,8 @@ const LandingPage: React.FC = () => {
         paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom, 0px))",
       }}
     >
-      {/* Header Logo */}
+      {/* Header Logo matching Home branding */}
       <div className="z-10 flex items-center space-x-3 mb-10 sm:mb-12">
-        {/* Glassmorphic Circle */}
         <div
           className="relative flex items-center justify-center rounded-full"
           style={{
@@ -43,7 +44,6 @@ const LandingPage: React.FC = () => {
             className="w-8 h-8 object-contain z-10 select-none drop-shadow-[0_0_4px_rgba(255,255,255,0.25)]"
           />
 
-          {/* Reflection Layer */}
           <div
             style={{
               position: "absolute",
@@ -61,7 +61,6 @@ const LandingPage: React.FC = () => {
           />
         </div>
 
-        {/* Branding Text same as Home */}
         <h1
           className="text-2xl font-bold text-gray-300 tracking-tight"
           style={{
@@ -74,7 +73,7 @@ const LandingPage: React.FC = () => {
         </h1>
       </div>
 
-      {/* Form Area */} */}
+      {/* Form Area */} */} */}
         <h1
           className="font-semibold tracking-tight text-white"
           style={{
