@@ -2,8 +2,8 @@ import React from "react";
 import Header from "../components/Header";
 
 const mockUser = {
-  first_name: "James T. Kirk",
-  email: "james.kirk@starfleet.com",
+  first_name: "arsenicc",
+  email: "scalefund@contact.com",
   photo_url:
     "https://img.freepik.com/free-photo/dark-background_1048-3848.jpg",
 };
