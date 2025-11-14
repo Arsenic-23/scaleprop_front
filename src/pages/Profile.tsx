@@ -14,20 +14,7 @@ const Profile: React.FC = () => {
 
   return (
     <div className="relative flex min-h-screen w-full flex-col bg-black dark overflow-x-hidden font-display">
-      {/* Top App Bar */}
-      <div className="sticky top-0 z-10 flex items-center bg-black/80 p-4 pb-2 backdrop-blur-sm justify-between">
-        <div className="flex size-12 shrink-0 items-center"></div>
-        <h2 className="text-[#EAEAEA] text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">
-          My Account
-        </h2>
-        <div className="flex w-12 items-center justify-end">
-          <button className="flex h-12 items-center justify-center rounded-lg text-[#EAEAEA]">
-            <span className="material-symbols-outlined text-[#EAEAEA]">
-              settings
-            </span>
-          </button>
-        </div>
-      </div>
+      <Header title="My Account" />
 
       <main className="flex-1 flex flex-col gap-6 px-4 py-4">
         {/* User Info */}
@@ -130,7 +117,7 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        {/* --- NEW Support Button Section --- */}
+        {/* Support Button */}
         <div className="bg-[#1C1C1E] p-4 rounded-xl">
           <h3 className="text-[#EAEAEA] text-lg font-bold pb-2">
             Support
