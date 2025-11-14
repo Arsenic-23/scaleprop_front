@@ -5,7 +5,7 @@ const mockUser = {
   first_name: "James T. Kirk",
   email: "james.kirk@starfleet.com",
   photo_url:
-    "https://www.google.com/imgres?q=cat%20cute&imgurl=https%3A%2F%2Fmedia.tenor.com%2F3zBRB7FbwDsAAAAM%2Fgroei-it-charlottexangie.gif&imgrefurl=https%3A%2F%2Fwww.prologisfreight.com%2F%3Fp%3D345451526&docid=cKPU3q2ObllmqM&tbnid=GtVFSNXI5DlvbM&vet=12ahUKEwity_LEn_GQAxXkSWwGHfKeGNYQM3oECCkQAA..i&w=220&h=220&hcb=2&ved=2ahUKEwity_LEn_GQAxXkSWwGHfKeGNYQM3oECCkQAA",
+    "https://img.freepik.com/free-photo/dark-background_1048-3848.jpg",
 };
 
 const Profile: React.FC = () => {
