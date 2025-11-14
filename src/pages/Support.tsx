@@ -129,7 +129,7 @@ const Support: React.FC = () => {
         {/* Version Info */}
         <section>
           <p className="text-center text-xs text-ios-label-secondary">
-            App Version 2.1.0 (Build 345)
+            App Version 1.1.0 
           </p>
         </section>
 
