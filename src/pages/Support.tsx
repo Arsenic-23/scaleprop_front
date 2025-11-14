@@ -1,16 +1,44 @@
 import React from "react";
+import { Helmet } from "react-helmet";
 
 const Support: React.FC = () => {
   return (
     <div className="relative flex min-h-screen w-full flex-col font-display bg-ios-bg text-ios-label">
-      
+
+      {/* Inject Fonts + Styles exactly like the HTML */}
+      <Helmet>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        />
+
+        <style>{`
+          body {
+            background-color: #000000;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: max(884px, 100dvh);
+          }
+          .ios-search-input::placeholder {
+            color: #8E8E93;
+          }
+          .ios-search-input:focus {
+            outline: none;
+          }
+        `}</style>
+      </Helmet>
+
       {/* Top Header */}
       <header className="sticky top-0 z-10 flex h-14 items-center justify-center bg-ios-bg/80 px-4 backdrop-blur-xl">
         <h1 className="text-lg font-semibold text-ios-label">Support</h1>
       </header>
 
       <main className="flex-1 flex flex-col gap-6 p-4">
-        
+
         {/* Search */}
         <section>
           <div className="relative">
@@ -28,6 +56,7 @@ const Support: React.FC = () => {
         {/* Support List */}
         <section className="overflow-hidden rounded-xl bg-ios-bg-secondary">
           <ul className="flex flex-col">
+
             <li>
               <a
                 href="#"
@@ -89,22 +118,19 @@ const Support: React.FC = () => {
                     support_agent
                   </span>
                 </div>
-                <p className="flex-1 text-base text-ios-label">
-                  Contact Support
-                </p>
+                <p className="flex-1 text-base text-ios-label">Contact Support</p>
                 <span className="material-symbols-outlined text-ios-label-secondary">
                   chevron_right
                 </span>
               </a>
             </li>
+
           </ul>
         </section>
 
         {/* Live Chat */}
         <section className="flex flex-col gap-3 rounded-xl bg-ios-bg-secondary p-4">
-          <h2 className="text-lg font-semibold text-ios-label">
-            Still Need Help?
-          </h2>
+          <h2 className="text-lg font-semibold text-ios-label">Still Need Help?</h2>
           <p className="text-sm text-ios-label-secondary">
             Our support team is available 24/7 to assist you with any questions
             or issues. You can reach us via live chat for the fastest response.
@@ -124,6 +150,7 @@ const Support: React.FC = () => {
             App Version 2.1.0 (Build 345)
           </p>
         </section>
+
       </main>
     </div>
   );
