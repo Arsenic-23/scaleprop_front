@@ -121,7 +121,7 @@ const Support: React.FC = () => {
 
           <div className="pt-2">
             <button
-              onClick={() => navigate("/live-support")}
+              onClick={() => navigate("/LiveSupport")}
               className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-ios-bg-tertiary border border-ios-separator text-base font-semibold text-ios-label"
             >
               <span className="material-symbols-outlined text-ios-label">chat_bubble</span>
