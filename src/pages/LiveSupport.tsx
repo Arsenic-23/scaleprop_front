@@ -1,4 +1,5 @@
 import React from "react";
+import Header from "../components/Header";
 
 const LiveSupport: React.FC = () => {
   return (
@@ -14,7 +15,7 @@ const LiveSupport: React.FC = () => {
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
       />
 
-      {/* Inline style definitions */}
+      {/* Inline styles */}
       <style>{`
         body {
           background-color: #000000;
@@ -31,24 +32,8 @@ const LiveSupport: React.FC = () => {
         }
       `}</style>
 
-      {/* HEADER */}
-      <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-ios-separator bg-ios-bg/80 px-4 backdrop-blur-xl">
-        <button className="flex items-center gap-1 text-ios-blue">
-          <span className="material-symbols-outlined !text-2xl">chevron_left</span>
-          <span className="text-base">Support</span>
-        </button>
+      <Header title="Live Chat" />
 
-        <div className="flex flex-col items-center">
-          <h1 className="text-lg font-semibold text-ios-label">Live Chat</h1>
-          <p className="text-xs text-ios-green">Online</p>
-        </div>
-
-        <button className="text-ios-blue">
-          <span className="material-symbols-outlined !text-2xl">more_horiz</span>
-        </button>
-      </header>
-
-      {/* MAIN CONTENT */}
       <main className="flex-1 overflow-y-auto p-4">
         <div className="flex flex-col gap-6">
 
@@ -126,7 +111,7 @@ const LiveSupport: React.FC = () => {
         </div>
       </main>
 
-      {/* FOOTER INPUT BAR */}
+      {/* Input Bar */}
       <footer className="sticky bottom-0 z-10 mt-auto border-t border-ios-separator bg-ios-bg/80 p-3 backdrop-blur-xl">
         <div className="flex items-center gap-3">
 
