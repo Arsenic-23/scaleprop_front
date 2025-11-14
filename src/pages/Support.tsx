@@ -1,4 +1,5 @@
 import React from "react";
+import Header from "../components/Header";
 
 const Support: React.FC = () => {
   return (
@@ -14,7 +15,7 @@ const Support: React.FC = () => {
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
       />
 
-      {/* Inline HTML styles exactly matching original */}
+      {/* Inline HTML styles */}
       <style>{`
         body {
           background-color: #000000;
@@ -30,10 +31,7 @@ const Support: React.FC = () => {
         }
       `}</style>
 
-      {/* Header */}
-      <header className="sticky top-0 z-10 flex h-14 items-center justify-center bg-ios-bg/80 px-4 backdrop-blur-xl">
-        <h1 className="text-lg font-semibold text-ios-label">Support</h1>
-      </header>
+      <Header title="Support" />
 
       <main className="flex-1 flex flex-col gap-6 p-4">
 
