@@ -1,4 +1,3 @@
-// src/App.tsx
 import {
   BrowserRouter as Router,
   Routes,
@@ -22,6 +21,7 @@ import AdminPanel from "./pages/AdminPanel";
 import Announcements from "./pages/Announcements";
 import Support from "./pages/Support";
 import Notifications from "./pages/Notifications";
+import LiveSupport from "./pages/LiveSupport";
 
 import BottomNav from "./components/BottomNav";
 
@@ -41,6 +41,8 @@ function AppWrapper() {
     "/plans",
     "/support",
   ];
+
+  // live chat screen should NOT show bottom nav
   const showBottomNav = showBottomNavRoutes.includes(location.pathname);
 
   useEffect(() => {
@@ -53,7 +55,6 @@ function AppWrapper() {
   return (
     <>
       <Routes>
-        {/* Landing Page now includes Login + Register logic */}
         <Route path="/" element={<LandingPage />} />
 
         <Route
@@ -64,6 +65,7 @@ function AppWrapper() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/plans"
           element={
@@ -72,6 +74,7 @@ function AppWrapper() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/payment"
           element={
@@ -80,6 +83,7 @@ function AppWrapper() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/account"
           element={
@@ -88,6 +92,7 @@ function AppWrapper() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/rules"
           element={
@@ -96,6 +101,7 @@ function AppWrapper() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/passed"
           element={
@@ -104,6 +110,7 @@ function AppWrapper() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/payout"
           element={
@@ -112,6 +119,7 @@ function AppWrapper() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/profile"
           element={
@@ -120,6 +128,7 @@ function AppWrapper() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/admin"
           element={
@@ -128,6 +137,7 @@ function AppWrapper() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/announcements"
           element={
@@ -136,6 +146,7 @@ function AppWrapper() {
             </PrivateRoute>
           }
         />
+
         <Route
           path="/support"
           element={
@@ -144,6 +155,17 @@ function AppWrapper() {
             </PrivateRoute>
           }
         />
+
+        {/* NEW — Live Support Page */}
+        <Route
+          path="/live-support"
+          element={
+            <PrivateRoute>
+              <LiveSupport />
+            </PrivateRoute>
+          }
+        />
+
         <Route
           path="/notifications"
           element={
