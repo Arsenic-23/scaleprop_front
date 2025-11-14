@@ -1,15 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 
 const mockUser = {
   first_name: "arsenicc",
   email: "scalefund@contact.com",
-  photo_url:
-    "https://img.freepik.com/free-photo/dark-background_1048-3848.jpg",
+  photo_url: "https://img.freepik.com/free-photo/dark-background_1048-3848.jpg",
 };
 
 const Profile: React.FC = () => {
   const user = mockUser;
+  const navigate = useNavigate();
 
   return (
     <div className="relative flex min-h-screen w-full flex-col bg-black dark overflow-x-hidden font-display">
@@ -127,6 +128,21 @@ const Profile: React.FC = () => {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* --- NEW Support Button Section --- */}
+        <div className="bg-[#1C1C1E] p-4 rounded-xl">
+          <h3 className="text-[#EAEAEA] text-lg font-bold pb-2">
+            Support
+          </h3>
+
+          <button
+            onClick={() => navigate("/support")}
+            className="w-full h-12 rounded-lg bg-[#0A84FF] text-white font-semibold flex items-center justify-center gap-2"
+          >
+            <span className="material-symbols-outlined">support_agent</span>
+            Open Support
+          </button>
         </div>
 
         {/* Action Button */}
