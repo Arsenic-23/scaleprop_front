@@ -117,24 +117,22 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        {/* Support Button */}
+        {/* Support Section */}
         <div className="bg-[#1C1C1E] p-4 rounded-xl">
-          <h3 className="text-[#EAEAEA] text-lg font-bold pb-2">
-            Support
-          </h3>
+          <h3 className="text-[#EAEAEA] text-lg font-bold pb-2">Support</h3>
 
           <button
             onClick={() => navigate("/support")}
-            className="w-full h-12 rounded-lg bg-[#0A84FF] text-white font-semibold flex items-center justify-center gap-2"
+            className="w-full h-12 rounded-lg bg-[#2C2C2E] border border-white/10 text-[#EAEAEA] font-semibold flex items-center justify-center gap-2"
           >
             <span className="material-symbols-outlined">support_agent</span>
             Open Support
           </button>
         </div>
 
-        {/* Action Button */}
+        {/* View Trade History Button */}
         <div className="py-4">
-          <button className="w-full h-12 rounded-lg bg-[#0A84FF] text-white font-bold">
+          <button className="w-full h-12 rounded-lg bg-[#2C2C2E] border border-white/10 text-[#EAEAEA] font-bold">
             View Trade History
           </button>
         </div>
