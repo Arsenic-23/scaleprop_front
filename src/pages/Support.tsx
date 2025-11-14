@@ -44,7 +44,7 @@ const Support: React.FC = () => {
             <input
               type="search"
               placeholder="Search Help Center"
-              className="ios-search-input block w-full rounded-lg border-none bg-ios-bg-secondary py-2.5 pl-10 pr-4 text-base text-ios-label placeholder-ios-label-secondary focus:ring-2 focus:ring-ios-blue focus:ring-opacity-50"
+              className="ios-search-input block w-full rounded-lg border-none bg-ios-bg-secondary py-2.5 pl-10 pr-4 text-base text-black placeholder-ios-label-secondary focus:ring-2 focus:ring-ios-blue/30"
             />
           </div>
         </section>
@@ -117,8 +117,10 @@ const Support: React.FC = () => {
           </p>
 
           <div className="pt-2">
-            <button className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-ios-blue text-base font-semibold text-white">
-              <span className="material-symbols-outlined">chat_bubble</span>
+            <button
+              className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-ios-bg-tertiary border border-ios-separator text-base font-semibold text-ios-label"
+            >
+              <span className="material-symbols-outlined text-ios-label">chat_bubble</span>
               Start Live Chat
             </button>
           </div>
