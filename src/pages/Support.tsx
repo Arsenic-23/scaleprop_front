@@ -8,7 +8,6 @@ const Support: React.FC = () => {
   return (
     <div className="relative flex min-h-screen w-full flex-col font-display bg-ios-bg text-ios-label">
 
-      {/* Load fonts EXACTLY like HTML */}
       <link
         rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
@@ -18,7 +17,6 @@ const Support: React.FC = () => {
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
       />
 
-      {/* Inline HTML styles */}
       <style>{`
         body {
           background-color: #000000;
@@ -115,13 +113,12 @@ const Support: React.FC = () => {
         <section className="flex flex-col gap-3 rounded-xl bg-ios-bg-secondary p-4">
           <h2 className="text-lg font-semibold text-ios-label">Still Need Help?</h2>
           <p className="text-sm text-ios-label-secondary">
-            Our support team is available 24/7 to assist you with any questions or issues.
-            You can reach us via live chat for the fastest response.
+            Our support team is available 24/7.
           </p>
 
           <div className="pt-2">
             <button
-              onClick={() => navigate("/LiveSupport")}
+              onClick={() => navigate("/live-support")}
               className="flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-ios-bg-tertiary border border-ios-separator text-base font-semibold text-ios-label"
             >
               <span className="material-symbols-outlined text-ios-label">chat_bubble</span>
@@ -130,10 +127,9 @@ const Support: React.FC = () => {
           </div>
         </section>
 
-        {/* Version Info */}
         <section>
           <p className="text-center text-xs text-ios-label-secondary">
-            App Version 1.1.0 
+            App Version 1.1.0
           </p>
         </section>
 
