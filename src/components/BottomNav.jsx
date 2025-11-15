@@ -11,7 +11,7 @@ export default function BottomNavigation() {
   const tabs = [
     { path: "/home", icon: <Home size={20} /> },
     { path: "/plans", icon: <BarChart2 size={20} /> },
-    { path: "/acc", icon: <Users size={20} /> },
+    { path: "/plans", icon: <Users size={20} /> },
     { path: "/profile", icon: <User size={20} /> },
   ];
 
