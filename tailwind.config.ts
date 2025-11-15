@@ -12,6 +12,7 @@ export default {
         background: "gradientBG 10s ease infinite",
         blink: "blink 1s step-start infinite",
       },
+
       keyframes: {
         gradientBG: {
           "0%, 100%": { backgroundPosition: "0% 50%" },
@@ -36,7 +37,10 @@ export default {
 
         "ios-bg": "#000000",
         "ios-bg-secondary": "#1C1C1E",
-        "ios-bg-tertiary": "#2C2C2E",     
+        "ios-bg-tertiary": "#2C2C2E",
+
+        "ios-fill-tertiary": "rgba(118,118,128,0.24)",
+        "ios-fill-quaternary": "rgba(118,118,128,0.18)",
 
         "ios-label": "#EAEAEA",
         "ios-label-secondary": "#8E8E93",
@@ -44,7 +48,7 @@ export default {
         "ios-blue": "#0A84FF",
         "ios-green": "#34C759",
         "ios-red": "#FF3B30",
-
+        
         "ios-separator": "rgba(84,84,88,0.65)",
         "ios-progress-bg": "#3A3A3C",
       },
