@@ -1,122 +1,191 @@
-// src/pages/Account.tsx
-import { useEffect, useState } from "react";
+import React from "react";
 
-interface AccountData {
-  login: string;
-  server: string;
-  password: string;
-  balance: number;
-  equity: number;
-  profit: number;
-  status: string;
-}
-
-const Account = () => {
-  const [account, setAccount] = useState<AccountData | null>(null);
-  const userId = localStorage.getItem("user_id");
-
-  useEffect(() => {
-    // 🚀 Replace with backend fetch later
-    const mockAccount: AccountData = {
-      login: "10123456",
-      server: "MetaTrader-Demo",
-      password: "trader123",
-      balance: 10000,
-      equity: 9985.5,
-      profit: -14.5,
-      status: "Active",
-    };
-
-    setTimeout(() => setAccount(mockAccount), 800); // smooth loading
-  }, []);
-
+const Account: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-950 via-neutral-900 to-black p-6 text-white">
-      <div className="max-w-xl mx-auto">
-        {/* Header */}
-        <h2 className="text-3xl font-extrabold text-center tracking-wide mb-1">
-          📊 Trading Account
-        </h2>
-        <p className="text-sm text-gray-400 mb-8 text-center">
-          User ID: {userId}
-        </p>
+    <div className="relative flex min-h-screen w-full flex-col font-display bg-ios-bg text-ios-label">
 
-        {/* Account Card */}
-        {account ? (
-          <div className="backdrop-blur-lg bg-white/5 border border-white/10 shadow-2xl rounded-2xl p-6 space-y-6 transition-all duration-300 hover:shadow-blue-500/20">
-            {/* Account Info Grid */}
-            <div className="grid grid-cols-2 gap-6">
-              <InfoBlock label="Login" value={account.login} />
-              <InfoBlock label="Server" value={account.server} />
-              <InfoBlock label="Password" value={account.password} />
-              <StatusBlock status={account.status} />
-            </div>
+      {/* Load fonts exactly as in HTML */}
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      />
 
-            <hr className="border-white/10" />
+      {/* Header */}
+      <header className="sticky top-0 z-10 flex h-14 items-center justify-between bg-ios-bg/80 px-4 backdrop-blur-xl">
+        <button className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-ios-blue">
+          <span className="material-symbols-outlined !text-3xl">
+            arrow_back_ios_new
+          </span>
+        </button>
 
-            {/* Account Stats */}
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <StatBlock label="Balance" value={account.balance} />
-              <StatBlock label="Equity" value={account.equity} />
-              <ProfitBlock profit={account.profit} />
-            </div>
+        <h1 className="text-lg font-semibold text-ios-label">Account</h1>
+
+        <button className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-ios-blue">
+          <span className="material-symbols-outlined !text-3xl">
+            more_horiz
+          </span>
+        </button>
+      </header>
+
+      {/* Main */}
+      <main className="flex-1 flex flex-col gap-6 p-4">
+
+        {/* Account Info */}
+        <section className="overflow-hidden rounded-xl bg-ios-bg-secondary">
+          <ul className="flex flex-col">
+
+            <li className="flex items-center justify-between gap-4 border-b border-ios-separator px-4 py-3">
+              <p className="text-base text-ios-label-secondary">Account ID</p>
+              <div className="flex items-center gap-2">
+                <p className="text-base text-ios-label">SF-EVAL-2981</p>
+                <span className="material-symbols-outlined text-ios-label-secondary !text-lg !font-light">
+                  content_copy
+                </span>
+              </div>
+            </li>
+
+            <li className="flex items-center justify-between gap-4 px-4 py-3">
+              <p className="text-base text-ios-label-secondary">Account Type</p>
+              <div className="rounded-full bg-ios-blue/20 px-3 py-1">
+                <p className="text-sm font-medium text-ios-blue">Evaluation</p>
+              </div>
+            </li>
+
+          </ul>
+        </section>
+
+        {/* Phase Progress */}
+        <section className="flex flex-col gap-4 rounded-xl bg-ios-bg-secondary p-4">
+
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-ios-label">
+              Phase Progress
+            </h2>
+            <span className="material-symbols-outlined text-ios-label-secondary">
+              info
+            </span>
           </div>
-        ) : (
-          <div className="text-center text-gray-500 text-sm animate-pulse">
-            Loading account details...
+
+          <div className="flex items-baseline justify-between">
+            <p className="text-sm text-ios-label-secondary">Profit Target</p>
+            <p className="text-2xl font-semibold text-ios-green">$8,000</p>
           </div>
-        )}
-      </div>
+
+          <div className="relative h-2 w-full rounded-full bg-ios-progress-bg">
+            <div
+              className="h-2 rounded-full bg-ios-green"
+              style={{ width: "30.625%" }}
+            ></div>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-ios-label-secondary">Current Profit</p>
+            <p className="text-sm font-medium text-ios-label">$2,450.00</p>
+          </div>
+
+        </section>
+
+        {/* Balances */}
+        <section className="overflow-hidden rounded-xl bg-ios-bg-secondary">
+          <ul className="flex flex-col">
+
+            <li className="flex justify-between gap-4 border-b border-ios-separator px-4 py-3">
+              <p className="text-base text-ios-label-secondary">
+                Starting Balance
+              </p>
+              <p className="text-base text-ios-label">$100,000.00</p>
+            </li>
+
+            <li className="flex justify-between gap-4 border-b border-ios-separator px-4 py-3">
+              <p className="text-base text-ios-label-secondary">
+                Current Balance
+              </p>
+              <p className="text-base text-ios-label">$102,450.00</p>
+            </li>
+
+            <li className="flex justify-between gap-4 px-4 py-3">
+              <p className="text-base text-ios-label-secondary">Equity</p>
+              <p className="text-base text-ios-label">$102,510.50</p>
+            </li>
+
+          </ul>
+        </section>
+
+        {/* Trading History */}
+        <section className="overflow-hidden rounded-xl bg-ios-bg-secondary">
+
+          <div className="border-b border-ios-separator px-4 py-3">
+            <h2 className="text-lg font-semibold text-ios-label">
+              Trading History
+            </h2>
+          </div>
+
+          <ul className="flex flex-col">
+
+            <li className="flex items-center justify-between gap-4 border-b border-ios-separator px-4 py-3">
+              <div className="flex flex-col">
+                <p className="font-medium text-ios-label">EUR/USD</p>
+                <p className="text-sm text-ios-label-secondary">
+                  Nov 22, 2023 · Buy 1.5 @ 1.0915
+                </p>
+              </div>
+              <div className="flex flex-col items-end">
+                <p className="font-medium text-ios-green">+$450.75</p>
+                <p className="text-sm text-ios-label-secondary">Closed</p>
+              </div>
+            </li>
+
+            <li className="flex items-center justify-between gap-4 border-b border-ios-separator px-4 py-3">
+              <div className="flex flex-col">
+                <p className="font-medium text-ios-label">NASDAQ 100</p>
+                <p className="text-sm text-ios-label-secondary">
+                  Nov 21, 2023 · Sell 1.0 @ 15980.5
+                </p>
+              </div>
+              <div className="flex flex-col items-end">
+                <p className="font-medium text-ios-red">-$210.20</p>
+                <p className="text-sm text-ios-label-secondary">Closed</p>
+              </div>
+            </li>
+
+            <li className="flex items-center justify-between gap-4 border-b border-ios-separator px-4 py-3">
+              <div className="flex flex-col">
+                <p className="font-medium text-ios-label">GOLD</p>
+                <p className="text-sm text-ios-label-secondary">
+                  Nov 21, 2023 · Buy 0.5 @ 1995.30
+                </p>
+              </div>
+              <div className="flex flex-col items-end">
+                <p className="font-medium text-ios-green">+$1,230.50</p>
+                <p className="text-sm text-ios-label-secondary">Closed</p>
+              </div>
+            </li>
+
+            <li className="flex cursor-pointer items-center justify-center gap-2 px-4 py-3 text-ios-blue">
+              <p className="text-base font-medium">View All History</p>
+              <span className="material-symbols-outlined !text-xl !font-medium">
+                chevron_right
+              </span>
+            </li>
+
+          </ul>
+        </section>
+
+        {/* Bottom Button */}
+        <div className="mt-auto pb-4 pt-2">
+          <button className="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-ios-blue text-base font-semibold text-white">
+            View Trading Dashboard
+            <span className="material-symbols-outlined">arrow_forward</span>
+          </button>
+        </div>
+
+      </main>
     </div>
   );
 };
-
-const InfoBlock = ({ label, value }: { label: string; value: string }) => (
-  <div>
-    <p className="text-xs text-gray-400">{label}</p>
-    <p className="font-semibold tracking-wide">{value}</p>
-  </div>
-);
-
-const StatusBlock = ({ status }: { status: string }) => (
-  <div>
-    <p className="text-xs text-gray-400">Status</p>
-    <span
-      className={`px-3 py-1 rounded-full text-xs font-semibold shadow-sm ${
-        status === "Active"
-          ? "bg-green-500/20 text-green-400 border border-green-500/30"
-          : "bg-red-500/20 text-red-400 border border-red-500/30"
-      }`}
-    >
-      {status}
-    </span>
-  </div>
-);
-
-const StatBlock = ({ label, value }: { label: string; value: number }) => (
-  <div className="bg-white/5 border border-white/10 p-3 rounded-xl hover:border-blue-500/30 transition-all duration-200">
-    <p className="text-xs text-gray-400">{label}</p>
-    <p className="text-lg font-bold">${value.toFixed(2)}</p>
-  </div>
-);
-
-const ProfitBlock = ({ profit }: { profit: number }) => (
-  <div
-    className={`bg-white/5 border border-white/10 p-3 rounded-xl transition-all duration-200 ${
-      profit >= 0
-        ? "hover:border-green-500/30"
-        : "hover:border-red-500/30"
-    }`}
-  >
-    <p className="text-xs text-gray-400">Profit</p>
-    <p
-      className={`text-lg font-bold ${
-        profit >= 0 ? "text-green-400" : "text-red-400"
-      }`}
-    >
-      ${profit.toFixed(2)}
-    </p>
-  </div>
-);
 
 export default Account;
