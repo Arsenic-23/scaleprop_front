@@ -1,65 +1,222 @@
-import { useNavigate } from "react-router-dom";
-import BackButton from "../components/BackButton"; // ✅ Reusable back button
+import React from "react";
 
-const Plans = () => {
-  const navigate = useNavigate();
-
-  const handleSelectPlan = (plan: string, price: number) => {
-    localStorage.setItem("selected_plan", plan);
-    localStorage.setItem("selected_price", price.toString());
-    navigate("/payment");
-  };
-
-  const plans = [
-    {
-      name: "Beginner Challenge",
-      price: 499,
-      details: "Demo $10,000 • 5% Max Drawdown",
-      emoji: "🚀",
-    },
-    {
-      name: "Pro Trader Challenge",
-      price: 999,
-      details: "Demo $25,000 • 8% Max Drawdown",
-      emoji: "🏆",
-    },
-    {
-      name: "Elite Funded Track",
-      price: 1999,
-      details: "Demo $50,000 • 10% Max Drawdown",
-      emoji: "💎",
-    },
-  ];
-
+const Plans: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white px-4 py-6">
-      {/* ✅ Reusable Back Button */}
-      <div className="mb-6">
-        <BackButton />
-      </div>
+    <div className="font-display bg-ios-bg text-ios-label min-h-screen w-full">
+      {/* Load Fonts EXACTLY like HTML */}
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      />
 
-      {/* Heading */}
-      <h2 className="text-2xl font-bold mb-8 text-center">
-        💼 Choose Your Trading Challenge
-      </h2>
+      <div className="relative flex min-h-screen w-full flex-col">
+        <header className="sticky top-0 z-10 flex h-[50px] items-center justify-center border-b border-ios-separator bg-ios-bg/80 px-4 backdrop-blur-xl">
+          <h1 className="text-center text-[17px] font-semibold text-ios-label">
+            Challenges
+          </h1>
+        </header>
 
-      {/* Plans Grid */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {plans.map((plan) => (
-          <div
-            key={plan.name}
-            className="p-6 rounded-2xl bg-white/10 backdrop-blur-lg border border-white/20 shadow-lg hover:scale-105 hover:shadow-2xl transition-transform cursor-pointer"
-            onClick={() => handleSelectPlan(plan.name, plan.price)}
-          >
-            <div className="text-4xl mb-3">{plan.emoji}</div>
-            <h3 className="text-xl font-semibold mb-1">{plan.name}</h3>
-            <p className="text-gray-300 text-sm mb-4">{plan.details}</p>
-            <p className="text-2xl font-bold mb-6">₹{plan.price}</p>
-            <button className="w-full bg-gradient-to-r from-blue-500 to-blue-700 py-2 rounded-full font-semibold hover:opacity-90 transition">
-              Select Plan
+        <main className="flex-1 flex flex-col gap-8 p-4 pt-6">
+
+          {/* ---------- FIRST CARD ---------- */}
+          <section className="flex flex-col gap-6 rounded-2xl bg-ios-bg-secondary p-5">
+            <div className="flex items-start justify-between">
+              <div className="flex flex-col">
+                <h2 className="text-2xl font-bold tracking-tight text-ios-label">
+                  $25,000 Stellar
+                </h2>
+                <p className="text-[17px] text-ios-label-secondary">
+                  Standard Challenge
+                </p>
+              </div>
+              <div className="text-2xl font-bold text-ios-label">$169</div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-ios-green text-xl">
+                  insights
+                </span>
+                <div>
+                  <p className="text-sm text-ios-label-secondary">Profit Target</p>
+                  <p className="text-[17px] font-medium text-ios-label">$2,500</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-ios-red text-xl">
+                  trending_down
+                </span>
+                <div>
+                  <p className="text-sm text-ios-label-secondary">Max Daily Loss</p>
+                  <p className="text-[17px] font-medium text-ios-label">$1,250</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-ios-red text-xl">
+                  show_chart
+                </span>
+                <div>
+                  <p className="text-sm text-ios-label-secondary">Max Total Loss</p>
+                  <p className="text-[17px] font-medium text-ios-label">$2,500</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-ios-blue text-xl">
+                  balance
+                </span>
+                <div>
+                  <p className="text-sm text-ios-label-secondary">Leverage</p>
+                  <p className="text-[17px] font-medium text-ios-label">1:100</p>
+                </div>
+              </div>
+            </div>
+
+            <button className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-fill-tertiary text-[17px] font-semibold text-ios-label active:bg-ios-separator">
+              Get Challenge
             </button>
-          </div>
-        ))}
+          </section>
+
+          {/* ---------- POPULAR CARD ---------- */}
+          <section className="relative flex flex-col gap-6 rounded-2xl bg-ios-bg-secondary p-5 ring-2 ring-ios-blue">
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 transform">
+              <div className="flex items-center gap-1.5 rounded-full bg-ios-blue px-3 py-1">
+                <span className="material-symbols-outlined text-sm text-white">
+                  star
+                </span>
+                <span className="text-xs font-bold uppercase tracking-wider text-white">
+                  Popular
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-start justify-between">
+              <div className="flex flex-col">
+                <h2 className="text-2xl font-bold tracking-tight text-ios-label">
+                  $100,000 Apex
+                </h2>
+                <p className="text-[17px] text-ios-label-secondary">
+                  Standard Challenge
+                </p>
+              </div>
+              <div className="text-2xl font-bold text-ios-blue">$499</div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-ios-green text-xl">
+                  insights
+                </span>
+                <div>
+                  <p className="text-sm text-ios-label-secondary">Profit Target</p>
+                  <p className="text-[17px] font-medium text-ios-label">$10,000</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-ios-red text-xl">
+                  trending_down
+                </span>
+                <div>
+                  <p className="text-sm text-ios-label-secondary">Max Daily Loss</p>
+                  <p className="text-[17px] font-medium text-ios-label">$5,000</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-ios-red text-xl">
+                  show_chart
+                </span>
+                <div>
+                  <p className="text-sm text-ios-label-secondary">Max Total Loss</p>
+                  <p className="text-[17px] font-medium text-ios-label">$10,000</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-ios-blue text-xl">
+                  balance
+                </span>
+                <div>
+                  <p className="text-sm text-ios-label-secondary">Leverage</p>
+                  <p className="text-[17px] font-medium text-ios-label">1:100</p>
+                </div>
+              </div>
+            </div>
+
+            <button className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-blue text-[17px] font-semibold text-white active:bg-opacity-80">
+              Get Challenge
+            </button>
+          </section>
+
+          {/* ---------- THIRD CARD ---------- */}
+          <section className="flex flex-col gap-6 rounded-2xl bg-ios-bg-secondary p-5">
+            <div className="flex items-start justify-between">
+              <div className="flex flex-col">
+                <h2 className="text-2xl font-bold tracking-tight text-ios-label">
+                  $200,000 Summit
+                </h2>
+                <p className="text-[17px] text-ios-label-secondary">
+                  Standard Challenge
+                </p>
+              </div>
+              <div className="text-2xl font-bold text-ios-label">$949</div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-x-4 gap-y-4">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-ios-green text-xl">
+                  insights
+                </span>
+                <div>
+                  <p className="text-sm text-ios-label-secondary">Profit Target</p>
+                  <p className="text-[17px] font-medium text-ios-label">$20,000</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-ios-red text-xl">
+                  trending_down
+                </span>
+                <div>
+                  <p className="text-sm text-ios-label-secondary">Max Daily Loss</p>
+                  <p className="text-[17px] font-medium text-ios-label">$10,000</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-ios-red text-xl">
+                  show_chart
+                </span>
+                <div>
+                  <p className="text-sm text-ios-label-secondary">Max Total Loss</p>
+                  <p className="text-[17px] font-medium text-ios-label">$20,000</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-ios-blue text-xl">
+                  balance
+                </span>
+                <div>
+                  <p className="text-sm text-ios-label-secondary">Leverage</p>
+                  <p className="text-[17px] font-medium text-ios-label">1:100</p>
+                </div>
+              </div>
+            </div>
+
+            <button className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-fill-tertiary text-[17px] font-semibold text-ios-label active:bg-ios-separator">
+              Get Challenge
+            </button>
+          </section>
+
+        </main>
       </div>
     </div>
   );
