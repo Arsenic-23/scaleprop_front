@@ -1,4 +1,5 @@
 import React from "react";
+import Header from "../components/Header";
 
 const Plans: React.FC = () => {
   return (
@@ -14,11 +15,8 @@ const Plans: React.FC = () => {
       />
 
       <div className="relative flex min-h-screen w-full flex-col">
-        <header className="sticky top-0 z-10 flex h-[50px] items-center justify-center border-b border-ios-separator bg-ios-bg/80 px-4 backdrop-blur-xl">
-          <h1 className="text-center text-[17px] font-semibold text-ios-label">
-            Challenges
-          </h1>
-        </header>
+
+        <Header title="Challenges" />
 
         <main className="flex-1 flex flex-col gap-8 p-4 pt-6">
 
