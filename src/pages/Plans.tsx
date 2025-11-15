@@ -15,13 +15,16 @@ const Plans: React.FC = () => {
       />
 
       <div className="relative flex min-h-screen w-full flex-col">
-
         <Header title="Challenges" />
 
-        <main className="flex-1 flex flex-col gap-8 p-4 pt-6">
+        {/* ----- MAKE DESKTOP LOOK PERFECT ----- */}
+        <main className="flex-1 flex flex-col gap-8 p-4 pt-6 mx-auto w-full max-w-3xl">
 
           {/* ---------- FIRST CARD ---------- */}
-          <section className="flex flex-col gap-6 rounded-2xl bg-ios-bg-secondary p-5">
+          <section
+            className="flex flex-col gap-6 rounded-2xl bg-ios-bg-secondary p-5 transition-all
+                       duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-[0.98]"
+          >
             <div className="flex items-start justify-between">
               <div className="flex flex-col">
                 <h2 className="text-2xl font-bold tracking-tight text-ios-label">
@@ -76,13 +79,16 @@ const Plans: React.FC = () => {
               </div>
             </div>
 
-            <button className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-fill-tertiary text-[17px] font-semibold text-ios-label active:bg-ios-separator">
+            <button className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-fill-tertiary text-[17px] font-semibold text-ios-label active:bg-ios-separator active:scale-[0.98] transition-all">
               Get Challenge
             </button>
           </section>
 
           {/* ---------- POPULAR CARD ---------- */}
-          <section className="relative flex flex-col gap-6 rounded-2xl bg-ios-bg-secondary p-5 ring-2 ring-ios-blue">
+          <section
+            className="relative flex flex-col gap-6 rounded-2xl bg-ios-bg-secondary p-5 ring-2 ring-ios-blue
+                       transition-all duration-200 hover:shadow-xl hover:-translate-y-1 active:scale-[0.98]"
+          >
             <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 transform">
               <div className="flex items-center gap-1.5 rounded-full bg-ios-blue px-3 py-1">
                 <span className="material-symbols-outlined text-sm text-white">
@@ -148,13 +154,16 @@ const Plans: React.FC = () => {
               </div>
             </div>
 
-            <button className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-blue text-[17px] font-semibold text-white active:bg-opacity-80">
+            <button className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-blue text-[17px] font-semibold text-white active:bg-opacity-80 active:scale-[0.98] transition-all">
               Get Challenge
             </button>
           </section>
 
           {/* ---------- THIRD CARD ---------- */}
-          <section className="flex flex-col gap-6 rounded-2xl bg-ios-bg-secondary p-5">
+          <section
+            className="flex flex-col gap-6 rounded-2xl bg-ios-bg-secondary p-5 transition-all
+                       duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-[0.98]"
+          >
             <div className="flex items-start justify-between">
               <div className="flex flex-col">
                 <h2 className="text-2xl font-bold tracking-tight text-ios-label">
@@ -209,11 +218,10 @@ const Plans: React.FC = () => {
               </div>
             </div>
 
-            <button className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-fill-tertiary text-[17px] font-semibold text-ios-label active:bg-ios-separator">
+            <button className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-fill-tertiary text-[17px] font-semibold text-ios-label active:bg-ios-separator active:scale-[0.98] transition-all">
               Get Challenge
             </button>
           </section>
-
         </main>
       </div>
     </div>
