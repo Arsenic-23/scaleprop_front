@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Header from "../components/Header";
 
 const Payout: React.FC = () => {
+  const [openForm, setOpenForm] = useState(false);
+
   return (
     <div className="relative flex min-h-screen w-full flex-col font-display bg-ios-bg text-ios-label">
 
@@ -33,13 +35,28 @@ const Payout: React.FC = () => {
             requested once every 30 days.
           </p>
 
+          <button
+            onClick={() => setOpenForm(!openForm)}
+            className="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-ios-green text-base font-semibold text-white"
+          >
+            Request Payout
+            <span className="material-symbols-outlined">arrow_forward</span>
+          </button>
+
         </section>
 
-        {/* Request Crypto Payout (NEW COMPONENT INSERTED HERE) */}
-        <section className="flex flex-col gap-4">
-          <h2 className="px-4 text-xl font-semibold text-ios-label">Request Crypto Payout</h2>
+        {/* SLIDE DOWN CRYPTO PAYOUT FORM */}
+        <div
+          className={`
+            transition-all duration-300 overflow-hidden
+            ${openForm ? "max-h-[1000px] opacity-100 translate-y-0" : "max-h-0 opacity-0 -translate-y-3"}
+          `}
+        >
+          <section className="flex flex-col gap-4 rounded-xl bg-ios-bg-secondary p-4 mt-[-4px]">
 
-          <div className="flex flex-col gap-4 overflow-hidden rounded-xl bg-ios-bg-secondary p-4">
+            <h2 className="text-xl font-semibold text-ios-label px-1">
+              Request Crypto Payout
+            </h2>
 
             {/* Amount */}
             <div className="flex flex-col gap-2">
@@ -59,7 +76,7 @@ const Payout: React.FC = () => {
               </div>
             </div>
 
-            {/* Crypto Selection */}
+            {/* Cryptocurrency */}
             <div className="flex flex-col gap-2">
               <label className="text-sm text-ios-label-secondary" htmlFor="cryptocurrency">
                 Cryptocurrency
@@ -98,14 +115,14 @@ const Payout: React.FC = () => {
               </div>
             </div>
 
-            {/* Confirm Button */}
+            {/* Confirm */}
             <button className="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-ios-blue text-base font-semibold text-white">
               Confirm Payout
               <span className="material-symbols-outlined">arrow_forward</span>
             </button>
 
-          </div>
-        </section>
+          </section>
+        </div>
 
         {/* Payout History */}
         <section className="flex flex-col gap-4">
@@ -160,6 +177,7 @@ const Payout: React.FC = () => {
 
         {/* Next Payout Cycle */}
         <section className="flex flex-col gap-4">
+
           <h2 className="px-4 text-xl font-semibold text-ios-label">Next Payout Cycle</h2>
 
           <div className="rounded-xl bg-ios-bg-secondary p-4">
@@ -169,7 +187,10 @@ const Payout: React.FC = () => {
             </div>
 
             <div className="mt-3 h-2 w-full rounded-full bg-ios-progress-bg">
-              <div className="h-2 rounded-full bg-ios-blue" style={{ width: "70%" }}></div>
+              <div
+                className="h-2 rounded-full bg-ios-blue"
+                style={{ width: "70%" }}
+              ></div>
             </div>
 
             <div className="mt-2 flex items-center justify-between text-sm text-ios-label-secondary">
@@ -177,6 +198,7 @@ const Payout: React.FC = () => {
               <span>9 days left</span>
             </div>
           </div>
+
         </section>
 
       </main>
