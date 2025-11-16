@@ -100,6 +100,24 @@ const Account: React.FC = () => {
           </ul>
         </section>
 
+        {/* Payout Insights (inserted perfectly from HTML) */}
+        <section className="overflow-hidden rounded-xl bg-ios-bg-secondary">
+          <a
+            className="flex cursor-pointer items-center justify-between px-4 py-3 transition-colors hover:bg-white/5"
+            href="#"
+          >
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-ios-blue !text-2xl">
+                insights
+              </span>
+              <p className="text-base text-ios-label">Payout Insights</p>
+            </div>
+            <span className="material-symbols-outlined text-ios-label-secondary">
+              chevron_right
+            </span>
+          </a>
+        </section>
+
         {/* Trading History */}
         <section className="overflow-hidden rounded-xl bg-ios-bg-secondary">
 
