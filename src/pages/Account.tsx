@@ -1,10 +1,14 @@
 import React from "react";
 import Header from "../components/Header";
+import { useNavigate } from "react-router-dom";
 
 const Account: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="relative flex min-h-screen w-full flex-col font-display bg-ios-bg text-ios-label">
-      {/* Fonts */}
+
+      {/* Load fonts */}
       <link
         rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
@@ -14,7 +18,6 @@ const Account: React.FC = () => {
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
       />
 
-      {/* KEEPING YOUR HEADER EXACTLY AS IS */}
       <Header title="Account" />
 
       <main className="flex-1 flex flex-col gap-6 p-4">
@@ -33,11 +36,22 @@ const Account: React.FC = () => {
               </div>
             </li>
 
-            <li className="flex items-center justify-between gap-4 px-4 py-3">
+            <li className="flex items-center justify-between gap-4 border-b border-ios-separator px-4 py-3">
               <p className="text-base text-ios-label-secondary">Account Type</p>
               <div className="rounded-full bg-ios-blue/20 px-3 py-1">
                 <p className="text-sm font-medium text-ios-blue">Evaluation</p>
               </div>
+            </li>
+
+            {/* NEW — Payout Insights Tab */}
+            <li
+              onClick={() => navigate("/payout")}
+              className="flex cursor-pointer items-center justify-between gap-4 px-4 py-3 active:scale-[0.98] active:opacity-70 transition-all"
+            >
+              <p className="text-base font-medium text-ios-blue">Payout Insights</p>
+              <span className="material-symbols-outlined text-ios-blue !text-xl">
+                chevron_right
+              </span>
             </li>
 
           </ul>
@@ -47,8 +61,12 @@ const Account: React.FC = () => {
         <section className="flex flex-col gap-4 rounded-xl bg-ios-bg-secondary p-4">
 
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-ios-label">Phase Progress</h2>
-            <span className="material-symbols-outlined text-ios-label-secondary">info</span>
+            <h2 className="text-lg font-semibold text-ios-label">
+              Phase Progress
+            </h2>
+            <span className="material-symbols-outlined text-ios-label-secondary">
+              info
+            </span>
           </div>
 
           <div className="flex items-baseline justify-between">
@@ -70,41 +88,21 @@ const Account: React.FC = () => {
 
         </section>
 
-        {/* Payout Insights (FULLY UPDATED TO MATCH HTML) */}
-        <section className="cursor-pointer overflow-hidden rounded-xl bg-ios-bg-secondary">
-          <div className="flex items-center justify-between px-4 py-3">
-            <div className="flex items-center gap-3">
-
-              {/* GREEN ICON */}
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-ios-green">
-                <span className="material-symbols-outlined text-black">payments</span>
-              </div>
-
-              <div className="flex flex-col">
-                <h2 className="text-base font-semibold text-ios-label">Payout Insights</h2>
-                <p className="text-sm text-ios-label-secondary">
-                  Check your eligibility &amp; history
-                </p>
-              </div>
-            </div>
-
-            <span className="material-symbols-outlined text-ios-label-secondary">
-              chevron_right
-            </span>
-          </div>
-        </section>
-
         {/* Balances */}
         <section className="overflow-hidden rounded-xl bg-ios-bg-secondary">
           <ul className="flex flex-col">
 
             <li className="flex justify-between gap-4 border-b border-ios-separator px-4 py-3">
-              <p className="text-base text-ios-label-secondary">Starting Balance</p>
+              <p className="text-base text-ios-label-secondary">
+                Starting Balance
+              </p>
               <p className="text-base text-ios-label">$100,000.00</p>
             </li>
 
             <li className="flex justify-between gap-4 border-b border-ios-separator px-4 py-3">
-              <p className="text-base text-ios-label-secondary">Current Balance</p>
+              <p className="text-base text-ios-label-secondary">
+                Current Balance
+              </p>
               <p className="text-base text-ios-label">$102,450.00</p>
             </li>
 
@@ -120,7 +118,9 @@ const Account: React.FC = () => {
         <section className="overflow-hidden rounded-xl bg-ios-bg-secondary">
 
           <div className="border-b border-ios-separator px-4 py-3">
-            <h2 className="text-lg font-semibold text-ios-label">Trading History</h2>
+            <h2 className="text-lg font-semibold text-ios-label">
+              Trading History
+            </h2>
           </div>
 
           <ul className="flex flex-col">
