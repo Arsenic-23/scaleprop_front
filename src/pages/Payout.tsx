@@ -1,133 +1,167 @@
-// src/pages/Payout.tsx
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Send, CheckCircle2 } from "lucide-react";
+import React from "react";
 
-const Payout = () => {
-  const navigate = useNavigate();
-  const [method, setMethod] = useState("UPI");
-  const [details, setDetails] = useState("");
-  const [success, setSuccess] = useState(false);
-
-  const transactions = [
-    { id: 1, type: "deposit", amount: 1500, date: "2025-08-05" },
-    { id: 2, type: "withdraw", amount: 700, date: "2025-08-07" },
-    { id: 3, type: "deposit", amount: 2500, date: "2025-08-09" },
-  ];
-
-  const handleSubmit = () => {
-    if (!details.trim()) return;
-    setSuccess(true);
-    setDetails("");
-  };
-
+const payout: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-gray-900 to-black text-white flex flex-col">
-      {/* Top Section */}
-      <div className="p-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="p-2 rounded-full hover:bg-white/10 transition mb-3"
-        >
-          <ArrowLeft size={20} />
+    <div className="relative flex min-h-screen w-full flex-col font-display bg-ios-bg text-ios-label">
+
+      {/* Load fonts */}
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+      />
+
+      {/* Header */}
+      <header className="sticky top-0 z-10 flex h-14 items-center justify-between bg-ios-bg/80 px-4 backdrop-blur-xl">
+        <button className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-ios-blue">
+          <span className="material-symbols-outlined !text-3xl">
+            arrow_back_ios_new
+          </span>
         </button>
-        <h1 className="text-2xl font-bold tracking-wide">Payout</h1>
-        <p className="text-sm text-gray-400">Withdraw your funds securely</p>
-      </div>
 
-      {/* Content */}
-      <div className="flex-1 px-4">
-        <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-white/10 mb-6">
-          {!success ? (
-            <>
-              <h2 className="text-xl font-semibold mb-6 text-center">
-                💸 Request Payout
-              </h2>
+        <h1 className="text-lg font-semibold text-ios-label">
+          Payout Insights
+        </h1>
 
-              {/* Method Selection */}
-              <div className="mb-5">
-                <label className="block mb-2 font-semibold text-sm text-gray-300">
-                  Choose Method:
-                </label>
-                <select
-                  value={method}
-                  onChange={(e) => setMethod(e.target.value)}
-                  className="w-full p-3 rounded-lg border border-white/10 bg-black/40 text-white focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-                >
-                  <option value="UPI" className="bg-gray-900">
-                    UPI
-                  </option>
-                  <option value="Crypto" className="bg-gray-900">
-                    Crypto (USDT)
-                  </option>
-                </select>
-              </div>
+        <button className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-ios-blue">
+          <span className="material-symbols-outlined !text-3xl">info</span>
+        </button>
+      </header>
 
-              {/* Details Input */}
-              <div className="mb-5">
-                <label className="block mb-2 font-semibold text-sm text-gray-300">
-                  Enter {method} ID:
-                </label>
-                <input
-                  type="text"
-                  value={details}
-                  onChange={(e) => setDetails(e.target.value)}
-                  className="w-full p-3 rounded-lg border border-white/10 bg-black/40 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-                  placeholder={method === "UPI" ? "example@upi" : "Your USDT Wallet Address"}
-                />
-              </div>
+      {/* Main */}
+      <main className="flex flex-1 flex-col gap-8 p-4">
 
-              {/* Submit Button */}
-              <button
-                onClick={handleSubmit}
-                className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 text-white px-5 py-3 rounded-full transition font-semibold shadow-lg hover:shadow-green-500/30"
-              >
-                <Send size={18} />
-                Request Payout
-              </button>
-            </>
-          ) : (
-            <div className="flex flex-col items-center text-center py-6">
-              <CheckCircle2 size={50} className="text-green-500 mb-3" />
-              <h2 className="text-xl font-bold mb-1">Request Sent</h2>
-              <p className="text-gray-400 text-sm">
-                Your payout request via {method} has been submitted successfully.
+        {/* Available For Payout */}
+        <section className="flex flex-col gap-4 rounded-xl bg-ios-bg-secondary p-4">
+
+          <div>
+            <p className="text-base text-ios-label-secondary">
+              Available for Payout
+            </p>
+            <p className="text-4xl font-bold text-ios-green">$2,450.00</p>
+          </div>
+
+          <p className="text-sm text-ios-label-tertiary">
+            This is the total profit eligible for withdrawal. Payouts can be
+            requested once every 30 days.
+          </p>
+
+          <button className="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-ios-green text-base font-semibold text-white">
+            Request Payout
+            <span className="material-symbols-outlined">arrow_forward</span>
+          </button>
+
+        </section>
+
+        {/* Payout History */}
+        <section className="flex flex-col gap-4">
+
+          <h2 className="px-4 text-xl font-semibold text-ios-label">
+            Payout History
+          </h2>
+
+          <div className="overflow-hidden rounded-xl bg-ios-bg-secondary">
+            <ul className="flex flex-col">
+
+              <li className="flex items-center justify-between gap-4 border-b border-ios-separator px-4 py-3">
+                <div className="flex flex-col">
+                  <p className="text-base text-ios-label">Payout #003</p>
+                  <p className="text-sm text-ios-label-secondary">
+                    May 15, 2024
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p className="text-base font-medium text-ios-label">
+                    $1,500.00
+                  </p>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-ios-green">
+                    <span className="material-symbols-outlined !text-base text-black">
+                      done
+                    </span>
+                  </div>
+                </div>
+              </li>
+
+              <li className="flex items-center justify-between gap-4 border-b border-ios-separator px-4 py-3">
+                <div className="flex flex-col">
+                  <p className="text-base text-ios-label">Payout #002</p>
+                  <p className="text-sm text-ios-label-secondary">
+                    April 12, 2024
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p className="text-base font-medium text-ios-label">
+                    $2,120.50
+                  </p>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-ios-green">
+                    <span className="material-symbols-outlined !text-base text-black">
+                      done
+                    </span>
+                  </div>
+                </div>
+              </li>
+
+              <li className="flex items-center justify-between gap-4 px-4 py-3">
+                <div className="flex flex-col">
+                  <p className="text-base text-ios-label">Payout #001</p>
+                  <p className="text-sm text-ios-label-secondary">
+                    March 10, 2024
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <p className="text-base font-medium text-ios-label">
+                    $980.00
+                  </p>
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-ios-green">
+                    <span className="material-symbols-outlined !text-base text-black">
+                      done
+                    </span>
+                  </div>
+                </div>
+              </li>
+
+            </ul>
+          </div>
+        </section>
+
+        {/* Next Payout Cycle */}
+        <section className="flex flex-col gap-4">
+
+          <h2 className="px-4 text-xl font-semibold text-ios-label">
+            Next Payout Cycle
+          </h2>
+
+          <div className="rounded-xl bg-ios-bg-secondary p-4">
+            <div className="flex items-center justify-between">
+              <p className="text-base text-ios-label-secondary">
+                Next eligible date
+              </p>
+              <p className="text-base font-medium text-ios-label">
+                June 14, 2024
               </p>
             </div>
-          )}
-        </div>
 
-        {/* Transaction History */}
-        <div className="bg-white/5 backdrop-blur-lg rounded-2xl p-5 shadow-xl border border-white/10">
-          <h3 className="text-lg font-semibold mb-4">📜 Transaction History</h3>
-          <ul className="space-y-4">
-            {transactions.map((tx) => (
-              <li
-                key={tx.id}
-                className="flex items-center justify-between border-b border-white/5 pb-2 last:border-0"
-              >
-                <div>
-                  <p className="font-medium">
-                    {tx.type === "deposit" ? "Funds Added" : "Withdrawal"}
-                  </p>
-                  <p className="text-xs text-gray-400">{tx.date}</p>
-                </div>
-                <span
-                  className={`font-semibold ${
-                    tx.type === "deposit" ? "text-green-400" : "text-red-400"
-                  }`}
-                >
-                  {tx.type === "deposit" ? "+" : "-"}₹{tx.amount}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+            <div className="mt-3 h-2 w-full rounded-full bg-ios-progress-bg">
+              <div
+                className="h-2 rounded-full bg-ios-blue"
+                style={{ width: "70%" }}
+              ></div>
+            </div>
 
-      <div className="h-6" />
+            <div className="mt-2 flex items-center justify-between text-sm text-ios-label-secondary">
+              <span>21 days</span>
+              <span>9 days left</span>
+            </div>
+          </div>
+
+        </section>
+
+      </main>
     </div>
   );
 };
 
-export default Payout;
+export default payout;
