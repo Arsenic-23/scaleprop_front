@@ -1,10 +1,11 @@
 import React from "react";
+import Header from "../components/Header";
 
 const Account: React.FC = () => {
   return (
     <div className="relative flex min-h-screen w-full flex-col font-display bg-ios-bg text-ios-label">
 
-      {/* Load fonts exactly as in HTML */}
+      {/* Load fonts */}
       <link
         rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
@@ -14,24 +15,8 @@ const Account: React.FC = () => {
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
       />
 
-      {/* Header */}
-      <header className="sticky top-0 z-10 flex h-14 items-center justify-between bg-ios-bg/80 px-4 backdrop-blur-xl">
-        <button className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-ios-blue">
-          <span className="material-symbols-outlined !text-3xl">
-            arrow_back_ios_new
-          </span>
-        </button>
+      <Header title="Account" />
 
-        <h1 className="text-lg font-semibold text-ios-label">Account</h1>
-
-        <button className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-ios-blue">
-          <span className="material-symbols-outlined !text-3xl">
-            more_horiz
-          </span>
-        </button>
-      </header>
-
-      {/* Main */}
       <main className="flex-1 flex flex-col gap-6 p-4">
 
         {/* Account Info */}
