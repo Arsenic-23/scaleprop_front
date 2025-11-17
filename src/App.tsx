@@ -13,7 +13,7 @@ import Home from "./pages/Home";
 import Plans from "./pages/Plans";
 import Payment from "./pages/Payment";
 import Account from "./pages/Account";
-import Checkout from "./pages/Rules";
+import Rules from "./pages/Rules";
 import Passed from "./pages/Passed";
 import Payout from "./pages/Payout";
 import Profile from "./pages/Profile";
@@ -93,7 +93,7 @@ function AppWrapper() {
         />
 
         <Route
-          path="/Checkout"
+          path="/Rules"
           element={
             <PrivateRoute>
               <Rules />
