@@ -54,56 +54,60 @@ const Support: React.FC = () => {
         <section className="overflow-hidden rounded-xl bg-ios-bg-secondary">
           <ul className="flex flex-col">
 
+            {/* FAQs */}
             <li>
-              <a
-                href="#"
-                className="flex items-center gap-4 border-b border-ios-separator px-4 py-3 active:bg-gray-800/50"
+              <button
+                onClick={() => navigate("/support/faqs")}
+                className="flex w-full items-center gap-4 border-b border-ios-separator px-4 py-3 text-left active:bg-gray-800/50"
               >
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-ios-blue">
                   <span className="material-symbols-outlined !text-xl text-white">quiz</span>
                 </div>
                 <p className="flex-1 text-base text-ios-label">FAQs</p>
                 <span className="material-symbols-outlined text-ios-label-secondary">chevron_right</span>
-              </a>
+              </button>
             </li>
 
+            {/* Knowledge Base */}
             <li>
-              <a
-                href="#"
-                className="flex items-center gap-4 border-b border-ios-separator px-4 py-3 active:bg-gray-800/50"
+              <button
+                onClick={() => navigate("/support/knowledge")}
+                className="flex w-full items-center gap-4 border-b border-ios-separator px-4 py-3 text-left active:bg-gray-800/50"
               >
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-ios-green">
                   <span className="material-symbols-outlined !text-xl text-white">menu_book</span>
                 </div>
                 <p className="flex-1 text-base text-ios-label">Knowledge Base</p>
                 <span className="material-symbols-outlined text-ios-label-secondary">chevron_right</span>
-              </a>
+              </button>
             </li>
 
+            {/* Community Forum */}
             <li>
-              <a
-                href="#"
-                className="flex items-center gap-4 border-b border-ios-separator px-4 py-3 active:bg-gray-800/50"
+              <button
+                onClick={() => navigate("/support/community")}
+                className="flex w-full items-center gap-4 border-b border-ios-separator px-4 py-3 text-left active:bg-gray-800/50"
               >
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500">
                   <span className="material-symbols-outlined !text-xl text-white">forum</span>
                 </div>
                 <p className="flex-1 text-base text-ios-label">Community Forum</p>
                 <span className="material-symbols-outlined text-ios-label-secondary">chevron_right</span>
-              </a>
+              </button>
             </li>
 
+            {/* Contact Support */}
             <li>
-              <a
-                href="#"
-                className="flex items-center gap-4 px-4 py-3 active:bg-gray-800/50"
+              <button
+                onClick={() => navigate("/support/contact")}
+                className="flex w-full items-center gap-4 px-4 py-3 text-left active:bg-gray-800/50"
               >
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-ios-red">
                   <span className="material-symbols-outlined !text-xl text-white">support_agent</span>
                 </div>
                 <p className="flex-1 text-base text-ios-label">Contact Support</p>
                 <span className="material-symbols-outlined text-ios-label-secondary">chevron_right</span>
-              </a>
+              </button>
             </li>
 
           </ul>
@@ -127,6 +131,7 @@ const Support: React.FC = () => {
           </div>
         </section>
 
+        {/* Version */}
         <section>
           <p className="text-center text-xs text-ios-label-secondary">
             App Version 1.1.0
