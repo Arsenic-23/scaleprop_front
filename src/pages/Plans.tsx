@@ -1,7 +1,14 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 
 const Plans: React.FC = () => {
+  const navigate = useNavigate();
+
+  function handleGetChallenge(planId: string, planName: string, price: string) {
+    navigate("/rules", { state: { planId, planName, price } });
+  }
+
   return (
     <div className="font-display bg-ios-bg text-ios-label min-h-screen w-full">
       {/* Load Fonts EXACTLY like HTML */}
@@ -79,7 +86,12 @@ const Plans: React.FC = () => {
               </div>
             </div>
 
-            <button className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-fill-tertiary text-[17px] font-semibold text-ios-label active:bg-ios-separator active:scale-[0.98] transition-all">
+            <button
+              onClick={() => handleGetChallenge("stellar-25k", "$25,000 Stellar", "169")}
+              className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-fill-tertiary text-[17px] font-semibold text-ios-label active:bg-ios-separator active:scale-[0.98] transition-all"
+              aria-label="Get $25,000 Stellar challenge"
+              data-plan-id="stellar-25k"
+            >
               Get Challenge
             </button>
           </section>
@@ -154,7 +166,12 @@ const Plans: React.FC = () => {
               </div>
             </div>
 
-            <button className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-blue text-[17px] font-semibold text-white active:bg-opacity-80 active:scale-[0.98] transition-all">
+            <button
+              onClick={() => handleGetChallenge("apex-100k", "$100,000 Apex", "499")}
+              className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-blue text-[17px] font-semibold text-white active:bg-opacity-80 active:scale-[0.98] transition-all"
+              aria-label="Get $100,000 Apex challenge"
+              data-plan-id="apex-100k"
+            >
               Get Challenge
             </button>
           </section>
@@ -218,7 +235,12 @@ const Plans: React.FC = () => {
               </div>
             </div>
 
-            <button className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-fill-tertiary text-[17px] font-semibold text-ios-label active:bg-ios-separator active:scale-[0.98] transition-all">
+            <button
+              onClick={() => handleGetChallenge("summit-200k", "$200,000 Summit", "949")}
+              className="flex h-12 w-full cursor-pointer items-center justify-center rounded-xl bg-ios-fill-tertiary text-[17px] font-semibold text-ios-label active:bg-ios-separator active:scale-[0.98] transition-all"
+              aria-label="Get $200,000 Summit challenge"
+              data-plan-id="summit-200k"
+            >
               Get Challenge
             </button>
           </section>
