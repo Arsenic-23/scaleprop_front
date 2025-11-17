@@ -23,6 +23,12 @@ import Support from "./pages/Support";
 import Notifications from "./pages/Notifications";
 import LiveSupport from "./pages/LiveSupport";
 
+// NEW Support Subpages
+import FAQs from "./pages/support/FAQs";
+import KnowledgeBase from "./pages/support/KnowledgeBase";
+import CommunityForum from "./pages/support/CommunityForum";
+import ContactSupport from "./pages/support/ContactSupport";
+
 import BottomNav from "./components/BottomNav";
 
 function PrivateRoute({ children }: { children: JSX.Element }) {
@@ -41,7 +47,6 @@ function AppWrapper() {
     "/plans",
   ];
 
-  // live chat screen should NOT show bottom nav
   const showBottomNav = showBottomNavRoutes.includes(location.pathname);
 
   useEffect(() => {
@@ -56,6 +61,7 @@ function AppWrapper() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
 
+        {/* Main App Pages */}
         <Route
           path="/home"
           element={
@@ -93,7 +99,7 @@ function AppWrapper() {
         />
 
         <Route
-          path="/Rules"
+          path="/rules"
           element={
             <PrivateRoute>
               <Rules />
@@ -146,6 +152,7 @@ function AppWrapper() {
           }
         />
 
+        {/* Support Home */}
         <Route
           path="/support"
           element={
@@ -155,7 +162,41 @@ function AppWrapper() {
           }
         />
 
-        {/* NEW — Live Support Page */}
+        {/* NEW — Support Subpages */}
+        <Route
+          path="/support/faqs"
+          element={
+            <PrivateRoute>
+              <FAQs />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/support/knowledge"
+          element={
+            <PrivateRoute>
+              <KnowledgeBase />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/support/community"
+          element={
+            <PrivateRoute>
+              <CommunityForum />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/support/contact"
+          element={
+            <PrivateRoute>
+              <ContactSupport />
+            </PrivateRoute>
+          }
+        />
+
+        {/* Live Chat */}
         <Route
           path="/live-support"
           element={
