@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { useEffect } from "react";
 import { useUser, UserProvider } from "./context/UserContext";
+import { HashRouter as Router } from "react-router-dom";
 
 import LandingPage from "./pages/LandingPage";
 import Home from "./pages/Home";
@@ -23,7 +24,6 @@ import Support from "./pages/Support";
 import Notifications from "./pages/Notifications";
 import LiveSupport from "./pages/LiveSupport";
 
-// NEW Support Subpages
 import FAQs from "./pages/support/FAQs";
 import KnowledgeBase from "./pages/support/KnowledgeBase";
 import CommunityForum from "./pages/support/CommunityForum";
