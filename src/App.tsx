@@ -13,7 +13,7 @@ import Home from "./pages/Home";
 import Plans from "./pages/Plans";
 import Payment from "./pages/Payment";
 import Account from "./pages/Account";
-import Rules from "./pages/Rules";
+import Checkout from "./pages/Rules";
 import Passed from "./pages/Passed";
 import Payout from "./pages/Payout";
 import Profile from "./pages/Profile";
@@ -39,7 +39,6 @@ function AppWrapper() {
     "/account",
     "/profile",
     "/plans",
-    "/support",
   ];
 
   // live chat screen should NOT show bottom nav
@@ -94,7 +93,7 @@ function AppWrapper() {
         />
 
         <Route
-          path="/rules"
+          path="/Checkout"
           element={
             <PrivateRoute>
               <Rules />
