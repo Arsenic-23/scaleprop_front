@@ -11,20 +11,9 @@ const Plans: React.FC = () => {
 
   return (
     <div className="font-display bg-ios-bg text-ios-label min-h-screen w-full">
-      {/* Load Fonts EXACTLY like HTML */}
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      />
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-      />
-
       <div className="relative flex min-h-screen w-full flex-col">
         <Header title="Challenges" />
 
-        {/* ----- MAKE DESKTOP LOOK PERFECT ----- */}
         <main className="flex-1 flex flex-col gap-8 p-4 pt-6 mx-auto w-full max-w-3xl">
 
           {/* ---------- FIRST CARD ---------- */}
