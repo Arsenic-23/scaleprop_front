@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "../components/Header";
 import SwipeableNotification from "../components/Swipeable";
@@ -24,6 +24,15 @@ interface Notification {
   colorType: NotificationColor;
   isRead: boolean;
 }
+
+// prevent animation on first mount
+const useFirstRender = () => {
+  const first = useRef(true);
+  useEffect(() => {
+    first.current = false;
+  }, []);
+  return first.current;
+};
 
 const NotificationItem: React.FC<Notification> = ({
   title,
@@ -51,22 +60,27 @@ const NotificationItem: React.FC<Notification> = ({
       <div className="flex items-start gap-4 relative font-[Manrope]">
         <div
           className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${colorMap[colorType].bg}`}
+          style={{ minHeight: 40, minWidth: 40 }}
         >
-          <span className={`material-symbols-outlined text-2xl ${colorMap[colorType].text}`}>
+          <span
+            className={`material-symbols-outlined text-2xl ${colorMap[colorType].text}`}
+            style={{ lineHeight: "1" }}
+          >
             {icon}
           </span>
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between flex-wrap gap-x-3">
-            <p className="font-semibold text-base leading-tight text-white">
+            <p className="font-semibold text-base leading-tight text-white select-none">
               {title}
             </p>
-            <p className="text-xs whitespace-nowrap text-white/50">
+            <p className="text-xs whitespace-nowrap text-white/50 select-none">
               {timestamp}
             </p>
           </div>
-          <p className="mt-1 text-sm leading-snug text-white/70 break-words">
+
+          <p className="mt-1 text-sm leading-snug text-white/70 break-words select-none">
             {message}
           </p>
         </div>
@@ -76,6 +90,8 @@ const NotificationItem: React.FC<Notification> = ({
 };
 
 const Notifications: React.FC = () => {
+  const isFirstRender = useFirstRender();
+
   const [newNotifications, setNewNotifications] = useState<Notification[]>([
     {
       id: 1,
@@ -99,7 +115,9 @@ const Notifications: React.FC = () => {
     },
   ]);
 
-  const [earlierNotifications, setEarlierNotifications] = useState<Notification[]>([
+  const [earlierNotifications, setEarlierNotifications] = useState<
+    Notification[]
+  >([
     {
       id: 3,
       title: "Margin Call",
@@ -128,7 +146,10 @@ const Notifications: React.FC = () => {
     }));
 
     setNewNotifications([]);
-    setTimeout(() => setEarlierNotifications((prev) => [...marked, ...prev]), 300);
+    setTimeout(
+      () => setEarlierNotifications((prev) => [...marked, ...prev]),
+      300
+    );
   };
 
   const handleRemove = (id: number, isNew: boolean) => {
@@ -167,20 +188,15 @@ const Notifications: React.FC = () => {
                 </div>
 
                 <motion.div layout className="space-y-3 mb-8">
-                  <AnimatePresence>
-                    {newNotifications.map((n, index) => (
+                  <AnimatePresence initial={false}>
+                    {newNotifications.map((n) => (
                       <motion.div
                         key={n.id}
                         layout
-                        initial={{ opacity: 0, y: -12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 12 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 220,
-                          damping: 28,
-                          delay: index * 0.04,
-                        }}
+                        initial={{ opacity: isFirstRender ? 1 : 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.18 }}
                       >
                         <SwipeableNotification
                           id={n.id}
@@ -200,21 +216,17 @@ const Notifications: React.FC = () => {
                 <div className="mb-5">
                   <h2 className="text-lg font-semibold text-white">Earlier</h2>
                 </div>
+
                 <motion.div layout className="space-y-3">
-                  <AnimatePresence>
-                    {earlierNotifications.map((n, index) => (
+                  <AnimatePresence initial={false}>
+                    {earlierNotifications.map((n) => (
                       <motion.div
                         key={n.id}
                         layout
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        transition={{
-                          type: "spring",
-                          stiffness: 220,
-                          damping: 28,
-                          delay: index * 0.03,
-                        }}
+                        initial={{ opacity: isFirstRender ? 1 : 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.18 }}
                       >
                         <SwipeableNotification
                           id={n.id}
