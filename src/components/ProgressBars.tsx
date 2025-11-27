@@ -13,6 +13,12 @@ interface LinearCapsuleBarProps {
   segments?: number;
 }
 
+const colorMap: Record<HtmlColorKey, string> = {
+  green: "from-green-400 to-green-600",
+  amber: "from-amber-400 to-amber-600",
+  red: "from-red-400 to-red-600",
+};
+
 const htmlColorClassFor = (c: HtmlColorKey) => {
   switch (c) {
     case "green":
@@ -43,35 +49,39 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
   const currentFillPercentage = Math.min(100, (value / max) * 100);
   const filledSegments = Math.round((currentFillPercentage / 100) * segments);
   const fillColorClass = htmlColorClassFor(color);
+  const gradientColors = colorMap[color];
 
   return (
     <div className="w-full">
       {/* Top labels */}
-      <div className="flex justify-between text-[0.85rem] font-medium text-gray-400">
+      <div className="flex justify-between text-[0.85rem] font-medium text-gray-300 tracking-wide">
         <span className="capitalize">{label}</span>
-        <span>{totalLabel}</span>
+        <span className="text-gray-400">{totalLabel}</span>
       </div>
 
       {/* Capsule bar */}
-      <div className="mt-2 flex gap-[3px] h-[14px]">
+      <div className="mt-2 flex gap-[4px] h-[16px] sm:h-[18px]">
         {Array.from({ length: segments }).map((_, i) => {
           const isFilled = i < filledSegments;
           return (
             <motion.div
               key={i}
-              initial={{ scaleY: 0.6, opacity: 0.3 }}
-              animate={{
-                scaleY: 1,
-                opacity: 1,
-              }}
+              initial={{ scaleY: 0.5, opacity: 0 }}
+              animate={{ scaleY: 1, opacity: 1 }}
               transition={{
-                delay: i * 0.012,
+                delay: i * 0.01,
                 type: "spring",
                 stiffness: 120,
-                damping: 18,
+                damping: 14,
               }}
-              className={`flex-1 rounded-full transition-colors duration-700 ${
-                isFilled ? fillColorClass : "bg-slate-700"
+              whileHover={{
+                scaleY: 1.2,
+                transition: { duration: 0.15 },
+              }}
+              className={`flex-1 rounded-full transition-all duration-700 ${
+                isFilled
+                  ? `bg-gradient-to-b ${gradientColors} shadow-[0_0_6px_rgba(0,0,0,0.5)]`
+                  : "bg-slate-800"
               }`}
             />
           );
@@ -79,9 +89,9 @@ const LinearCapsuleBar: React.FC<LinearCapsuleBarProps> = ({
       </div>
 
       {/* Bottom labels */}
-      <div className="mt-2 flex justify-between text-[0.75rem] text-gray-500">
+      <div className="mt-2 flex justify-between text-[0.75rem] text-gray-500 tracking-wide">
         <span>{usedLabel}</span>
-        <span>{formatPct(value, max)}%</span>
+        <span className="text-gray-300">{formatPct(value, max)}%</span>
       </div>
     </div>
   );
@@ -105,7 +115,7 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
   totalDrawdownMax,
 }) => {
   return (
-    <div className="space-y-6 w-full">
+    <div className="space-y-8 w-full">
       <LinearCapsuleBar
         label="profit target"
         value={profitTargetValue}
@@ -136,11 +146,10 @@ export const ProgressBarsGroup: React.FC<ProgressBarsGroupProps> = ({
   );
 };
 
-/* ✅ Responsive Wrapper — paste this where you render ProgressBarsGroup */
 export const ResponsiveProgressView = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#0f1116]">
-      <div className="w-full max-w-md px-4 sm:px-6 md:px-8 scale-[0.98] md:scale-100">
+      <div className="w-full max-w-lg px-5 sm:px-6 md:px-10 scale-[0.98] md:scale-100">
         <ProgressBarsGroup
           profitTargetValue={8000}
           profitTargetMax={10000}
