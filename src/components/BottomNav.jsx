@@ -15,7 +15,7 @@ export default function BottomNavigation() {
     { path: "/profile", icon: <User size={22} /> },
   ];
 
-  const handleTabClick = (path: string) => {
+  const handleTabClick = (path) => {
     if (window.navigator.vibrate) {
       window.navigator.vibrate(40);
     }
@@ -39,7 +39,7 @@ export default function BottomNavigation() {
             "0 22px 45px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.28), inset 0 -2px 6px rgba(0,0,0,0.16)",
         }}
       >
-        {/* Top Shine Layer */}
+        {/* Shine Layer */}
         <div
           style={{
             position: "absolute",
@@ -51,7 +51,7 @@ export default function BottomNavigation() {
           }}
         />
 
-        {/* Glass Bloom Gradient */}
+        {/* Bloom */}
         <div
           style={{
             position: "absolute",
@@ -63,7 +63,7 @@ export default function BottomNavigation() {
           }}
         />
 
-        {/* Noise Layer */}
+        {/* Noise */}
         <div
           style={{
             position: "absolute",
@@ -75,7 +75,7 @@ export default function BottomNavigation() {
           }}
         />
 
-        {/* Button Row */}
+        {/* Buttons */}
         <div className="relative z-20 h-full flex items-center justify-around">
           {tabs.map((tab) => {
             const isActive = active === tab.path;
