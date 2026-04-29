@@ -1,6 +1,5 @@
 # ScaleFund (ScaleProp) Frontend 🚀
 
-![ScaleFund Banner](https://via.placeholder.com/1200x400?text=ScaleFund+Frontend)
 
 ScaleFund is the premium front-end application for a modern proprietary trading platform. Built with a focus on high performance, seamless user experience, and dark-mode-first premium aesthetics, this application provides users with all the tools they need to manage their trading accounts, participate in funded challenges, and track their payouts. It is seamlessly integrated as a Telegram Mini App and built as a modern Progressive Web App (PWA).
 
